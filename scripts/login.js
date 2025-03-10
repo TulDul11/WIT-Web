@@ -15,11 +15,14 @@ function login() {
     La logica del codigo de validacion deberia ser similar al del codigo de abajo.
     */
     if (user_id == "A01236010" && user_password == "123") {
-        window.location.href = "../templates/start_admin.html";
+        window.location.href = `../templates/start_admin.html?user=${encodeURIComponent(user_id)}`;
+        user_name_showcase(user_id);
     } else if (user_id == "A01234693" && user_password == "456") {
-        window.location.href = "../templates/start_profesor.html";
+        window.location.href = `../templates/start_profesor.html?user=${encodeURIComponent(user_id)}`;
+        user_name_showcase(user_id);
     } else if (user_id == "A01236034" && user_password == "789") {
-        window.location.href = "../templates/start_alumno.html";
+        window.location.href = `../templates/alumno_home.html?user=${encodeURIComponent(user_id)}`;
+        user_name_showcase(user_id);
     } else if (!user_id && !user_password ) {
         // Agregar texto de error que el usuario y contraseña esta vacio
         console.log("User and Password empty");

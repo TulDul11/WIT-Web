@@ -93,7 +93,6 @@
         background-color: #bb8d04;
     }
 }
-
 @media only screen and (min-width: 769px) and (max-width: 1024px) { /*Tablet devices*/
     .index_body {
         display: block;
@@ -184,7 +183,6 @@
         background-color: #bb8d04;
     }
 }
-
 @media (min-width: 1025px) { /*Monitors and computers*/
     .index_body {
         display: block;
@@ -276,41 +274,113 @@
     }
 }
 
-/*navigation styles*/
-.top_nav {
-    height: 10vh;
-    width: 100%;
-    margin: 0px;
-    background-color: #093454;
-    color: white;
-}
-.top_nav div {
-    height: auto;
-    width: 30%;
-    float: right;
-}
-.top_nav div.nav_logo {
-    height: auto;
-    width: 30%;
-    float: left;
-}
-.top_nav img.nav_wti_logo {
-    height: auto;
-    width: auto;
-    object-fit: contain;
-}
-
-/*home screen styles*/
-.user_body {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
-    text-align: center;
-    width: 100%;
-    height: 100%;
-    margin: 0px;
-    background: #ececec;
-}
-
 /*alumno_home.html styles*/
+@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+}
+@media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
+    .alumno_body {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        text-align: center;
+        margin: 0;
+        background: #00111D;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .alumno_body div.top_nav {
+        height: 70px;
+        width: 100%;
+        margin: 0;
+        background-color: #415361;
+        overflow: hidden;
+    } 
+
+    .alumno_body div.top_nav div.nav_menu {
+        height: 55px;
+        width: 55px;
+        border-radius: 50%;
+        margin: 0px 10px;
+        margin-top: 7px;
+        padding: 10px;
+        float: left;
+    }
+    .alumno_body div.top_nav div.nav_menu:hover {
+        background-color: #333f48;
+    }
+    .alumno_body div.top_nav div.nav_menu img.nav_menu_icon {
+        height: 100%;
+        width: auto;
+        float: left;
+    }
+
+    .alumno_body div.top_nav div.nav_logo {
+        height: 90%;
+        width: auto;
+        margin: 3px 10px;
+        padding: 10px;
+        border-radius: 15%;
+        align-items: center;
+        float: left;
+    }
+    .alumno_body div.top_nav div.nav_logo:hover {
+        background-color: #333f48;
+    }
+    .alumno_body div.top_nav div.nav_logo img.nav_wti_logo {
+        height: 160%;
+        width: auto;
+        float: left;
+        transform: translateY(-15%);
+    }
+
+    .alumno_body div.top_nav div.profile_picture {
+        height: 70%;
+        width: auto;
+        border-radius: 50%;
+        margin: 10px;
+        float: right;
+    }
+    .alumno_body div.top_nav div.profile_picture:hover {
+        background-color: #333f48;
+    }
+    .alumno_body div.top_nav div.profile_picture img.pfp {
+        height: 100%;
+    }
+
+    .alumno_body div.top_nav div.greeting_container {
+        height: 100%;
+        margin: 0px 10px;
+        width: auto;
+        float: right;
+    }
+    
+    .alumno_body div.top_nav div p#greeting_text {
+        font-size: 25px;
+        color: white;
+        letter-spacing: 1px;
+
+    }
+    .alumno_body div.top_nav div p#greeting_text:hover {
+        text-decoration: underline;
+    }
+
+    .alumno_body div.decoration_bar {
+        height: 5px;
+        width: 100%;
+        margin: 0;
+        background-color: #F1B300;
+    }
+}
+
+/*teacher_home.html styles*/
+@media only screen and (max-width: 1024px) { /*Teachers are not allowed to use mobile and tablet devices*/
+}
+@media only screen and (min-width: 1025px) { /*Monitors and computers*/
+}
+
+/*admin_home.html styles*/
+@media only screen and (max-width: 1024px) { /*Admins are not allowed to use mobile and tablet devices*/
+}
+@media only screen and (min-width: 1025px) { /*Monitors and computers*/
+}

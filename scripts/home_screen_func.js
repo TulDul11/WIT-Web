@@ -1,14 +1,10 @@
 window.addEventListener('DOMContentLoaded', function() {
     const greeting_text = document.getElementById('greeting_text');
 
-    const urlParameters = new URLSearchParams(window.location.search);
-    const user = urlParameters.get('user');
+    const userInfo = JSON.parse(this.sessionStorage.getItem('userInfo'));
+    const user = userInfo.user;
 
     if (user) {
-        greeting_text.textContent = "Welcome, " + user; 
+        greeting_text.textContent = "Bienvenido, " + user; 
     }
 });
-
-function logout() {
-    window.location.href = "../templates/index.html";
-}

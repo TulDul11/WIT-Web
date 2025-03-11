@@ -42,12 +42,27 @@
         letter-spacing: 3px;
     }
 
+    .login_error_container {
+        display: block;
+        width: 100%;
+        height: 30px;
+        margin-top: 0;
+    }
+    #login_error_message {
+        color: #ff2727;
+        font-size: 15px;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: normal;
+        transform: translateY(10px);
+    }
+
     .text_input_container {
         display: block;
         width: 100%;
     }
     #userid_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 250px;
@@ -56,10 +71,22 @@
         margin-bottom: 7px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #userid_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #userid_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
     #password_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 250px;
@@ -68,7 +95,19 @@
         margin-bottom: 4px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #password_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #password_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
 
     .button_container {
@@ -76,6 +115,7 @@
         width: 100%;
     }
     #log_in_button {
+        background-color: #F1B300;
         border: 0px;
         border-radius: 15px;
         width: 250px;
@@ -87,13 +127,26 @@
         text-align: center;
         color: #093454;
         font-weight: bold;
-        background-color: #F1B300;
+        position: relative;
+    }
+    #log_in_button::before {
+        content: "";
+        position: absolute;
+        top: -4px; left: -4px; right: -4px; bottom: -4px;
+        z-index: -1;
+        border: 2px solid #F1B300;
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
     }
     #log_in_button:hover {
         background-color: #bb8d04;
     }
+    #log_in_button:hover::before {
+        opacity: 1;
+    }
 }
-@media only screen and (min-width: 769px) and (max-width: 1024px) { /*Tablet devices*/
+@media only screen and (min-width: 769px) and (max-width: 1024px) { /*Tablet devices*/  
     .index_body {
         display: block;
         justify-content: center;
@@ -132,12 +185,27 @@
         letter-spacing: 3px;
     }
 
+    .login_error_container {
+        display: block;
+        width: 100%;
+        height: 30px;
+        margin-top: 0;
+    }
+    #login_error_message {
+        color: #ff2727;
+        font-size: 15px;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: normal;
+        transform: translateY(10px);
+    }
+
     .text_input_container {
         display: block;
         width: 100%;
     }
     #userid_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 300px;
@@ -146,10 +214,22 @@
         margin-bottom: 7px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #userid_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #userid_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
     #password_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 300px;
@@ -158,7 +238,19 @@
         margin-bottom: 4px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #password_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #password_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
 
     .button_container {
@@ -166,7 +258,8 @@
         width: 100%;
     }
     #log_in_button {
-        border: 0px;
+        background-color: #F1B300;
+        border: none;
         border-radius: 15px;
         width: 300px;
         height: 55px;
@@ -177,10 +270,23 @@
         text-align: center;
         color: #093454;
         font-weight: bold;
-        background-color: #F1B300;
+        position: relative;
+    }
+    #log_in_button::before {
+        content: "";
+        position: absolute;
+        top: -4px; left: -4px; right: -4px; bottom: -4px;
+        z-index: -1;
+        border: 2px solid #F1B300;
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
     }
     #log_in_button:hover {
         background-color: #bb8d04;
+    }
+    #log_in_button:hover::before {
+        opacity: 1;
     }
 }
 @media (min-width: 1025px) { /*Monitors and computers*/
@@ -222,12 +328,27 @@
         letter-spacing: 3px;
     }
 
+    .login_error_container {
+        display: block;
+        width: 100%;
+        height: 30px;
+        margin-top: 0;
+    }
+    #login_error_message {
+        color: #ff2727;
+        font-size: 15px;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: bold;
+        transform: translateY(10px);
+    }
+
     .text_input_container {
         display: block;
         width: 100%;
     }
     #userid_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 350px;
@@ -236,10 +357,22 @@
         margin-bottom: 7px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #userid_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #userid_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
     #password_input {
-        border: 5px solid #F1B300;
+        border: 5px solid transparent;
         border-radius: 15px;
         padding: 15px;
         width: 350px;
@@ -248,7 +381,19 @@
         margin-bottom: 4px;
         font-size: 15px;
         letter-spacing: 1px;
-        outline: none;
+        outline: 2px solid transparent;
+        position: relative;
+        transition: outline 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.1s ease-in-out;
+    }
+    #password_input:hover {
+        background-color: #fbfafa;
+        outline-color: #093454;
+        box-shadow: 0 0 0 4px #F1B300;
+    }  
+    #password_input:focus {
+        background-color: #fbfafa;
+        outline-color: transparent;
+        box-shadow: 0 0 0 3px #F1B300;
     }
 
     .button_container {
@@ -256,7 +401,8 @@
         width: 100%;
     }
     #log_in_button {
-        border: 0px;
+        background-color: #F1B300;
+        border: none;
         border-radius: 15px;
         width: 350px;
         height: 60px;
@@ -267,28 +413,39 @@
         text-align: center;
         color: #093454;
         font-weight: bold;
-        background-color: #F1B300;
+        position: relative;
+    }
+    #log_in_button::before {
+        content: "";
+        position: absolute;
+        top: -4px; left: -4px; right: -4px; bottom: -4px;
+        z-index: -1;
+        border: 2px solid #F1B300;
+        border-radius: 20px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
     }
     #log_in_button:hover {
         background-color: #bb8d04;
     }
+    #log_in_button:hover::before {
+        opacity: 1;
+    }
 }
 
-/*alumno_home.html styles*/
-@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+/*home.html styles*/
+/*Navigation Bar*/
+@media only screen and (max-width: 768px) { /*Mobile devices*/
 }
 @media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
-    .alumno_body {
+    .navigation_bar {
         display: flex;
-        width: 100%;
-        height: 100%;
         flex-direction: column;
         text-align: center;
+        height: 75px;
+        width: 100%;
         margin: 0;
-        background: #00111D;
-        font-family: Arial, Helvetica, sans-serif;
     }
-    
     .alumno_body div.top_nav {
         height: 70px;
         width: 100%;
@@ -296,19 +453,18 @@
         background-color: #415361;
         overflow: hidden;
     } 
-
     .alumno_body div.top_nav div.nav_menu {
         height: 55px;
         width: 55px;
-        border-radius: 50%;
+        border-radius: 0%;
         margin: 0px 10px;
         margin-top: 7px;
         padding: 10px;
         float: left;
     }
-    .alumno_body div.top_nav div.nav_menu:hover {
+    /*.alumno_body div.top_nav div.nav_menu:hover {
         background-color: #333f48;
-    }
+    } */ /* --> Add back when onclick is implemented */ 
     .alumno_body div.top_nav div.nav_menu img.nav_menu_icon {
         height: 100%;
         width: auto;
@@ -320,13 +476,13 @@
         width: auto;
         margin: 3px 10px;
         padding: 10px;
-        border-radius: 15%;
+        
         align-items: center;
         float: left;
     }
-    .alumno_body div.top_nav div.nav_logo:hover {
+    /*.alumno_body div.top_nav div.nav_logo:hover {
         background-color: #333f48;
-    }
+    } *//* --> Add back when onclick is implemented */ 
     .alumno_body div.top_nav div.nav_logo img.nav_wti_logo {
         height: 160%;
         width: auto;
@@ -341,9 +497,9 @@
         margin: 10px;
         float: right;
     }
-    .alumno_body div.top_nav div.profile_picture:hover {
+    /*.alumno_body div.top_nav div.profile_picture:hover {
         background-color: #333f48;
-    }
+    } *//* --> Add back when onclick is implemented */ 
     .alumno_body div.top_nav div.profile_picture img.pfp {
         height: 100%;
     }
@@ -361,9 +517,9 @@
         letter-spacing: 1px;
 
     }
-    .alumno_body div.top_nav div p#greeting_text:hover {
+    /*.alumno_body div.top_nav div p#greeting_text:hover {
         text-decoration: underline;
-    }
+    }*/ /* --> Add back when onclick is implemented */ 
 
     .alumno_body div.decoration_bar {
         height: 5px;
@@ -373,14 +529,26 @@
     }
 }
 
-/*teacher_home.html styles*/
-@media only screen and (max-width: 1024px) { /*Teachers are not allowed to use mobile and tablet devices*/
+/*student part*/
+@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+
 }
-@media only screen and (min-width: 1025px) { /*Monitors and computers*/
+@media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
+    .alumno_body {
+        display: flex;
+        width: 100%;
+        height: 90%;
+        flex-direction: column;
+        text-align: center;
+        margin: 0;
+        background: #00111D;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
 }
 
-/*admin_home.html styles*/
-@media only screen and (max-width: 1024px) { /*Admins are not allowed to use mobile and tablet devices*/
+/*teacher part*/
+@media only screen and (max-width: 1024px) { /*Teachers are not allowed to use mobile and tablet devices*/
 }
 @media only screen and (min-width: 1025px) { /*Monitors and computers*/
 }

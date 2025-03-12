@@ -6,25 +6,67 @@
 
         <title>Whirlpool Training Interface - Página Inicial</title>
     </head>
-    <header class="navigation_bar">
+    <body class="home_body">
         <div class="top_nav">
-            <div class="nav_menu">
+            <div id="nav_menu" onclick="openSideMenu()">
                 <img src="../images/menu_icon_white.png" class="nav_menu_icon">
-            </div>
-            <div class="nav_logo">
-                <img src="../images/WTI_logo_white_no_name.png" class="nav_wti_logo">
             </div>
             <div class="profile_picture">
                 <img src="../images/profile_picture_template.png" class="pfp">
             </div>
             <div class="greeting_container">
-                <p id="greeting_text">Welcome, </p>
+                <p id="greeting_text">Usuario</p>
             </div>
         </div>
         <div class="decoration_bar"></div>
+        <div id="background_overlay" onclick="closeSideMenu()"></div>
+        <div id="side_menu">
+            <div class="side_menu_top_bar">
+                <div class="side_menu_logo" onclick="homeScreen()">
+                    <img src="../images/WTI_logo_white_no_name.png" id="side_menu_wti_logo">
+                </div>
+                <div class="side_menu_button" onclick="closeSideMenu()">
+                    <img src="../images/menu_icon_white.png" id="side_menu_icon">
+                </div>
+            </div>
+            <div id="home_screen_side_menu" onclick="homeScreen()">
+                <img src="../images/home_screen.png" id="side_menu_home_screen_icon">
+                <p id="side_menu_home_screen_text">Pantalla de inicio</p>
+            </div>
+            <div id="side_menu_course_container">
+                <p id="side_menu_courses_text">Cursos</p>
+                <p class="side_menu_course" display="none"></p>
+            </div>
+            <div id="log_out_container" onclick="logOut()">
+                <img src="../images/logout_icon.png" id="side_menu_log_out_icon">
+                <p id="side_menu_log_out_text">Cerrar sesión</p>
+            </div>
+        </div>
+        <div class="alumno_screen">
+            <div id="course_group">
+                <div id="course_title">
+                    <p>Cursos</p>
+                </div>
+                <div id="inscripcion_curso">
+                    <!-- Agregar despues () -->
+                </div>
+                <div id="curso" display="none">
+    
+                </div>
+            </div>
+            <div id="alumno_data">
+                <div id="alumno_level">
+    
+                </div>
+                <div id="alumno_summary">
+    
+                </div>
+                <div id="todolist_view">
+    
+                </div>
+            </div>
+        </div>
+
         <script src="../scripts/home_screen_func.js"></script>
-    </header>
-    <body class="alumno_body">
-        
     </body>
 </html>

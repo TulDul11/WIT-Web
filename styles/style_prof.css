@@ -1,0 +1,665 @@
+* {
+    box-sizing: border-box;
+}
+
+/*index.html styles*/
+@media only screen and (max-width: 768px) { /*Mobile devices*/
+    .index_body {
+        display: block;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: #093454;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    .logo_container {
+        display: block;
+        width: 100%;
+        height: 200px;
+        margin-top: 10vh;
+        margin-bottom: 0;
+        overflow: hidden;
+    }
+    .index_wti_logo {
+        width: auto;
+        height: 150%;
+    }
+
+    .page_name_container {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+    }
+    .wti_page_name {
+        color: #ffffff;
+        font-size: 120%;
+        text-align: center;
+        letter-spacing: 3px;
+    }
+
+    .text_input_container {
+        display: block;
+        width: 100%;
+    }
+    #userid_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 250px;
+        height: 50px;
+        margin-top: 25px;
+        margin-bottom: 7px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+    #password_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 250px;
+        height: 50px;
+        margin-top: 7px;
+        margin-bottom: 4px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+
+    .button_container {
+        display: block;
+        width: 100%;
+    }
+    #log_in_button {
+        border: 0px;
+        border-radius: 15px;
+        width: 250px;
+        height: 50px;
+        margin-top: 40px;
+        font-size: 18px;
+        letter-spacing: 0px;
+        justify-content: center;
+        text-align: center;
+        color: #093454;
+        font-weight: bold;
+        background-color: #F1B300;
+    }
+    #log_in_button:hover {
+        background-color: #bb8d04;
+    }
+}
+@media only screen and (min-width: 769px) and (max-width: 1024px) { /*Tablet devices*/
+    .index_body {
+        display: block;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: #093454;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    .logo_container {
+        display: block;
+        width: 100%;
+        height: 250px;
+        margin-top: 10vh;
+        margin-bottom: 0;
+        overflow: hidden;
+    }
+    .index_wti_logo {
+        width: auto;
+        height: 150%;
+    }
+
+    .page_name_container {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+    }
+    .wti_page_name {
+        color: #ffffff;
+        font-size: 130%;
+        text-align: center;
+        letter-spacing: 3px;
+    }
+
+    .text_input_container {
+        display: block;
+        width: 100%;
+    }
+    #userid_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 300px;
+        height: 55px;
+        margin-top: 25px;
+        margin-bottom: 7px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+    #password_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 300px;
+        height: 55px;
+        margin-top: 7px;
+        margin-bottom: 4px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+
+    .button_container {
+        display: block;
+        width: 100%;
+    }
+    #log_in_button {
+        border: 0px;
+        border-radius: 15px;
+        width: 300px;
+        height: 55px;
+        margin-top: 40px;
+        font-size: 18px;
+        letter-spacing: 0px;
+        justify-content: center;
+        text-align: center;
+        color: #093454;
+        font-weight: bold;
+        background-color: #F1B300;
+    }
+    #log_in_button:hover {
+        background-color: #bb8d04;
+    }
+}
+@media (min-width: 1025px) { /*Monitors and computers*/
+    .index_body {
+        display: block;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: #093454;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    .logo_container {
+        display: block;
+        width: 100%;
+        height: 320px;
+        margin-top: 1vh;
+        margin-bottom: 0px;
+        overflow: hidden;
+    }
+    .index_wti_logo {
+        width: auto;
+        height: 150%;
+    }
+
+    .page_name_container {
+        display: block;
+        width: 100%;
+        margin-top: 0;
+    }
+    .wti_page_name {
+        color: #ffffff;
+        font-size: 30px;
+        text-align: center;
+        letter-spacing: 3px;
+    }
+
+    .text_input_container {
+        display: block;
+        width: 100%;
+    }
+    #userid_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 350px;
+        height: 60px;
+        margin-top: 25px;
+        margin-bottom: 7px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+    #password_input {
+        border: 5px solid #F1B300;
+        border-radius: 15px;
+        padding: 15px;
+        width: 350px;
+        height: 60px;
+        margin-top: 7px;
+        margin-bottom: 4px;
+        font-size: 15px;
+        letter-spacing: 1px;
+        outline: none;
+    }
+
+    .button_container {
+        display: block;
+        width: 100%;
+    }
+    #log_in_button {
+        border: 0px;
+        border-radius: 15px;
+        width: 350px;
+        height: 60px;
+        margin-top: 40px;
+        font-size: 18px;
+        letter-spacing: 0px;
+        justify-content: center;
+        text-align: center;
+        color: #093454;
+        font-weight: bold;
+        background-color: #F1B300;
+    }
+    #log_in_button:hover {
+        background-color: #bb8d04;
+    }
+}
+
+/*alumno_home.html styles*/
+@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+}
+@media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
+    .alumno_body {
+        display: flex;
+        width: 100%;
+height: 100%;
+flex-direction: column;
+text-align: center;
+margin: 0;
+background: #00111D;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+.alumno_body div.top_nav {
+height: 70px;
+width: 100%;
+margin: 0;
+background-color: #415361;
+overflow: hidden;
+} 
+
+.alumno_body div.top_nav div.nav_menu {
+height: 55px;
+width: 55px;
+border-radius: 50%;
+margin: 0px 10px;
+margin-top: 7px;
+padding: 10px;
+float: left;
+}
+.alumno_body div.top_nav div.nav_menu:hover {
+background-color: #333f48;
+}
+.alumno_body div.top_nav div.nav_menu img.nav_menu_icon {
+height: 100%;
+width: auto;
+float: left;
+}
+
+.alumno_body div.top_nav div.nav_logo {
+height: 90%;
+width: auto;
+margin: 3px 10px;
+padding: 10px;
+border-radius: 15%;
+align-items: center;
+float: left;
+}
+.alumno_body div.top_nav div.nav_logo:hover {
+background-color: #333f48;
+}
+.alumno_body div.top_nav div.nav_logo img.nav_wti_logo {
+height: 160%;
+width: auto;
+float: left;
+transform: translateY(-15%);
+}
+
+.alumno_body div.top_nav div.profile_picture {
+height: 70%;
+width: auto;
+border-radius: 50%;
+margin: 10px;
+float: right;
+}
+.alumno_body div.top_nav div.profile_picture:hover {
+background-color: #333f48;
+}
+.alumno_body div.top_nav div.profile_picture img.pfp {
+height: 100%;
+}
+
+.alumno_body div.top_nav div.greeting_container {
+height: 100%;
+margin: 0px 10px;
+width: auto;
+float: right;
+}
+
+.alumno_body div.top_nav div p#greeting_text {
+font-size: 25px;
+color: white;
+letter-spacing: 1px;
+
+}
+.alumno_body div.top_nav div p#greeting_text:hover {
+text-decoration: underline;
+}
+
+.alumno_body div.decoration_bar {
+height: 5px;
+width: 100%;
+margin: 0;
+background-color: #F1B300;
+}
+}
+/* teacher_home.html styles */
+@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+}
+@media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
+    .profesor_interface .profesor_body {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        text-align: center;
+        margin: 0;
+        background: #00111D;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav {
+        height: 70px;
+        width: 100%;
+        margin: 0;
+        background-color: #415361;
+        overflow: hidden;
+    } 
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_menu {
+        height: 55px;
+        width: 55px;
+        border-radius: 50%;
+        margin: 0px 10px;
+        margin-top: 7px;
+        padding: 10px;
+        float: left;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_menu:hover {
+        background-color: #333f48;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_menu img.nav_menu_icon {
+        height: 100%;
+        width: auto;
+        float: left;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_logo {
+        height: 90%;
+        width: auto;
+        margin: 3px 10px;
+        padding: 10px;
+        border-radius: 15%;
+        align-items: center;
+        float: left;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_logo:hover {
+        background-color: #333f48;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.nav_logo img.nav_wti_logo {
+        height: 160%;
+        width: auto;
+        float: left;
+        transform: translateY(-15%);
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.profile_picture {
+        height: 70%;
+        width: auto;
+        border-radius: 50%;
+        margin: 10px;
+        float: right;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.profile_picture:hover {
+        background-color: #333f48;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.profile_picture img.pfp {
+        height: 100%;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div.greeting_container {
+        height: 100%;
+        margin: 0px 10px;
+        width: auto;
+        float: right;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div p#greeting_text {
+        font-size: 25px;
+        color: white;
+        letter-spacing: 1px;
+    }
+    
+    .profesor_interface .profesor_body div.top_nav div p#greeting_text:hover {
+        text-decoration: underline;
+    }
+    
+    .profesor_interface .profesor_body div.decoration_bar {
+        height: 5px;
+        width: 100%;
+        margin: 0;
+        background-color: #F1B300;
+    }
+    
+    .profesor_interface .card_container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    
+    .profesor_interface .card {
+        width: 325px;
+        background-color: #808080;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: none;
+        margin: 20px;
+        position: relative; 
+    }
+    
+    .profesor_interface .card-header {
+        position: absolute;
+        top: 7px;
+        right: 8px;
+        z-index: 10; 
+    }
+    
+    .profesor_interface .edit-icon {
+        width: 40px !important;
+        height: 40px !important;
+        cursor: pointer;
+    }
+    
+    .profesor_interface .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover; 
+    }
+    .card img[src="../images/azul.png"] {
+        height: 100px;
+        object-fit: cover;
+    }
+    
+    .profesor_interface .card-content {
+        padding: auto;
+    }
+    
+    .profesor_interface .card-content h3 {
+        font-size: 28px;
+        margin-bottom: 8px;
+        margin-top: 8px;
+    }
+    
+    .profesor_interface .card-content p {
+        color: #666;
+        font-size: 5px;
+        line-height: 1.3;
+    }
+    
+    .profesor_interface .edit-options {
+        display: none;
+        position: absolute;
+        top: 30px;
+        right: 5px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .profesor_interface #side_menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100%;
+        background-color: #001d33;
+        transition: left 0.3s ease-in-out;
+        color: white;
+        z-index: 1000;
+    }
+    
+    .profesor_interface #side_menu.active {
+        left: 0;
+    }
+    
+    .profesor_interface #background_overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+    }
+    
+    .profesor_interface #background_overlay.active {
+        display: block;
+    }
+    
+    .profesor_interface .side_menu_top_bar {
+        display: flex;
+        height: 80px;
+        padding: 5px;
+        border-bottom: 2px solid #fbfafa;
+        justify-content: space-between;
+    }
+    
+    .profesor_interface .side_menu_logo {
+        padding: 15px;
+        cursor: pointer;
+    }
+    
+    .profesor_interface .side_menu_logo img {
+        height: 40px;
+        width: auto;
+    }
+    
+    .profesor_interface #side_menu_course_container, #home_screen_side_menu, #log_out_container {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .profesor_interface #side_menu_course_container p, #home_screen_side_menu p, #log_out_container p {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        font-weight: 550;
+        margin-left: 10px;
+    }
+    
+    .profesor_interface #log_out_container:hover, #home_screen_side_menu:hover, #side_menu_course_container:hover {
+        background-color: #003366;
+    }
+    
+    /* Estilo para el título "Cursos" */
+    .profesor_interface .courses_title {
+        text-align: left; /* Alinea el texto a la izquierda */
+        margin-top: 20px;
+        margin-bottom: -20px;
+        margin-left: 180px; /* Ajusta el margen izquierdo para alinearlo con las tarjetas */
+    }
+    
+    .profesor_interface .courses_title h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: white; /* Cambia el color a blanco */
+    }
+
+    .profesor_interface .home_screen_icon {
+        width: 20px; /* Ajusta el tamaño de la imagen */
+        height: auto;
+        margin-right: 10px; /* Espacio entre la imagen y el texto */
+    }
+    
+    .profesor_interface .logout_icon {
+        width: 20px; /* Ajusta el tamaño de la imagen */
+        height: auto;
+        margin-right: 10px; /* Espacio entre la imagen y el texto */
+    }
+    .profesor_interface .add-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    
+    .profesor_interface .add-card img {
+        width: 80px; /* Ajusta el tamaño de la imagen */
+        height: 80px;
+        object-fit: contain; /* Asegura que la imagen se ajuste dentro del contenedor */
+        margin-bottom: 10px;
+    }
+    
+}
+
+
+
+
+/*admin_home.html styles*/
+@media only screen and (max-width: 1024px) { /*Admins are not allowed to use mobile and tablet devices*/
+}
+@media only screen and (min-width: 1025px) { /*Monitors and computers*/
+}

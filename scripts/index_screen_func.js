@@ -6,8 +6,8 @@ function login() {
 
     error_message_text.textContent = ""
 
-    console.log("User ID: ", user_id);  /* Borrar despues ded debugging*/
-    console.log("Password: ", user_password); /* Borrar despues ded debugging*/
+    console.log("User ID: ", user_id);  /* Borrar despues de debugging*/
+    console.log("Password: ", user_password); /* Borrar despues de debugging*/
 
     /* 
     AGREGAR VALIDACION DE USUARIO Y CONTRASEÑA CON BASE DE DATOS
@@ -23,11 +23,30 @@ function login() {
     } else if (!user_id) {
         error_message_text.textContent = "Error: Se requiere llenar el campo de usario.";
         console.log("User empty"); -- > Borrar despues de debugging
-    } else { -- > CAMBIAR A CHECAR SI USUARIO Y CONTRASEÑA CON LA BASE DE DATOS
-        error_message_text.textContent = "Error: Usuario o contraseña incorrecta.";
-        console.log("User or Password wrong"); -- > Borrar despues de debugging
-    }
+    } else {
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userID })
+            });
 
+            const data = await response.json();
+
+            if (data.success) {
+                const userInfo = {
+                    user: user_id
+                };
+                sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
+                window.location.href = `../templates/home.html`;
+            } else {
+                error_message_text.textContent = "Error: Usuario o contraseña incorrecta."
+                console.log("User or Password wrong");
+            }
+        } catch (error) {
+            console.error("Error iniciando sesión:", error);
+            error_message_text.textContent = "Error iniciando sesión. Prueba más tarde"
+    }
     */
 
     /* 
@@ -43,7 +62,7 @@ function login() {
     } else if (!user_id) {
         error_message_text.textContent = "Error: Se requiere llenar el campo de usario."
         console.log("User empty");
-    } else if (user_id == "A01236010" && user_password == "123") {
+    } else if (user_id == "A01236010" && user_password == "1234") {
         const userInfo = {
             user: user_id,
             role: 'admin',
@@ -51,7 +70,7 @@ function login() {
         };
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         window.location.href = `../templates/home.html`;
-    } else if (user_id == "A01234693" && user_password == "456") {
+    } else if (user_id == "A01234693" && user_password == "1234") {
         const userInfo = {
             user: user_id,
             role: 'profesor',
@@ -59,7 +78,7 @@ function login() {
         };
         sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         window.location.href = `../templates/home.html`;
-    } else if (user_id == "A01236034" && user_password == "789") {
+    } else if (user_id == "A01236034" && user_password == "1234") {
         const userInfo = {
             user: user_id,
             role: 'alumno',

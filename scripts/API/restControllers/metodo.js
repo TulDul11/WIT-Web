@@ -74,7 +74,7 @@ async function getCourseData(courseID) {
 
 async function agregarCurso(studentID, courseClave) {
     return new Promise((resolve, reject) => {
-        db.query('IF EXISTS (SELECT 1 FROM Curso WHERE curso_clave = ?) BEGIN INSERT INTO Alumno_Cruso VALUES (?, ?); END;', [course_clave, studentID, courseID], (error, results) => {
+        db.query('INSERT INTO Alumno_Cruso (alumno_id, curso_id) SELECT ?, curso_id FROM Curso WHERE curso_clave = ?', [studentID, courseClave], (error, results) => {
             if (error) {
                 reject(error);
             } else {

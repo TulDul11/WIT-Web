@@ -1,5 +1,8 @@
 var user_type_id = ''
 
+async function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 window.addEventListener('DOMContentLoaded', function() {
     const userInfo = JSON.parse(this.sessionStorage.getItem('userInfo'));
     const userType = userInfo.tipo;
@@ -114,12 +117,14 @@ function setUpCoursesAlumno(courses) {
     
     const base_course = `
         <div class="curso_alumno">
-            <img src="../images/three_dots.png" class="course_options_students">
+            
             <div class="course_nameplate">
                 <p class="course_name">Course name</p>
                 <p class="course_id">Course id</p>
             </div>
         </div>`;
+
+    /*<img src="../images/three_dots.png" class="course_options_students">  --> Agregar cuando tenga funcionalidad*/
     
     courses.forEach(item => {
         fetch('http://localhost:3001/course_data', {
@@ -132,9 +137,6 @@ function setUpCoursesAlumno(courses) {
             })
         })
         .then(response => {
-            if (!response.ok) {
-                console.error("Error consiguiendo datos:", error);
-            }
             return response.json();
         })
         .then(data => {
@@ -149,7 +151,7 @@ function setUpCoursesAlumno(courses) {
             }
         })
         .catch(error => {
-            console.error("Error consiguiendo datos:", error);
+            console.log("Error");
         });
     });
 }
@@ -169,24 +171,13 @@ function inscribirCurso() {
             })
         })
         .then(response => {
-            if (!response.ok) {
-                console.error("Error consiguiendo datos:", error);
-                alert("Error consiguiendo datos");
-            }
+            wait(200).then(() => {console.log("")});
             return response.json();
         })
         .then(data => {
-            if (data.success) {
-                location.reload();  
-            } else {
-                console.log("Datos no encontrados");
-                alert("Curso no encontrado");
-            }
+            wait(200).then(() => {console.log("")});
         })
-        .catch(error => {
-            console.error("Error consiguiendo datos:", error);
-            alert("Error consiguiendo datos");
-        });
+        location.reload();
     }
 } 
 

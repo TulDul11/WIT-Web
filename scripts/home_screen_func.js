@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     } else if (userType == 'Profesor') {
         const profesorScreen = document.getElementById('profesor_screen');
-        profesorScreen.style.display = 'flex';
+        profesorScreen.style.display = 'block';
 
         fetch('http://localhost:3001/teacher_data', {
             method: 'POST',
@@ -183,7 +183,166 @@ function inscribirCurso() {
 
 function setUpProfesorScreen(data) {
     const greeting_text = document.getElementById('greeting_text');
+
     greeting_text.textContent = data.nombre + " " + data.apellido;
+
+    user_type_id = data.profesor_id;
+
+    fetch('http://localhost:3001/teacher_course', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            teacherID: data.profesor_id
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error("Error consiguiendo datos:", error);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            setUpCoursesTeacher(data.data);
+        } else {
+            console.log("Datos no encontrados");
+        }
+    })
+    .catch(error => {
+        console.error("Error consiguiendo datos:", error);
+    });
+}
+
+function setUpCoursesTeacher(courses) {
+    const course_container = document.getElementById('professor_courses');
+    
+    var base_course = `
+        <div class="curso_profesor">
+            <div class="course_nameplate">
+                <p class="course_name">Course name</p>
+                <p class="course_id">Course id</p>
+            </div>
+        </div>`;
+
+    /*<img src="../images/three_dots.png" class="course_options_students">  --> Agregar cuando tenga funcionalidad*/
+    
+    courses.forEach(item => {
+        fetch('http://localhost:3001/course_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                courseID: item.curso_id
+            })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const new_course = base_course
+                    .replace('Course name', `${data.data[0].nombre}`)
+                    .replace('Course id', `${data.data[0].curso_clave}`);
+
+                course_container.innerHTML += new_course;
+            }
+        })
+    });
+}
+
+function toggleMenu(icon) {
+    let menu = icon.nextElementSibling; // Encuentra el menú al lado de la imagen
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+
+function editCard() {
+    alert("Editar tarjeta");
+}
+
+function deleteCard(button) {
+    let card = button.closest(".card"); // Encuentra la tarjeta más cercana al botón
+    if (card) {
+        card.remove(); // Elimina la tarjeta del DOM
+    }
+}
+
+function createCourseForm() {
+    // Verifica si ya existe un formulario activo
+    const existingForm = document.getElementById("formContainer");
+    if (existingForm.style.display === "block") {
+        alert("Ya hay un formulario activo.");
+        return;
+    }
+
+    // Mostrar el formulario
+    existingForm.style.display = "block";
+
+    existingForm.innerHTML = `
+        <label for="courseName">Nombre del curso:</label>
+        <input type="text" id="courseName" placeholder="Escribe el nombre del curso">
+        <input type="text" id="courseCodigo" placeholder="Escribe el codigo del curso">
+        <input type="text" id="courseDesc" placeholder="Escribe la descripcion del curso">
+        <button onclick="addCourse()">Confirmar</button>
+    `;
+}
+
+function addCourse() {
+    const courseName = document.getElementById("courseName").value;
+    const courseCodigo = document.getElementById("courseCodigo").value;
+    const courseDesc = document.getElementById("courseDesc").value;
+    if (courseName && courseCodigo && courseDesc) {
+        fetch('http://localhost:3001/create_course', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                courseName: courseName,
+                courseDesc: courseDesc,
+                courseClave: courseCodigo
+            })
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                createCourseCard(courseCodigo)
+            }
+        })
+    } else {
+        alert("Por favor, ingresa un nombre para el curso.");
+    }
+}
+
+function createCourseCard(courseClave) {
+    console.log(user_type_id, courseClave)
+    fetch('http://localhost:3001/link_course', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            teacherID: user_type_id,
+            courseClave: courseClave
+        })
+    })
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            wait(400).then(() => {console.log("")});
+            location.reload();
+        }
+    })
+    const existingForm = document.getElementById("formContainer");
+    existingForm.style.display = 'none';
+
+    existingForm.innerHTML = ``;
 }
 
 function openSideMenu() {
@@ -206,5 +365,6 @@ function homeScreen() {
 
 function logOut() {
     sessionStorage.removeItem('userInfo');
+    alert("Cerrando sesión...");
     window.location.href = `../templates/index.html`;
 }

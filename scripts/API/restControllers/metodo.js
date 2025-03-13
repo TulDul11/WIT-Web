@@ -38,7 +38,7 @@ async function getTeacherData(userID) {
 
 async function getStudentCourses(studentID) {
     return new Promise((resolve, reject) => {
-        db.query('SELECT curso_id FROM Alumno_Cruso WHERE alumno_id = ?', [studentID], (error, results) => {
+        db.query('SELECT curso_id FROM Alumno_Curso WHERE alumno_id = ?', [studentID], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -50,7 +50,7 @@ async function getStudentCourses(studentID) {
 
 async function getTeacherCourses(teacherID) {
     return new Promise((resolve, reject) => {
-        db.query('SELECT curso_id FROM Profesor_Cruso WHERE profesor_id = ?', [teacherID], (error, results) => {
+        db.query('SELECT curso_id FROM Profesor_Curso WHERE profesor_id = ?', [teacherID], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -74,7 +74,7 @@ async function getCourseData(courseID) {
 
 async function agregarCurso(studentID, courseClave) {
     return new Promise((resolve, reject) => {
-        db.query('INSERT INTO Alumno_Cruso (alumno_id, curso_id) SELECT ?, curso_id FROM Curso WHERE curso_clave = ?', [studentID, courseClave], (error, results) => {
+        db.query('INSERT INTO Alumno_Curso (alumno_id, curso_id) SELECT ?, curso_id FROM Curso WHERE curso_clave = ?', [studentID, courseClave], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -84,4 +84,28 @@ async function agregarCurso(studentID, courseClave) {
     });
 }
 
-module.exports = { checkUserIDandPW, getStudentData, getTeacherData, getStudentCourses, getTeacherCourses, getCourseData, agregarCurso };
+async function crearCurso(courseName, courseDesc, courseClave) {
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO curso (tema, nombre, descripcion, curso_clave) VALUES (1, ?, ?, ?)', [courseName, courseDesc, courseClave], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+async function linkCurso(teacherID, courseClave) {
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO Profesor_Curso (profesor_id, curso_id) SELECT ?, curso_id FROM Curso WHERE curso_clave = ?', [teacherID, courseClave], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results);
+            }
+        });
+    });
+}
+
+module.exports = { checkUserIDandPW, getStudentData, getTeacherData, getStudentCourses, getTeacherCourses, getCourseData, agregarCurso, crearCurso, linkCurso};

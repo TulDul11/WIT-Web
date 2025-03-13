@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkUserIDandPW, getStudentData, getTeacherData, getStudentCourses, getTeacherCourses, getCourseData, agregarCurso} = require('../restControllers/metodo'); 
+const { checkUserIDandPW, getStudentData, getTeacherData, getStudentCourses, getTeacherCourses, getCourseData, agregarCurso, crearCurso, linkCurso} = require('../restControllers/metodo'); 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
@@ -95,6 +95,26 @@ router.post('/register_course', async (req, res) => {
         } else {
             res.status(404).json({success: false, message:"Datos no encontrados" });
         }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+router.post('/create_course', async (req, res) => {
+    const { courseName, courseDesc, courseClave } = req.body;
+    try {
+        const result = await crearCurso(courseName, courseDesc, courseClave); 
+        res.json({success: true, data:result});
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+router.post('/link_course', async (req, res) => {
+    const { teacherID, courseClave } = req.body;
+    try {
+        const result = await linkCurso(teacherID, courseClave); 
+        res.json({success: true, data:result});
     } catch (error) {
         console.error("Error:", error);
     }

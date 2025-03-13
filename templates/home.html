@@ -42,29 +42,40 @@
                 <p id="side_menu_log_out_text">Cerrar sesión</p>
             </div>
         </div>
-        <div class="alumno_screen">
+        <div id="alumno_screen">
             <div id="course_group">
                 <div id="course_title">
                     <p>Cursos</p>
                 </div>
-                <div id="inscripcion_curso">
-                    <!-- Agregar despues () -->
-                </div>
-                <div id="curso" display="none">
-    
+                <div id="courses_alumno">
+                    <div id="inscripcion_curso" onclick="inscribirCurso()">
+                        <img src="../images/plus_sign.png">
+                        <p id="add_course_text">Inscribir nuevo curso</p>
+                    </div>
                 </div>
             </div>
             <div id="alumno_data">
+                <p id="alumno_data_title_text">Estadísticas</p>
                 <div id="alumno_level">
-    
+                    <p id="level">Nivel 1</p>
+                    <div id="xp_bar">
+                        <progress id="xp_colored_bar" value="0" max="1000"><progress>
+                    </div>
+                    <div id="xp_showcase">
+                        <p id="xp_amount">0 xp</p>
+                        <p id="xp_to_level">XP para siguiente nivel: 1000 xp</p>
+                    </div>
                 </div>
                 <div id="alumno_summary">
-    
+                    <!-- Agregar despues -->
                 </div>
                 <div id="todolist_view">
-    
+                    <!-- Agregar despues -->
                 </div>
             </div>
+        </div>
+        <div id="profesor_screen">
+
         </div>
 
         <script src="../scripts/home_screen_func.js"></script>

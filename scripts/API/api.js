@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Router
-app.use(router)
+app.use('/', router);
 
 // Serve static files (like HTML, CSS, JS)
 app.use('/templates', express.static(path.join(__dirname, '../../templates')));

@@ -1,6 +1,8 @@
+
+
 async function login() {
-    const user_id = document.getElementById("userid_input").value;
-    const user_password = document.getElementById("password_input").value;
+    const user_id = document.getElementById("login_user").value;
+    const user_password = document.getElementById("login_password").value;
 
     const error_message_text = document.getElementById("login_error_message");
 

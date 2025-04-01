@@ -30,7 +30,7 @@ app.use('/images', express.static(path.join(__dirname, '../../images')));
 
 // Endpoint Gateway Definition
 app.get('/', (req, res) => {
-    res.redirect('../../templates/index.html');
+    res.redirect('../../index.html');
 });
 
 // Start Listening web server requests...

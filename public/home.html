@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Whirlpool Training Interface - Página Inicial</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="./styles/style.css" rel="stylesheet">
+    </head>
+    <body class="home_body">
+        <div class="top_nav">
+            <div id="nav_menu" onclick="openSideMenu()">
+                <img src="../images/menu_icon_white.png" class="nav_menu_icon">
+            </div>
+            <div class="profile_picture">
+                <img src="../images/profile_picture_template.png" class="pfp">
+            </div>
+            <div class="greeting_container">
+                <p id="greeting_text">Usuario</p>
+            </div>
+        </div>
+        <div class="decoration_bar"></div>
+        <div id="background_overlay" onclick="closeSideMenu()"></div>
+        <div id="side_menu">
+            <div class="side_menu_top_bar">
+                <div class="side_menu_logo" onclick="homeScreen()">
+                    <img src="../images/WTI_logo_white_no_name.png" id="side_menu_wti_logo">
+                </div>
+                <div class="side_menu_button" onclick="closeSideMenu()">
+                    <img src="../images/menu_icon_white.png" id="side_menu_icon">
+                </div>
+            </div>
+            <div id="home_screen_side_menu" onclick="homeScreen()">
+                <img src="../images/home_screen.png" id="side_menu_home_screen_icon">
+                <p id="side_menu_home_screen_text">Pantalla de inicio</p>
+            </div>
+            <!--
+            <div id="side_menu_course_container">
+                <p id="side_menu_courses_text">Cursos</p>
+                <p class="side_menu_course" display="none"></p>
+            </div>
+            -->
+            <div id="log_out_container" onclick="logOut()">
+                <img src="../images/logout_icon.png" id="side_menu_log_out_icon">
+                <p id="side_menu_log_out_text">Cerrar sesión</p>
+            </div>
+        </div>
+        <div id="alumno_screen">
+            <div id="course_group">
+                <div id="course_title">
+                    <p>Cursos</p>
+                </div>
+                <div id="courses_alumno">
+                    <div id="inscripcion_curso" onclick="inscribirCurso()">
+                        <img src="../images/plus_sign.png">
+                        <p id="add_course_text">Inscribir nuevo curso</p>
+                    </div>
+                </div>
+            </div>
+            <div id="alumno_data">
+                <p id="alumno_data_title_text">Estadísticas</p>
+                <div id="alumno_level">
+                    <p id="level">Nivel 1</p>
+                    <div id="xp_bar">
+                        <progress id="xp_colored_bar" value="0" max="1000"><progress>
+                    </div>
+                    <div id="xp_showcase">
+                        <p id="xp_amount">0 xp</p>
+                        <p id="xp_to_level">XP para siguiente nivel: 1000 xp</p>
+                    </div>
+                </div>
+                <div id="alumno_summary">
+                    <!-- Agregar despues -->
+                </div>
+                <div id="todolist_view">
+                    <!-- Agregar despues -->
+                </div>
+            </div>
+        </div>
+        <div id="profesor_screen">
+            <p class="courses_title">Cursos</p>
+            <div id="professor_courses">
+                <div id="crear_curso" onclick="createCourseForm()">
+                    <img src="../images/plus_sign.png">
+                    <p>Crear nuevo curso</p>
+                </div>
+            </div>
+            <div id="formContainer"></div>
+            <div class="card_container"></div>
+        </div>
+        <script src="../scripts/home_screen_func.js"></script>
+    </body>
+</html>

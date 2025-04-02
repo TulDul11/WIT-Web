@@ -2,6 +2,8 @@
     box-sizing: border-box;
 }
 
+/* Login (index.html) styles*/
+
 .login_body {
     position: relative;
     background-color: #093454;
@@ -85,4 +87,215 @@
     background-color: #bb8d04;
     outline-color: #093454;
     box-shadow: 0 0 0 4px #F1B300;
+}
+
+
+
+/* Home (home.html) Styles */
+
+.home_body div.top_nav {
+    height: 70px;
+    width: 100%;
+    margin: 0;
+    background-color: #415361;
+    overflow: hidden;
+} 
+.home_body div.top_nav div#nav_menu {
+    height: 55px;
+    width: 55px;
+    border-radius: 0%;
+    margin: 0px 10px;
+    margin-top: 7px;
+    padding: 10px;
+    cursor: pointer;
+    float: left;
+    z-index: 1;
+}
+.home_body div.top_nav div#nav_menu:hover {
+    background-color: #333f48;
+}
+.home_body div.top_nav div#nav_menu img.nav_menu_icon {
+    height: 100%;
+    width: auto;
+    float: left;
+    pointer-events: none;
+}
+
+.home_body div.top_nav div.profile_picture {
+    height: 70%;
+    width: auto;
+    border-radius: 50%;
+    margin: 10px;
+    float: right;
+}
+/*.home_body div.top_nav div.profile_picture:hover {
+    background-color: #333f48;
+} *//* --> Add back when onclick is implemented */ 
+.home_body div.top_nav div.profile_picture img.pfp {
+    height: 100%;
+}
+
+.home_body div.top_nav div.greeting_container {
+    height: 100%;
+    margin: 0px 10px;
+    width: auto;
+    float: right;
+}
+
+.home_body div.top_nav div p#greeting_text {
+    font-size: 25px;
+    color: white;
+    letter-spacing: 1px;
+
+}
+/*.home_body div.top_nav div p#greeting_text:hover {
+    text-decoration: underline;
+}*/ /* --> Add back when onclick is implemented */ 
+
+.home_body div.decoration_bar {
+    height: 3px;
+    width: 100%;
+    margin: 0;
+    background-color: #F1B300;
+}
+
+#background_overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    display: none;
+}
+#background_overlay.active {
+    display: block;
+}
+
+#side_menu {
+    position: fixed;
+    top: 0;
+    left: -20%;
+    width: 20%;
+    height: 100%;
+    background-color: #093454;
+    transition: left 0.3s ease-in-out;
+    z-index: 3;
+}
+#side_menu.active {
+    left: 0;
+}
+
+#side_menu div.side_menu_top_bar {
+    display: flex;
+    height: 80px;
+    width: 100%;
+    padding: 5px;
+    border-bottom: 2px solid #fbfafa;
+    justify-content: space-between;
+}
+#side_menu div.side_menu_top_bar div.side_menu_logo {
+    height: 100%;
+    padding: 15px;
+    cursor: pointer;
+}
+#side_menu div.side_menu_top_bar div.side_menu_logo img#side_menu_wti_logo {
+    height: 200%;
+    width: auto;
+    transform: translateY(-15%);
+    pointer-events: none;
+}
+#side_menu div.side_menu_top_bar div.side_menu_button {
+    display: flex;
+    width: 20%;
+    height: 100%;
+    padding: 10px;
+    margin: 10px;
+    transform: translateY(-15%);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+#side_menu div.side_menu_top_bar div.side_menu_button:hover {
+    background-color: #001d33;
+}
+#side_menu div.side_menu_top_bar div.side_menu_button img#side_menu_icon {
+    height: 90%;
+    width: auto;
+    pointer-events: none;
+}
+
+#side_menu div#home_screen_side_menu {
+    display: flex;
+    color: rgba(255, 255, 255, 0.9); ;
+    width: 100%;
+    height: 10%;
+    padding: 15px;
+    cursor: pointer;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+#side_menu div#home_screen_side_menu img#side_menu_home_screen_icon {
+    height: 70%;
+    margin-right: 10px;
+    width: auto;
+    pointer-events: none;
+    opacity: 0.9;
+}
+#side_menu div#home_screen_side_menu p#side_menu_home_screen_text {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    font-weight: 550;
+    pointer-events: none;
+}
+
+#side_menu div#side_menu_course_container {
+    display: flex;
+    color:rgba(255, 255, 255, 0.9); 
+    width: 100%;
+    height: 10%;
+    padding: 15px;
+    padding-top: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+#side_menu div#side_menu_course_container p#side_menu_courses_text {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    font-weight: 550;
+    pointer-events: none;
+}
+#side_menu div#side_menu_course_container p#side_menu_course {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color:rgba(255, 255, 255, 0.8);
+    text-decoration: underline; 
+}
+
+#side_menu div#log_out_container {
+    display: flex;
+    color:rgba(255, 255, 255, 0.9); 
+    width: 100%;
+    height: 10%;
+    padding: 15px;
+    cursor: pointer;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+#side_menu div#log_out_container img#side_menu_log_out_icon {
+    height: 70%;
+    margin-right: 10px;
+    width: auto;
+    pointer-events: none;
+    opacity: 0.9;
+}
+#side_menu div#log_out_container p#side_menu_log_out_text {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    font-weight: 550;
+    pointer-events: none;
 }

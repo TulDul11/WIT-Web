@@ -20,7 +20,30 @@ router.get('/<<Extension donde quieres el fetch>><</: (Solo si requieres inputs)
 router.get('/login_info/:id', async (req, res) => {
     try {
         const user_id = req.params.id;
-        const [results] = await db.query('SELECT contrasena FROM usuarios WHERE id = ?', [user_id]);
+        const [results] = await db.query('SELECT contrasena, rol FROM usuarios WHERE id = ?', [user_id]);
+
+        if (results.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
+
+        res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+router.get('/user_home/:id/:role', async (req, res) => {
+    try {
+        const user_id = req.params.id;
+        const user_role = req.params.role;
+
+        const query = `SELECT id, nombre, apellido FROM ${user_role} WHERE id_usuario = ${user_id}`
+
+        const [results] = await db.query(query);
 
         if (results.length == 0) {
             return res.status(404).json({

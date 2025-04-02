@@ -25,7 +25,11 @@ function login_auth() {
             })
             .then(data => {
                 if (data.contrasena === user_password) {
-                    sessionStorage.setItem('user_id', JSON.stringify(user_id));
+                    const user_info = {
+                        'user_id': user_id,
+                        'user_role': data.rol
+                    }
+                    sessionStorage.setItem('user_info', JSON.stringify(user_info));
                     window.location.href = './home.html';
                 } else {
                     error_text.textContent = 'Contraseña incorrecta';

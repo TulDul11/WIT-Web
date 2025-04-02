@@ -89,6 +89,11 @@
     box-shadow: 0 0 0 4px #F1B300;
 }
 
+#wti_legal_note {
+    font-size: clamp(0.7rem, 0.9rem, 1rem);
+    color: rgba(255, 255, 255, 0.7)
+}
+
 
 
 /* Home (home.html) Styles */

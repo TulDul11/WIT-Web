@@ -1,3 +1,3 @@
 window.addEventListener('load', (event) => {
-    console.log(sessionStorage.getItem('user_information'))
+    console.log(sessionStorage.getItem('user_id'))
 })

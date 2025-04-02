@@ -3,6 +3,7 @@
 }
 
 .login_body {
+    position: relative;
     background-color: #093454;
     width: 100vw;
     height: 100vh;
@@ -14,7 +15,6 @@
 }
 
 #login_container {
-    position: relative;
     z-index: 1;
 }
 

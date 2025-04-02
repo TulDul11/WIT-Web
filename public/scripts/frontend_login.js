@@ -4,9 +4,6 @@ function login_auth() {
 
     const error_text = document.getElementById('error_message');
 
-    /* Re-add API connection */
-
-    /* Log-in testing functionality */
     if (!user_id && !user_password) {
         error_text.textContent = 'Error: Se requiere llenar los campos de usuario y contraseña.'
     } else if (!user_id) {
@@ -14,11 +11,28 @@ function login_auth() {
     } else if (!user_password) {
         error_text.textContent = 'Error: Se requiere llenar el campo de contraseña.'
     } else {
-        data = {
-            'User': user_id,
-            'Password': user_password
-        }
-        sessionStorage.setItem('user_information', JSON.stringify(data));
-        window.location.href = './home.html';
+        fetch(`http://localhost:3000/login_info/${user_id}`)
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        error_text.textContent = 'Error: Usuario no encontrado';
+                    } else {
+                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intenté más tarde.';
+                    }
+                    throw new Error(`Error: ${response.status}`);
+                }
+                return response.json(); 
+            })
+            .then(data => {
+                if (data.contrasena === user_password) {
+                    sessionStorage.setItem('user_id', JSON.stringify(user_id));
+                    window.location.href = './home.html';
+                } else {
+                    error_text.textContent = 'Contraseña incorrecta';
+                }
+            })
+            .catch(error =>
+                console.error('Error: ', error)
+            )
     }
 }

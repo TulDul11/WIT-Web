@@ -17,7 +17,7 @@ function login_auth() {
                     if (response.status === 404) {
                         error_text.textContent = 'Error: Usuario no encontrado';
                     } else {
-                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intenté más tarde.';
+                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
                     }
                     throw new Error(`Error: ${response.status}`);
                 }

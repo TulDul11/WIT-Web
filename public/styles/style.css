@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 
-body {
+.login_body {
     background-color: #093454;
     width: 100vw;
     height: 100vh;
@@ -27,6 +27,7 @@ body {
 }
 #error_message{
     display: block;
+    color: red;
     height: 30px;
 }
 

@@ -21,7 +21,7 @@
 }
 
 #login_logo {
-    width: clamp(100px, 80vw, 650px);
+    width: clamp(100px, 80vw, 550px);
 }
 
 #wti_page_name{

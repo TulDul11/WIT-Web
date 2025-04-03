@@ -20,6 +20,14 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+/* -> For deployment */
+app.listen(3000, '0.0.0.0', () => {
     console.log(`Server running on 0.0.0.0:${PORT}`)
 });
+
+/* -> For self-development */
+/*
+app.listen(PORT, () => {
+    console.log(`Server running on localhost:${PORT}`)
+});
+*/

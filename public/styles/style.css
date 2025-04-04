@@ -304,3 +304,57 @@
     font-weight: 550;
     pointer-events: none;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    color: #000;
+    font-family: sans-serif;
+    overflow-y: auto;
+  }
+  
+  #login_container {
+    max-width: 900px;
+    margin: 2rem 0 2rem 2rem;
+    padding: 0 1rem;
+  }
+  
+  #page-title {
+    margin-bottom: 1rem;
+  }
+  
+  #editor-wrapper,
+  #preview-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  #editor-container {
+    height: auto;
+    width: 100%;
+  }
+  
+  .ql-editor {
+    color: #000 !important;
+    background-color: #fff !important;
+  }
+  
+  .ql-tooltip, .ql-tooltip * {
+    color: #000 !important;
+  }
+  
+  #preview-container {
+    display: none;
+    margin-top: 1rem;
+    height: auto;
+  }
+  
+  .btn-custom {
+    background-color: #EBF015;
+    border: none;
+    color: #000;
+  }
+  

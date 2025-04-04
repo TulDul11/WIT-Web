@@ -6,14 +6,14 @@ window.addEventListener('load', (event) => {
 
     if (user_info.user_role == 'alumno') {
         /* -> Deployment */
-        fetch_url = `http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/user_home/${user_id}/alumnos`
+        //fetch_url = `http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/user_home/${user_id}/alumnos`
         /* -> Local development */
-        /*fetch_url = `http://localhost:3000/user_home/${user_id}/alumnos`*/
+        fetch_url = `http://localhost:3000/user_home/${user_id}/alumnos`;
     } else if (user_info.user_role == 'profesor') {
         /* -> Deployment */
-        fetch_url = `http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/user_home/${user_id}/profesores`
+        //fetch_url = `http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/user_home/${user_id}/profesores`
         /* -> Local development */
-        /*fetch_url = `http://localhost:3000/user_home/${user_id}/profesores`*/
+        fetch_url = `http://localhost:3000/user_home/${user_id}/profesores`;
     }
     fetch(fetch_url)
             .then(response => {

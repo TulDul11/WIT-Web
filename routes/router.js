@@ -41,7 +41,7 @@ router.get('/user_home/:id/:role', async (req, res) => {
         const user_id = req.params.id;
         const user_role = req.params.role;
 
-        const query = `SELECT id, nombre, apellido FROM ${user_role} WHERE id_usuario = ${user_id}`
+        const query = `SELECT id, nombre, apellido FROM ${user_role} WHERE id_usuario = '${user_id}'`
 
         const [results] = await db.query(query);
 

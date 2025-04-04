@@ -20,15 +20,6 @@
 
 `npm install mysql2`
 
-## .env File
+# Files
 
-```
-envdbhost=YourDatabaseHost
-envdbuser=YourDatabaseUser
-envdbpass=YourDatabasePassword
-envdbname=YourDatabaseName
-envdbport=YourDatabasePort
-envdblimit=YourDatabaseUserLimit
-PORT=YourDesiredPort
-```
-Replace _envdbhost_, _envdbuser_, _envdbpass_, _envdbname_, _envdbport_ and _evdblimit_ with the names you wish to use.
+> Fill out _.env_ according to your necessities.  An *.env_demo* is included for the needed environment variables.

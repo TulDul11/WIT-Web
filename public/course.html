@@ -12,13 +12,13 @@
     <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
         <div id="nav_div">
             <div id="navbar_nav">
-                <img src="./images/menu_icon_white.png" id="nav_bar_menu">
-                <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo">
+                <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()">
+                <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()">
                 
                 <div id="nav_modules">
                     <ul class="navbar-nav">
                         <li>
-                            <a class="nav-link active" href="#">Inicio</a>
+                            <a class="nav-link" href="home.html">Inicio</a>
                         </li>
                         <li>
                             <a class="nav-link" href="#"></a>
@@ -31,7 +31,7 @@
     </nav>
     <div class="container-fluid" id="course_container">
         <div class="course_code_container"> 
-            <p id="course_code">LVD2005B</p>
+            <p id="course_code">LAV0001</p>
         </div>
         <div class="course_card_container">
             <p id="course_title">Introducción a lavadoras</p>
@@ -60,7 +60,7 @@
             </table>
         </div>
     </div>
-    <script src="./scripts/frontend_home.js"></script>
+    <script src="./scripts/frontend_course.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

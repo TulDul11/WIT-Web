@@ -11,110 +11,26 @@
         <link href="./styles/style.css" rel="stylesheet">
     </head>
     <body class="home_body">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">BrandName</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-info-circle"></i> About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-cogs"></i> Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-phone-alt"></i> Contact</a>
-                    </li>
-                    </ul>
+        <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
+            <div id="nav_div">
+                <div id="navbar_nav">
+                    <img src="./images/menu_icon_white.png" id="nav_bar_menu">
+                    <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo">
+                    
+                    <div id="nav_modules">
+                        <ul class="navbar-nav">
+                            <li>
+                                <a class="nav-link active" href="#">Inicio</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#"></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                <div id="nav_role"></div>
             </div>
         </nav>
-        <div class="top_nav">
-            <div id="nav_menu">
-                <img src="../images/menu_icon_white.png" class="nav_menu_icon">
-            </div>
-            <div class="profile_picture">
-                <img src="../images/profile_picture_template.png" class="pfp">
-            </div>
-            <div class="greeting_container">
-                <p id="greeting_text">Usuario</p>
-            </div>
-        </div>
-        <div class="decoration_bar"></div>
-        <div id="background_overlay"></div>
-        <div id="side_menu">
-            <div class="side_menu_top_bar">
-                <div class="side_menu_logo">
-                    <img src="../images/WTI_logo_white_no_name.png" id="side_menu_wti_logo">
-                </div>
-                <div class="side_menu_button">
-                    <img src="../images/menu_icon_white.png" id="side_menu_icon">
-                </div>
-            </div>
-            <div id="home_screen_side_menu">
-                <img src="../images/home_screen.png" id="side_menu_home_screen_icon">
-                <p id="side_menu_home_screen_text">Pantalla de inicio</p>
-            </div>
-            <!--
-            <div id="side_menu_course_container">
-                <p id="side_menu_courses_text">Cursos</p>
-                <p class="side_menu_course" display="none"></p>
-            </div>
-            -->
-            <div id="log_out_container" onclick="logOut()">
-                <img src="../images/logout_icon.png" id="side_menu_log_out_icon">
-                <p id="side_menu_log_out_text">Cerrar sesión</p>
-            </div>
-        </div>
-        <div id="alumno_screen">
-            <div id="course_group">
-                <div id="course_title">
-                    <p>Cursos</p>
-                </div>
-                <div id="courses_alumno">
-                    <div id="inscripcion_curso" onclick="inscribirCurso()">
-                        <img src="../images/plus_sign.png">
-                        <p id="add_course_text">Inscribir nuevo curso</p>
-                    </div>
-                </div>
-            </div>
-            <div id="alumno_data">
-                <p id="alumno_data_title_text">Estadísticas</p>
-                <div id="alumno_level">
-                    <p id="level">Nivel 1</p>
-                    <div id="xp_bar">
-                        <progress id="xp_colored_bar" value="0" max="1000"><progress>
-                    </div>
-                    <div id="xp_showcase">
-                        <p id="xp_amount">0 xp</p>
-                        <p id="xp_to_level">XP para siguiente nivel: 1000 xp</p>
-                    </div>
-                </div>
-                <div id="alumno_summary">
-                    <!-- Agregar despues -->
-                </div>
-                <div id="todolist_view">
-                    <!-- Agregar despues -->
-                </div>
-            </div>
-        </div>
-        <div id="profesor_screen">
-            <p class="courses_title">Cursos</p>
-            <div id="professor_courses">
-                <div id="crear_curso" onclick="createCourseForm()">
-                    <img src="../images/plus_sign.png">
-                    <p>Crear nuevo curso</p>
-                </div>
-            </div>
-            <div id="formContainer"></div>
-            <div class="card_container"></div>
-        </div>
         <script src="./scripts/frontend_home.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

@@ -5,6 +5,7 @@ const db = require('../config/db');
 /* Formato de router por query
 Cambiar cualquier parte entre << >>
 
+Router metodo get
 router.get('/<<Extension donde quieres el fetch>><</: (Solo si requieres inputs)>><<Cualquier input>>', async (req, res) => {
     try {
         const [results] = await db.query('<<Query que quieres hacer>>'<<, [input]>>);
@@ -15,20 +16,48 @@ router.get('/<<Extension donde quieres el fetch>><</: (Solo si requieres inputs)
         });
     }
 })
+
+Router metodo post
+router.post('/', async (req, res) => {
+    try {
+        const {} = req.body;
+
+    } catch (err) {
+
+    }
+})
 */
 
-router.get('/login_info/:id', async (req, res) => {
+router.post('/login_info', async (req, res) => {
     try {
-        const user_id = req.params.id;
-        const [results] = await db.query('SELECT contrasena, rol FROM usuarios WHERE id = ?', [user_id]);
+        const { user_id, user_password } = req.body;
+
+        if (!user_id || !user_password) {
+            return res.status(399).json({ message: 'Se requiere tanto el usuario como la contraseña.' });
+        }
+
+        const [results] = await db.query(`SELECT contrasena, rol FROM usuarios WHERE id = ?`, [user_id]);
 
         if (results.length == 0) {
             return res.status(404).json({
                 message: 'Error: Usuario no encontrado'
             })
+        } else if (user_password != results[0].contrasena) {
+            return res.status(401).json({
+                message: 'Error: Contraseña incorrecta'
+            })
         }
 
-        res.json(results[0]);
+        req.session.user = user_id;
+
+        const user_role = results[0].rol;
+
+        return res.json({
+            user_info: {
+                user_id: user_id,
+                user_role: user_role
+            }
+        });
     } catch (err) {
         res.status(500).json({
             error: err.message
@@ -36,12 +65,19 @@ router.get('/login_info/:id', async (req, res) => {
     }
 })
 
-router.get('/user_home/:id/:role', async (req, res) => {
-    try {
-        const user_id = req.params.id;
-        const user_role = req.params.role;
+router.get('/session', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: 'No se ha iniciado sesión' });
+    } else {
+        return res.status(200).json({ message: 'Bienvenido al home', user: req.session.user });
+    }
+});
 
-        const query = `SELECT id, nombre, apellido FROM ${user_role} WHERE id_usuario = '${user_id}'`
+router.post('/user_home', async (req, res) => {
+    try {
+        const { user_id, role_table } = req.body;
+
+        const query = `SELECT nombre, apellido FROM ${role_table} WHERE id_usuario = '${user_id}'`
 
         const [results] = await db.query(query);
 
@@ -58,5 +94,10 @@ router.get('/user_home/:id/:role', async (req, res) => {
         });
     }
 })
+
+
+router.get('/config', (req, res) => {
+    res.json({ api_url: process.env.API_URL || 'http://localhost:3000' });
+});
 
 module.exports = router;

@@ -6,11 +6,13 @@
 
 ***OR***
 
-`npm install express path body-parser cors mysql2`
+`npm install express express-session path body-parser cors mysql2`
 
 ***OR***
 
 `npm install express`
+
+`npm install express-session`
 
 `npm install cors`
 

@@ -1,92 +1,49 @@
-function login_auth() {
+let api_url = 'http://localhost:3000';
+
+async function login_auth() {
+    event.preventDefault();
+    
     const user_id = document.getElementById('login_user').value;
     const user_password = document.getElementById('login_password').value;
 
     const error_text = document.getElementById('error_text');
     const error_symbol = document.getElementById('error_symbol');
 
-    if (!user_id && !user_password) {
-        error_text.textContent = 'Se requiere llenar los campos de usuario y contraseña.';
-        error_symbol.style.display = 'grid';
-    } else if (!user_id) {
-        error_text.textContent = 'Se requiere llenar el campo de usuario.';
-        error_symbol.style.display = 'grid';
-    } else if (!user_password) {
-        error_text.textContent = 'Se requiere llenar el campo de contraseña.';
-        error_symbol.style.display = 'grid';
-    } else {
-        error_text.textContent = '';
-        error_symbol.style.display = 'none';
-        /* -> Deployment */
-        fetch(`http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/login_info/${user_id}`)
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        error_text.textContent = 'Usuario no encontrado';
-                        error_symbol.style.display = 'grid';
-                    } else {
-                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
-                        error_symbol.style.display = 'grid';
-                    }
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json(); 
-            })
-            .then(data => {
-                if (data.contrasena === user_password) {
-                    
+    error_text.textContent = '';
+    error_symbol.display = 'none';
 
-                    const user_info = {
-                        'user_id': user_id,
-                        'user_role': data.rol
-                    }
-                    sessionStorage.setItem('user_info', JSON.stringify(user_info));
-                    window.location.href = './home.html';
-                } else {
-                    error_text.textContent = 'Contraseña incorrecta';
-                    error_symbol.style.display = 'grid';
-                }
+    try {
+        const response = await fetch(`${api_url}/login_info`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: user_id,
+                user_password: user_password
             })
-            .catch(error => {
-                console.error('Error: ', error);
-                error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
-                error_symbol.style.display = 'grid';
-            })
-        /* -> Local development */
-        /*
-        fetch(`http://localhost:3000/login_info/${user_id}`)
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        error_text.textContent = 'Usuario no encontrado';
-                        error_symbol.style.display = 'grid';
-                    } else {
-                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
-                        error_symbol.style.display = 'grid';
-                    }
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json(); 
-            })
-            .then(data => {
-                if (data.contrasena === user_password) {
-                    const user_info = {
-                        'user_id': user_id,
-                        'user_role': data.rol
-                    }
-                    sessionStorage.setItem('user_info', JSON.stringify(user_info));
-                    window.location.href = './home.html';
-                } else {
-                    error_text.textContent = 'Contraseña incorrecta';
-                    error_symbol.style.display = 'grid';
-                }
-            })
-            .catch(error => {
-                console.error('Error: ', error);
-                error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
-                error_symbol.style.display = 'grid';
-            })
-        */
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                error_text.textContent = 'Usuario no encontrado';
+            } else if (response.status === 401) {
+                error_text.textContent = 'Contraseña incorrecta';
+            } else if (response.status === 399) {
+                error_text.textContent = 'Se requiere tanto el usuario como la contraseña.';
+            } else {
+                error_text.textContent = 'Error al iniciar sesión. Intente más tarde.';
+            }
+            error_symbol.style.display = 'grid';
+            throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        sessionStorage.setItem('user_info', JSON.stringify(data.user_info));
+        window.location.href = './home.html';
+
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
 

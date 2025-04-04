@@ -8,7 +8,7 @@ const cors = require('cors');
 const router = require('./routes/router');
 const PORT = process.env.PORT || 3000;
 
-const API_URL = process.env.API_URL; 
+const API_URL = process.env.API_URL;
 
 const app = express();
 

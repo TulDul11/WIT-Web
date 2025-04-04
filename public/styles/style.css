@@ -230,3 +230,36 @@
         justify-content: space-between;
     }
 }
+
+ /* General Styling for Profesor Screen */
+ #profesor_body {
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Profesor Content Section */
+.profesor-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 2rem;
+}
+
+/* Card Container */
+#profesor_cursos {
+    flex: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-left: 0;
+    margin: 0;
+}
+
+/* Card Style */
+.card {
+    width: 18rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
+}

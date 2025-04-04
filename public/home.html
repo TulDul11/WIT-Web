@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
             <div id="nav_div">
                 <div id="navbar_nav">
-                    <img src="./images/menu_icon_white.png" id="nav_bar_menu">
+                    <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()">
                     <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()">
                     
                     <div id="nav_modules">
@@ -31,20 +31,9 @@
                 <div id="nav_role"></div>
             </div>
         </nav>
-        <div style="display: flex; flex-direction: row; align-items: flex-start; gap: 1rem; margin: 2rem 2rem 2rem 2rem;" id="alumno_body">
-            <div style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;">
-                <!-- Tarjetas de cursos -->
-                <div class="card" style="width: 18rem; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);">
-                    <a href="your_target_page.html" style="text-decoration: none; color: inherit;">
-                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
-                            style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                        <div class="card-body" style="height: 7rem; padding: 0.5rem;">
-                            <h9 class="card-title" style="font-size: 1rem; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 0.2rem;">Card title</h9>
-                            <h15 class="card-code" style="font-size: 0.625rem; margin-bottom: 0.2rem; display: block;">Codigo de clase</h15>
-                            <small class="card-text" style="font-size: 0.75rem; margin: 0.3rem 0 0.8rem;">Some quick example text to build on the card title and make up the bulk of the card's content.</small>
-                        </div>
-                    </a>
-                </div>
+        <div style="display: none; flex-direction: row; align-items: flex-start; gap: 1rem; margin: 2rem 2rem 2rem 2rem;" id="alumno_body">
+            <div style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;" id="alumno_cursos">
+                <!-- Aqui van los cursos -->
             </div>
         
             <div style="flex: 1; max-width: 25%; min-width: 250px; margin-right: 0;">
@@ -55,7 +44,7 @@
                                 <img src="../images/perfil.png"
                                     class="rounded-circle img-fluid" style="width: 100px;" />
                             </div>
-                            <h4 class="mb-2">Tecnico de Whirlpool</h4>
+                            <h4 class="mb-2" id="card_name">Tecnico de Whirlpool</h4>
                             <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem;">Nivel de experiencia</p>
                             <div class="progress" style="margin: 0 1rem 0.5rem 1rem;">
                                 <div class="progress-bar bg-info" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"> 100 exp </div>
@@ -69,11 +58,27 @@
                 </section>
             </div>
         </div>
-        <div id="profesor_body">
-            
+        <div style="display: none;" id="profesor_body">
+            <div class="inicio-header">
+                <h2>Inicio</h2>
+                <hr class="linea-header">
+            </div>
+        
+            <!-- Sección de cursos -->
+            <div id="profesor_cursos">
+                <div class="card">
+                    <a href="course.html" class="no-link">
+                        <img class="card-img-top" style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;" src="../images/educacion.png" alt="Card image cap">
+                        <div class="card-body" style="display: flex;justify-content: center;align-items: center;text-align: center;flex-direction: column;gap: 1rem; ">
+                            <h9 class="card-title" style="font-size: 1rem;font-weight: bold;font-family: Arial, sans-serif;margin-bottom: 0.2rem;">Agregar curso</h9>
+                        </div>
+                    </a>
+                </div>
+                <!-- Añadir más tarjetas de cursos si es necesario -->
+            </div>
+        </div>
         </div>
         <script src="./scripts/frontend_home.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
 </html>
-<!--"../images/educacion.png"-->

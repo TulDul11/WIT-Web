@@ -65,11 +65,17 @@ router.post('/login_info', async (req, res) => {
     }
 })
 
-router.get('/session', (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: 'No se ha iniciado sesión' });
-    } else {
-        return res.status(200).json({ message: 'Bienvenido al home', user: req.session.user });
+router.get('/session/:log', (req, res) => {
+    const log_info = req.params.log
+    if (log_info == 'in') {
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'No se ha iniciado sesión' });
+        } else {
+            return res.status(200).json({ message: 'Bienvenido al inicio'});
+        }
+    } else if (log_info == 'out') {
+        req.session.destroy()
+        return res.status(200).json({ message: 'Cerrando sesion'});
     }
 });
 
@@ -95,9 +101,59 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
+router.post('/courses', async (req, res) => {
+    try {
+        const { user_role, user_id} = req.body;
 
-router.get('/config', (req, res) => {
-    res.json({ api_url: process.env.API_URL || 'http://localhost:3000' });
-});
+        const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
+
+        const [current_user] = await db.query(query);
+
+        if (current_user.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
+
+        let num_id = current_user[0].id;
+
+        let course_codes_query;
+
+        if (user_role == 'alumnos') {
+            course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`
+        } else if (user_role == 'profesores') {
+            course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`
+        }
+
+        const [courses_codes] = await db.query(course_codes_query);
+
+        if (courses_codes.length == 0) {
+            return res.status(404).json({
+                message: 'No está inscrito en ningún curso.'
+            })
+        }
+
+        let course_data = []
+
+        for (let row of courses_codes) {
+            let code_course = row.cod_curso;
+            
+            let course_query = `SELECT * FROM cursos WHERE cod = '${code_course}'`;
+
+            const [course] = await db.query(course_query);
+
+            if (course.length > 0) {
+                course_data.push(course);
+            }
+        }
+
+        return res.json({course_data: course_data})
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
 
 module.exports = router;

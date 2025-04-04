@@ -12,7 +12,6 @@ function login_auth() {
         error_text.textContent = 'Error: Se requiere llenar el campo de contraseña.'
     } else {
         /* -> Deployment */
-        /*
         fetch(`http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io/login_info/${user_id}`)
             .then(response => {
                 if (!response.ok) {
@@ -40,8 +39,8 @@ function login_auth() {
             .catch(error =>
                 console.error('Error: ', error)
             )
-        */
         /* -> Local development */
+        /*
         fetch(`http://localhost:3000/login_info/${user_id}`)
             .then(response => {
                 if (!response.ok) {
@@ -69,5 +68,6 @@ function login_auth() {
             .catch(error =>
                 console.error('Error: ', error)
             )
+        */
     }
 }

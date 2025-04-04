@@ -11,32 +11,8 @@
         <link href="./styles/style.css" rel="stylesheet">
     </head>
     <body class="home_body">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">BrandName</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#"><i class="fas fa-home"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-info-circle"></i> About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-cogs"></i> Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-phone-alt"></i> Contact</a>
-                    </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
         <div class="top_nav">
-            <div id="nav_menu">
+            <div id="nav_menu" onclick="openSideMenu()">
                 <img src="../images/menu_icon_white.png" class="nav_menu_icon">
             </div>
             <div class="profile_picture">
@@ -47,17 +23,17 @@
             </div>
         </div>
         <div class="decoration_bar"></div>
-        <div id="background_overlay"></div>
+        <div id="background_overlay" onclick="closeSideMenu()"></div>
         <div id="side_menu">
             <div class="side_menu_top_bar">
-                <div class="side_menu_logo">
+                <div class="side_menu_logo" onclick="homeScreen()">
                     <img src="../images/WTI_logo_white_no_name.png" id="side_menu_wti_logo">
                 </div>
-                <div class="side_menu_button">
+                <div class="side_menu_button" onclick="closeSideMenu()">
                     <img src="../images/menu_icon_white.png" id="side_menu_icon">
                 </div>
             </div>
-            <div id="home_screen_side_menu">
+            <div id="home_screen_side_menu" onclick="homeScreen()">
                 <img src="../images/home_screen.png" id="side_menu_home_screen_icon">
                 <p id="side_menu_home_screen_text">Pantalla de inicio</p>
             </div>

@@ -21,7 +21,7 @@
 }
 
 #login_logo {
-    width: clamp(100px, 80vw, 650px);
+    width: clamp(100px, 80vw, 550px);
 }
 
 #wti_page_name{
@@ -97,6 +97,13 @@
 
 
 /* Home (home.html) Styles */
+.home_body {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #00111D; 
+}
 
 .home_body div.top_nav {
     height: 70px;
@@ -303,4 +310,311 @@
     letter-spacing: 1px;
     font-weight: 550;
     pointer-events: none;
+}
+
+/*student part*/
+@media only screen and (max-width: 768px) { /*Edit mobile to follow Figma*/
+}
+@media only screen and (min-width: 769px) { /*Tablets, monitors and computers*/
+    #alumno_screen {
+        display: none;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background-color: #00111D;
+    }
+
+    #alumno_screen div#course_group {
+        width: 75%;
+        height: 100%;
+        background-color: transparent;
+    }
+    #alumno_screen div#course_group div#course_title {
+        margin: 20px 10px 20px 40px;
+        font-size: 40px;
+        color: white;
+        font-weight: 550;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #alumno_screen div#course_group div#courses_alumno {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-wrap: wrap;
+        align-content: start;
+        gap: 15px;
+        margin: 30px;
+    }
+    #alumno_screen div#course_group div#courses_alumno div#inscripcion_curso {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 30%;
+        height: 25%;
+        border: 5px solid #98a5a8;
+        border-radius: 10px;
+        margin: 10px;
+        cursor: pointer;
+    }
+    #alumno_screen div#course_group div#courses_alumno div#inscripcion_curso img {
+        width: 30%;
+        height: auto;
+        opacity: 0.4;
+        pointer-events: none;
+    }
+    #alumno_screen div#course_group div#courses_alumno div#inscripcion_curso p#add_course_text {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.1rem;
+        transform: translateY(-10px);
+        pointer-events: none;
+    }
+
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno {
+        width: 30%;
+        height: 25%;
+        background-color: #93c2cd;
+        border-radius: 10px;
+        margin: 10px;
+        position: relative;
+        /*cursor: pointer; --> Implementar cuando los cursos esten agregados*/
+    }
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno img {
+        position: absolute;
+        bottom: 80%;
+        left: 90%;
+        border-radius: 50%;
+        height: 15%;
+        width: auto;
+        cursor: pointer;
+    }
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno img:hover {
+        background-color: rgba(0, 0, 0, 0.3); /* Circular glow effect */
+    }
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno div.course_nameplate {
+        position: absolute;
+        width: 100%;
+        height: 60%;
+        background-color: #5c5c5c;
+        border-radius: 10px;
+        bottom: 0;
+    }
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno div.course_nameplate p.course_name {
+        margin-left: 20px;
+        color: whitesmoke;
+        font-size: 1.4rem;
+    }
+    #alumno_screen div#course_group div#courses_alumno div.curso_alumno div.course_nameplate p.course_id {
+        margin-left: 20px;
+        color: whitesmoke;
+        font-size: 1.1rem;
+        transform: translateY(-10px);
+    }
+
+    #alumno_screen div#alumno_data {
+        width: 25%;
+        height: 100%;
+    }
+    #alumno_screen div#alumno_data p#alumno_data_title_text {
+        font-size: 1.5rem;
+        color: white;
+        font-weight: 550;
+        letter-spacing: 0px;
+    }
+
+    #alumno_screen div#alumno_data div#alumno_level {
+        height: 100%;
+        width: 100%;
+    }
+    #alumno_screen div#alumno_data div#alumno_level p#level {
+        font-size: 1.4rem;
+        color: white;
+        transform: translateY(10px);
+    }
+
+    #alumno_screen div#alumno_data div#alumno_level div#xp_bar {
+        width: 100%;
+        display: flex;
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_bar progress#xp_colored_bar {
+        width: 80%;
+        height: 25px;
+        border: 2px solid rgb(196, 196, 196);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_bar progress#xp_colored_bar::-webkit-progress-bar {
+        background-color: #ffffff;
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_bar progress#xp_colored_bar::-webkit-progress-value {
+        background-color: #33ff47;
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_showcase {
+        width: 80%;
+        display: flex;
+        justify-content: space-between;
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_showcase p#xp_amount {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.753);
+        margin-left: 5px;
+        transform: translateY(-5px);
+    }
+    #alumno_screen div#alumno_data div#alumno_level div#xp_showcase p#xp_to_level {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.753);
+        transform: translateY(-5px);
+    }
+}
+
+/*teacher part*/
+@media only screen and (max-width: 1024px) { /*Teachers are not allowed to use mobile and tablet devices*/
+}
+@media only screen and (min-width: 1025px) { /*Monitors and computers*/
+
+    #profesor_screen {
+        display: none;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background-color: #00111D;
+    }
+
+    /* Sección específica de cursos */
+    #profesor_screen .courses_title {
+        margin-top: 50px;
+        margin-left: 70px;
+        font-size: 40px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    #profesor_screen div#professor_courses {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: start;
+        gap: 15px;
+        width: 100%;
+        height: 100%;
+        margin-left: 70px;
+        background-color: #00111D;
+    }
+
+    #profesor_screen div#professor_courses #crear_curso {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 25%;
+        height: 25%;
+        border: 5px solid #98a5a8;
+        border-radius: 10px;
+        margin: 10px;
+        cursor: pointer;
+    }
+    #profesor_screen div#professor_courses #crear_curso img {
+        width: 30%;
+        height: auto;
+        opacity: 0.4;
+        pointer-events: none;
+    }
+    #profesor_screen div#professor_courses #crear_curso p {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 1.1rem;
+        transform: translateY(-10px);
+        pointer-events: none;
+    }
+
+    #profesor_screen div#professor_courses div.curso_profesor {
+        width: 25%;
+        height: 25%;
+        background-color: #93c2cd;
+        border-radius: 10px;
+        margin: 10px;
+        position: relative;
+        /*cursor: pointer; --> Implementar cuando los cursos esten agregados*/
+    }
+    #profesor_screen div#professor_courses div.curso_profesor img {
+        position: absolute;
+        bottom: 80%;
+        left: 90%;
+        border-radius: 50%;
+        height: 15%;
+        width: auto;
+        cursor: pointer;
+    }
+    #profesor_screen div#professor_courses div.curso_profesor img:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+    #profesor_screen div#professor_courses div.curso_profesor div.course_nameplate {
+        position: absolute;
+        width: 100%;
+        height: 60%;
+        background-color: #5c5c5c;
+        border-radius: 10px;
+        bottom: 0;
+    }
+    #profesor_screen div#professor_courses div.curso_profesor div.course_nameplate p.course_name {
+        margin-left: 20px;
+        color: whitesmoke;
+        font-size: 1.4rem;
+    }
+    #profesor_screen div#professor_courses div.curso_profesor div.course_nameplate p.course_id {
+        margin-left: 20px;
+        color: whitesmoke;
+        font-size: 1.1rem;
+        transform: translateY(-10px);
+    }
+
+    #formContainer {
+        position: fixed;
+        top: 20%; left: 40%;
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 30%;
+        height: auto;
+        z-index: 999;
+        max-width: 400px;
+        display: none; 
+    }
+
+    #formContainer label {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+        color: #333;
+    }
+
+    #formContainer input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    #formContainer button {
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #4CAF50; 
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #formContainer button:hover {
+        background-color: #45a049; 
+    }
 }

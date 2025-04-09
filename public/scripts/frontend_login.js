@@ -13,7 +13,7 @@ async function login_auth() {
     const password_toggle_wrapper = document.getElementById('icon_wrapper');
 
     error_text.textContent = '';
-    error_symbol.display = 'none';
+    error_symbol.style.display = 'none';
 
     login_button.disabled = true;
     login_button_text.style.display = 'none';
@@ -21,6 +21,8 @@ async function login_auth() {
     password_container.disabled = true;
     login_button_loading_wheel.style.display = 'inline-block';
     password_toggle_wrapper.style.display = 'none';
+
+    await new Promise(resolve => setTimeout(resolve, 750));
 
     try {
         const response = await fetch(`${api_url}/login_info`, {

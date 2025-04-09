@@ -49,59 +49,6 @@ window.addEventListener('load', async () => {
     }
 })
 
-async function load_home() {
-    user_info = JSON.parse(sessionStorage.getItem('user_info'));
-
-    user_id = user_info.user_id;
-    let role_table = user_info.user_role == 'alumno' ? 'alumnos' : 'profesores';
-    let user_role = user_info.user_role == 'alumno' ? 'Alumno' : 'Profesor';
-
-    try {
-        const response = await fetch(`${api_url}/user_home`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                user_id: user_id,
-                role_table: role_table
-            })
-        });
-
-        if (!response.ok) {
-            if (response.status === 404) {
-                user_role_text.textContent = 'Usuario no encontrado';
-            }
-            throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        const user_role_text = document.getElementById('nav_role');
-        user_role_text.textContent = user_role;
-        const card_name = document.getElementById('card_name');
-
-        if (data.apellido) {
-            card_name.innerHTML = data.nombre + ' ' + data.apellido;
-        } else {
-            card_name.innerHTML = data.nombre
-        }
-
-    } catch (error) {
-        console.error('Error:', error);
-    }
-    
-    if (user_role == 'Alumno') {
-        const alumno_body = document.getElementById('alumno_body');
-        alumno_body.style.display = 'flex';
-        set_up_alumno(role_table, user_id)
-    } else {
-        const profesor_body = document.getElementById('profesor_body');
-        profesor_body.style.display = 'flex';
-        set_up_profesor(role_table, user_id)
-    }
-}
-
 async function set_up_alumno(user_role, user_id) {
     try {
         const response = await fetch(`${api_url}/user_courses`, {

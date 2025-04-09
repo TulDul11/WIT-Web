@@ -1,5 +1,4 @@
-// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
-let api_url = 'http://localhost:3000'
+let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
 async function login_auth() {
 
@@ -46,6 +45,7 @@ async function login_auth() {
             } else {
                 error_text.textContent = 'Error al iniciar sesión. Intente más tarde.';
             }
+            error_symbol.style.display = 'grid';
             throw new Error(`Error: ${response.status}`);
         }
         
@@ -54,7 +54,6 @@ async function login_auth() {
     } catch (error) {
         console.error('Error:', error);
     } finally {
-        error_symbol.style.display = 'grid';
         login_button.disabled = false;
         login_button_text.style.display = 'inline-block';
         user_container.disabled = false;

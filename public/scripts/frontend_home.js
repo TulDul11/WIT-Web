@@ -207,9 +207,9 @@ async function log_out() {
             if (response.status === 500) {
                 console.error('Cerrar sesión fallida.');
             }
+        } else {
+            window.location.href = '/';
         }
-        window.location.href = '/';
-
     } catch (error) {
         console.error('Error:', error);
     }

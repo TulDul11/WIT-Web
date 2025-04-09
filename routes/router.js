@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const db = require('../config/db');
 
@@ -36,18 +37,20 @@ router.post('/login_info', async (req, res) => {
             return res.status(399).json({ message: 'Se requiere tanto el usuario como la contraseña.' });
         }
 
-        const [results] = await db.query(`SELECT contrasena, rol FROM usuarios WHERE id = ?`, [user_id]);
+        const [results] = await db.query(`SELECT hashing, salt, rol FROM usuarios WHERE id = ?`, [user_id]);
 
         if (results.length == 0) {
             return res.status(404).json({
                 message: 'Error: Usuario no encontrado'
             })
-        } else if (user_password != results[0].contrasena) {
-            return res.status(401).json({
-                message: 'Error: Contraseña incorrecta'
-            })
-        }
-
+        } else {
+            const hashed_password = await bcrypt.hash(user_password, results[0].salt);
+            if (hashed_password != results[0].hashing) {
+                return res.status(401).json({
+                    message: 'Error: Contraseña incorrecta'
+                })
+            }
+        } 
         const user_role = results[0].rol;
 
         req.session.user = {user_id: user_id, user_role: user_role};
@@ -72,6 +75,7 @@ router.get('/logout', async (req, res) => {
                 return res.status(500).send('Failed to log out');
             }
         });
+        res.json({ message: 'Logged out successfully' });
     } catch (err) {
         res.status(500).json({
             error: err.message

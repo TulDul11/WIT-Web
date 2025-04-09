@@ -114,6 +114,37 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
+router.post('/user_course', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+
+        const user_id = req.session.user.user_id;
+
+        const role_table = req.session.user.user_role == 'alumno' ? 'alumnos' : 'profesores';
+
+        const query = `SELECT nombre, apellido FROM ${role_table} WHERE id_usuario = '${user_id}'`
+
+        const [results] = await db.query(query);
+
+        if (results.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
+
+        results[0].user_id = user_id;
+        results[0].user_role = req.session.user.user_role;
+
+        return res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
 router.post('/user_courses', async (req, res) => {
     try {
         if (!req.session.user) {

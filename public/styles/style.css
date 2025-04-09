@@ -126,6 +126,22 @@
     outline-color: #093454;
     box-shadow: 0 0 0 4px #F1B300;
 }
+#buttonText {
+    display: inline-block;
+}
+#login_button_loading_wheel {
+    display: inline-block;
+    border: 2px solid transparent;
+    border-top: 2px solid #093454;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 #wti_legal_note {
     font-size: clamp(0.7rem, 0.9rem, 1rem);

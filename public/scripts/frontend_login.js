@@ -2,15 +2,26 @@
 let api_url = 'http://localhost:3000'
 
 async function login_auth() {
-    
-    const user_id = document.getElementById('login_user').value;
-    const user_password = document.getElementById('login_password').value;
 
     const error_text = document.getElementById('error_text');
     const error_symbol = document.getElementById('error_symbol');
 
+    const user_container = document.getElementById('login_user');
+    const password_container = document.getElementById('login_password');
+    const login_button = document.getElementById('login_button');
+    const login_button_text = document.getElementById('login_button_text');
+    const login_button_loading_wheel = document.getElementById('login_button_loading_wheel');
+    const password_toggle_wrapper = document.getElementById('icon_wrapper');
+
     error_text.textContent = '';
     error_symbol.display = 'none';
+
+    login_button.disabled = true;
+    login_button_text.style.display = 'none';
+    user_container.disabled = true;
+    password_container.disabled = true;
+    login_button_loading_wheel.style.display = 'inline-block';
+    password_toggle_wrapper.style.display = 'none';
 
     try {
         const response = await fetch(`${api_url}/login_info`, {
@@ -20,8 +31,8 @@ async function login_auth() {
             },
             credentials: 'include',
             body: JSON.stringify({
-                user_id: user_id,
-                user_password: user_password
+                user_id: user_container.value,
+                user_password: password_container.value
             })
         });
 
@@ -35,7 +46,6 @@ async function login_auth() {
             } else {
                 error_text.textContent = 'Error al iniciar sesión. Intente más tarde.';
             }
-            error_symbol.style.display = 'grid';
             throw new Error(`Error: ${response.status}`);
         }
         
@@ -43,6 +53,14 @@ async function login_auth() {
 
     } catch (error) {
         console.error('Error:', error);
+    } finally {
+        error_symbol.style.display = 'grid';
+        login_button.disabled = false;
+        login_button_text.style.display = 'inline-block';
+        user_container.disabled = false;
+        password_container.disabled = false;
+        login_button_loading_wheel.style.display = 'none';
+        password_toggle_wrapper.style.display = 'flex';
     }
 }
 

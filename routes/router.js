@@ -48,9 +48,9 @@ router.post('/login_info', async (req, res) => {
             })
         }
 
-        req.session.user = user_id;
-
         const user_role = results[0].rol;
+
+        req.session.user = {user_id: user_id, user_role: user_role};
 
         return res.json({
             user_info: {
@@ -65,23 +65,29 @@ router.post('/login_info', async (req, res) => {
     }
 })
 
-router.get('/session/:log', (req, res) => {
-    const log_info = req.params.log
-    if (log_info == 'in') {
-        if (!req.session.user) {
-            return res.status(401).json({ message: 'No se ha iniciado sesión' });
-        } else {
-            return res.status(200).json({ message: 'Bienvenido al inicio'});
-        }
-    } else if (log_info == 'out') {
-        req.session.destroy()
-        return res.status(200).json({ message: 'Cerrando sesion'});
+router.get('/logout', async (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).send('Failed to log out');
+            }
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
     }
 });
 
 router.post('/user_home', async (req, res) => {
     try {
-        const { user_id, role_table } = req.body;
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+
+        const user_id = req.session.user.user_id;
+
+        const role_table = req.session.user.user_role == 'alumno' ? 'alumnos' : 'profesores';
 
         const query = `SELECT nombre, apellido FROM ${role_table} WHERE id_usuario = '${user_id}'`
 
@@ -93,7 +99,10 @@ router.post('/user_home', async (req, res) => {
             })
         }
 
-        res.json(results[0]);
+        results[0].user_id = user_id;
+        results[0].user_role = req.session.user.user_role;
+
+        return res.json(results[0]);
     } catch (err) {
         res.status(500).json({
             error: err.message
@@ -101,8 +110,12 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
-router.post('/courses', async (req, res) => {
+router.post('/user_courses', async (req, res) => {
     try {
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+        
         const { user_role, user_id} = req.body;
 
         const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`

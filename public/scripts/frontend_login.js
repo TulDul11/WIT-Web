@@ -1,7 +1,7 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'
 
 async function login_auth() {
-    event.preventDefault();
     
     const user_id = document.getElementById('login_user').value;
     const user_password = document.getElementById('login_password').value;
@@ -18,6 +18,7 @@ async function login_auth() {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
                 user_id: user_id,
                 user_password: user_password
@@ -37,10 +38,8 @@ async function login_auth() {
             error_symbol.style.display = 'grid';
             throw new Error(`Error: ${response.status}`);
         }
-
-        const data = await response.json();
-        sessionStorage.setItem('user_info', JSON.stringify(data.user_info));
-        window.location.href = './home.html';
+        
+        window.location.href = './home';
 
     } catch (error) {
         console.error('Error:', error);

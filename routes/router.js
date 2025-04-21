@@ -173,4 +173,30 @@ router.post('/user_courses', async (req, res) => {
     }
 })
 
+router.post('/agregar_curso', async (req, res) => {
+    try {
+        const { cod, nombre, descripcion } = req.body;
+
+        // Verificar si los campos están completos
+        if (!cod || !nombre || !descripcion) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios' });
+        }
+
+        // Verifica si el curso ya existe en la base de datos
+        const [existingCourse] = await db.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+        if (existingCourse.length > 0) {
+            return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
+        }
+
+        // Agregar el curso a la base de datos
+        await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
+
+        // Retornar respuesta exitosa
+        res.status(201).json({ message: 'Curso agregado exitosamente' });
+    } catch (err) {
+        console.error('Error al agregar curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

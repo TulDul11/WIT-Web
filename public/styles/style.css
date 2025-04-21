@@ -324,3 +324,111 @@
 .course_card_container img{
     width: clamp(30px, 30vw, 300px);
 }
+
+.btn-agregar-curso {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+/* Card Style */
+.card {
+    width: 18rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
+}
+
+.card-img-top {
+    height: 8rem;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.card-body {
+    height: 7rem;
+    padding: 0.5rem;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    margin-bottom: 0.2rem;
+}
+
+.card-code {
+    font-size: 0.625rem;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+.card-text {
+    font-size: 0.75rem;
+    margin: 0.3rem 0 0.8rem;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 2rem 5rem;
+    flex-wrap: wrap;
+}
+
+/* Course (course.html) Styles */
+.course_body div.course_code_container {
+    display: flex;
+    margin: 20px 0px 15px 0px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.course_body div.course_code_container p#course_code {
+    font-size: 1.2rem;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    margin: 10px 15px;  
+}
+
+.course_body div.course_card_container p#course_title {
+    font-size: 2rem;
+    color: black;
+    letter-spacing: 0.5px;
+    font-weight: 550;
+    margin: 10px 0px;  
+}
+
+
+.course_card_container {
+    margin: 10px 100px 10px 40px;
+    width: 80%;
+}
+
+.course_card_container table#card_grid {
+    border-collapse: collapse; 
+    background-color: #000000;
+}
+
+.course_card_container td#grid_txt {
+
+    height: 23px; 
+    padding: 10px; 
+    vertical-align: middle;
+}
+
+.course_card_container img{
+    width: clamp(30px, 30vw, 300px);
+}
+
+.linea-header {
+    width: 95.5%;
+    margin-top: -20px; /* Ajusta según necesites */
+}
+

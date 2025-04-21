@@ -1,4 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+ let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+
 
 window.addEventListener('load', async () => {
     let user_role;
@@ -117,7 +118,7 @@ async function set_up_profesor(user_role, user_id) {
 
         const data = await response.json();
         
-        const profesor_cursos = document.getElementById('profesor_cursos');
+        const profesor_cursos = document.getElementById('coursesContainer');
 
         for (let curso of data.course_data) {
             let carta_curso = `<div class="card" href='course.html' style="width: 18rem; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);">
@@ -160,3 +161,95 @@ async function log_out() {
         console.error('Error:', error);
     }
 }
+
+document.getElementById("saveCourseButton").addEventListener("click", function() {
+    const courseName = document.getElementById("courseName").value;
+    const courseKey = document.getElementById("courseKey").value;
+    const description = document.getElementById("description").value;
+    const csvUpload = document.getElementById("csvUpload").value;
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    card.innerHTML = `
+        <a href="#" style="text-decoration: none; color: inherit;">
+            <img class="card-img-top" src="../images/educacion.png" alt="Imagen del curso">
+            <div class="card-body">
+                <h9 class="card-title">${courseName}</h9>
+                <h15 class="card-code">${courseKey}</h15>
+                <small class="card-text">${description}</small> <br>
+            </div>
+        </a>
+    `;
+
+    document.getElementById("coursesContainer").appendChild(card);
+
+    // 🔽🔽 Hacemos el POST a la base de datos
+    fetch('http://localhost:3000/agregar_curso', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            cod: courseKey,
+            nombre: courseName,
+            descripcion: description
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Curso agregado:", data);
+    })
+    .catch(error => {
+        console.error('Error al agregar curso:', error);
+    });
+
+    // Limpiar campos
+    document.getElementById("courseName").value = "";
+    document.getElementById("courseKey").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("csvUpload").value = "";
+
+    // Cerrar el modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+    modal.hide();
+});
+
+
+document.getElementById("csvUpload").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const csvContent = e.target.result;
+            const rows = csvContent.split("\n");
+            const studentNames = rows.join("\n").trim(); // Convierte las líneas del CSV en texto
+            document.getElementById("studentList").value = studentNames; // Pone el contenido en el textarea
+        };
+        reader.readAsText(file); // Lee el contenido del archivo CSV
+    }
+});
+
+// Seleccionamos el input del filtro y el contenedor de los cursos
+const filterInput = document.getElementById('filterInput');
+const coursesContainer = document.getElementById('coursesContainer');
+
+// Escuchamos el evento "input" para capturar lo que el usuario escribe
+filterInput.addEventListener('input', function () {
+    const filterValue = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+    const courseCards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+
+    courseCards.forEach(card => {
+        const courseTitle = card.querySelector('.card-title').textContent.toLowerCase(); // Título del curso
+        const courseDescription = card.querySelector('.card-text').textContent.toLowerCase(); // Descripción del curso
+
+        // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+        if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
+            card.style.display = 'block'; // Mostramos la tarjeta
+        } else {
+            card.style.display = 'none'; // Ocultamos la tarjeta
+        }
+    });
+});
+
+

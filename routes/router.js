@@ -114,48 +114,18 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
-router.post('/user_course', async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
-        }
-
-        const user_id = req.session.user.user_id;
-
-        const role_table = req.session.user.user_role == 'alumno' ? 'alumnos' : 'profesores';
-
-        const query = `SELECT nombre, apellido FROM ${role_table} WHERE id_usuario = '${user_id}'`
-
-        const [results] = await db.query(query);
-
-        if (results.length == 0) {
-            return res.status(404).json({
-                message: 'Error: Usuario no encontrado'
-            })
-        }
-
-        results[0].user_id = user_id;
-        results[0].user_role = req.session.user.user_role;
-
-        return res.json(results[0]);
-    } catch (err) {
-        res.status(500).json({
-            error: err.message
-        });
-    }
-})
-
 router.post('/user_courses', async (req, res) => {
     try {
         if (!req.session.user) {
             return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
         }
         
-        const { user_role, user_id} = req.body;
+        const { user_role, user_id, cod} = req.body;
 
         const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
 
         const [current_user] = await db.query(query);
+
 
         if (current_user.length == 0) {
             return res.status(404).json({
@@ -167,13 +137,22 @@ router.post('/user_courses', async (req, res) => {
 
         let course_codes_query;
 
-        if (user_role == 'alumnos') {
-            course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`
-        } else if (user_role == 'profesores') {
-            course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`
+        if(!cod) {
+            if (user_role == 'alumnos') {
+                course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`
+            } else if (user_role == 'profesores') {
+                course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`
+            }
+        }else{
+            if (user_role == 'alumnos') {
+                course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id} AND cod_curso = '${cod}'`
+            } else if (user_role == 'profesores') {
+                course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id} AND cod_curso = '${cod}'`
+            }
         }
 
         const [courses_codes] = await db.query(course_codes_query);
+        
 
         if (courses_codes.length == 0) {
             return res.status(404).json({

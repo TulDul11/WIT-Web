@@ -368,7 +368,15 @@
 #tareas_mobile {
     display: none;
 }
-  
+
+#alumno_body {
+    display: none;
+}
+
+#profesor_body {
+    display: none;
+}
+
 
 @media (max-width: 992px){
     #course_grid {

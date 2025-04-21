@@ -130,7 +130,7 @@ async function set_up_alumno(user_role, user_id) {
 
         for (let curso of data.course_data) {
             let carta_curso = `<div class="card"  style="width: 18rem; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);">
-                    <a href='course' style="text-decoration: none; color: inherit;">
+                    <a href='course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
                         <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
                             style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
                         <div class="card-body" style="height: 7rem; padding: 0.5rem;">

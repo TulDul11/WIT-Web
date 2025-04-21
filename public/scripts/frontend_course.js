@@ -4,9 +4,10 @@ let api_url = 'http://localhost:3000';
 window.addEventListener('load', async () => {
     let user_role;
     let data;
+    const course_code_text = document.getElementById('course_code');
     const user_role_text = document.getElementById('nav_role');
     try {
-        const response = await fetch(`${api_url}/user_course`, {
+        const response = await fetch(`${api_url}/user_home`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -31,10 +32,14 @@ window.addEventListener('load', async () => {
     user_role = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
     user_role_text.textContent = user_role;
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseCode = urlParams.get('code');
+    course_code_text.textContent = courseCode;
+
     if (user_role == 'Alumno') {
         const alumno_body = document.getElementById('alumno_body');
         alumno_body.style.display = 'flex';
-        set_up_alumno('alumnos', data.user_id)
+        set_up_alumno('alumnos', data.user_id, courseCode)
     } else {
         const profesor_body = document.getElementById('profesor_body');
         profesor_body.style.display = 'flex';
@@ -44,7 +49,7 @@ window.addEventListener('load', async () => {
 })
 
 async function set_up_alumno(user_role, user_id, cod) {
-    try {
+    try {      
         const response = await fetch(`${api_url}/user_courses`, {
             method: 'POST',
             headers: {
@@ -60,29 +65,42 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                user_role_text.textContent = 'No esta inscrito en ningun curso';
+                const course_code_text = document.getElementById('course_code');
+                const alumno_body = document.getElementById('alumno_body');
+                course_code_text.textContent = 'No esta inscrito en este curso';
+                alumno_body.style.display = 'none';
             }
             throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
+        }else{
+            const data = await response.json();
         
-        const alumno_cursos = document.getElementById('alumno_cursos');
+            const alumno_curso = document.getElementById('alumno_curso');
 
-        for (let curso of data.course_data) {
-            let carta_curso = `<div class="card"  style="width: 18rem; background-color: #ffffff; border-radius: 0.5rem; box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);">
-                    <a href='course' style="text-decoration: none; color: inherit;">
-                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
-                            style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                        <div class="card-body" style="height: 7rem; padding: 0.5rem;">
-                            <h9 class="card-title" style="font-size: 1rem; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 0.2rem;">${curso[0].nombre}</h9>
-                            <h15 class="card-code" style="font-size: 0.625rem; margin-bottom: 0.2rem; display: block;">${curso[0].cod}</h15>
-                            <small class="card-text" style="font-size: 0.75rem; margin: 0.3rem 0 0.8rem;">${curso[0].descripcion}</small>
+            curso = data.course_data[0];
+
+            let carta_curso = `<div class="card p-4" style="width: 90%;margin-inline: auto;">
+                        <p id="course_title" class="fw-bold mb-4" style="font-size: 2rem;">${curso[0].nombre}</p>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h5 class="fw-bold">${curso[0].nombre}</h5>
+                                <p>
+                                    ${curso[0].descripcion_det}
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <img src="./images/lavadora.png" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
+                            </div>
                         </div>
-                    </a>
-                </div>`
-            alumno_cursos.innerHTML += carta_curso;
+            
+                        <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-animated bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        </div>
+                    </div>`
+            
+            alumno_curso.innerHTML += carta_curso;
         }
+        
 
     } catch (error) {
         console.error('Error:', error);

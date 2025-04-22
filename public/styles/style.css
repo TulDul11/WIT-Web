@@ -335,6 +335,17 @@
     cursor: pointer;
 
 }
+
+.btn-agregar-alumno {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
 /* Card Style */
 .card {
     width: 18rem;

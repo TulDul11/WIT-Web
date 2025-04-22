@@ -191,8 +191,21 @@ router.post('/agregar_curso', async (req, res) => {
         // Agregar el curso a la base de datos
         await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
 
-        // Retornar respuesta exitosa
-        res.status(201).json({ message: 'Curso agregado exitosamente' });
+        // Obtener ID del profesor usando el id de usuario en sesión
+        const user_id = req.session.user.user_id;
+        const [profesorData] = await db.query('SELECT id FROM profesores WHERE id_usuario = ?', [user_id]);
+
+        if (profesorData.length === 0) {
+            return res.status(404).json({ message: 'Profesor no encontrado' });
+        }
+
+        const id_profesor = profesorData[0].id;
+
+        // Insertar en profesores_cursos
+        await db.query('INSERT INTO profesores_cursos (id_profesor, cod_curso) VALUES (?, ?)', [id_profesor, cod]);
+
+        res.status(201).json({ message: 'Curso y asociación con profesor agregados exitosamente' });
+
     } catch (err) {
         console.error('Error al agregar curso:', err);
         res.status(500).json({ error: err.message });

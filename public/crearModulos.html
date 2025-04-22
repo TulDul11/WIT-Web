@@ -203,21 +203,35 @@
         const titulo = document.getElementById('module-title').value;
         const contenido = quill.root.innerHTML;
       
-        fetch('/modulos', {
-          method: 'POST',
+        const params = new URLSearchParams(window.location.search);
+        const modo = params.get('modo');
+        const id = params.get('id');
+      
+        let metodo, url;
+      
+        if (modo === 'editar' && id) {
+          metodo = 'PUT';
+          url = `/modulos/${id}`;
+        } else {
+          metodo = 'POST';
+          url = '/modulos';
+        }
+      
+        fetch(url, {
+          method: metodo,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titulo, contenido, preguntas: [] }) // Por ahora sin preguntas
+          body: JSON.stringify({ titulo, contenido })
         })
-        .then(res => res.json())
-        .then(data => {
-          moduloGuardadoId = data.moduloId;
-          alert(`Módulo guardado con ID: ${moduloGuardadoId}`);
-          
-          // 🔁 Redirigir a course.html automáticamente:
-          window.location.href = 'course.html';
-        })
-        .catch(() => alert("Error al guardar el módulo"));
+          .then(res => res.json())
+          .then(data => {
+            // Guardamos ID si es nuevo o si estamos editando
+            moduloGuardadoId = modo === 'editar' ? parseInt(id) : data.moduloId;
+      
+            alert(`Módulo ${modo === 'editar' ? 'actualizado' : 'creado'} con ID: ${moduloGuardadoId}`);
+          })
+          .catch(() => alert("Error al guardar el módulo"));
       }
+      
       
 
     // Función para guardar preguntas asociadas al módulo guardado
@@ -240,8 +254,38 @@
       .then(data => alert(data.message))
       .catch(() => alert("Error al guardar las preguntas"));
     }
-
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = new URLSearchParams(window.location.search);
+      const modo = params.get('modo');
+      const id = params.get('id');
+    
+      if (modo === 'editar' && id) {
+        try {
+          // Cargar contenido del módulo
+          const res = await fetch(`/modulos/${id}`);
+          const modulo = await res.json();
+    
+          document.getElementById('module-title').value = modulo.titulo;
+          quill.root.innerHTML = modulo.contenido_html;
+    
+          // Cargar preguntas del módulo
+          const pregRes = await fetch(`/modulos/${id}/preguntas`);
+          const preguntas = await pregRes.json();
+    
+          // Asignar al store global correctamente
+          Alpine.store('bancoPreguntas').preguntas = preguntas.map(p => ({
+          texto: p.pregunta,
+          respuestas: p.opciones,
+          correcta: p.correcta,
+          abierta: true
+      }));
+    } catch (err) {
+      console.error('Error cargando módulo o preguntas:', err);
+    }
+  }
+});    
   </script>
+  
   <script>
     document.getElementById('probar-juego').addEventListener('click', () => {
       document.getElementById('juego-container').style.display = 'block';
@@ -271,6 +315,5 @@
       }
     });
   </script>
-  
 </body>
 </html>

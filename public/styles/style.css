@@ -308,3 +308,23 @@
 .course_card_container img{
     width: clamp(30px, 30vw, 300px);
 }
+
+.Alumno{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.in-flex{
+    flex:1;
+    min-width: 300px;
+}
+
+.in-flex:first-child{
+    flex: 2;
+    padding: 20px;
+    margin: 0px;
+    margin-bottom: 0px;
+}
+
+
+

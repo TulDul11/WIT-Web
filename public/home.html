@@ -62,11 +62,19 @@
         <div style="display: none;" id="profesor_body">
             <div class="inicio-header" style="margin-top: 20px; margin-left: 80px; display: flex; justify-content: space-between; align-items: center; margin-right: 80px;">
                 <h2>Inicio</h2>
-                <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
+        
+                <!-- Contenedor para los botones juntos -->
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Alumnos</button>
+                    <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
+                </div>
             </div>
-            <hr class="linea-header" style="width: 95.5%; border-top: -200px;">
+        
+            <hr class="linea-header" style="width: 95.5%;">
+        </div>
+        
 
-                <!-- Filtro de cursos -->
+            <!-- Filtro de cursos -->
                 <div style="margin: 0 auto; width: 91%; text-align: center;">
                     <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
                 </div>
@@ -107,8 +115,8 @@
                                 <!-- Lista de alumnos -->
                                 <div class="mb-3">
                                     <label for="studentList" class="form-label">Alumnos a Agregar</label>
-                                    <textarea class="form-control" id="studentList" rows="4"></textarea>
-                                </div>
+                                    <textarea class="form-control" id="studentList" rows="4" readonly></textarea>
+                                </div>                                
                             </form>
                         </div>
                         <div class="modal-footer">

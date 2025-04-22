@@ -6,11 +6,15 @@
 
 ***OR***
 
-`npm install express path body-parser cors mysql2`
+`npm install express express-session express-mysql-session path body-parser cors mysql2 bcrypt`
 
 ***OR***
 
 `npm install express`
+
+`npm install express-session`
+
+`npm install express-mysql-session`
 
 `npm install cors`
 
@@ -20,15 +24,8 @@
 
 `npm install mysql2`
 
-## .env File
+`npm install bcrypt`
 
-```
-envdbhost=YourDatabaseHost
-envdbuser=YourDatabaseUser
-envdbpass=YourDatabasePassword
-envdbname=YourDatabaseName
-envdbport=YourDatabasePort
-envdblimit=YourDatabaseUserLimit
-PORT=YourDesiredPort
-```
-Replace _envdbhost_, _envdbuser_, _envdbpass_, _envdbname_, _envdbport_ and _evdblimit_ with the names you wish to use.
+# Files
+
+> Fill out _.env_ according to your necessities.  An *.env_demo* is included for the needed environment variables.

@@ -212,4 +212,27 @@ router.post('/agregar_curso', async (req, res) => {
     }
 });
 
+router.get('/obtener_alumnos', async (req, res) => {
+    try {
+        // Consulta a la base de datos para obtener los nombres y apellidos de los alumnos
+        const [results] = await db.query('SELECT nombre, apellido FROM alumnos');
+
+        // Si no hay alumnos en la base de datos
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron alumnos' });
+        }
+
+        // Formateamos los resultados y enviamos solo nombre y apellido
+        const alumnos = results.map(alumno => ({
+            nombre: alumno.nombre,
+            apellido: alumno.apellido
+        }));
+
+        // Respondemos con los alumnos encontrados
+        res.json(alumnos);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

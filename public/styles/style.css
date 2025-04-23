@@ -443,3 +443,11 @@
     margin-top: -20px; /* Ajusta según necesites */
 }
 
+#studentDropdown .dropdown-item {
+    cursor: pointer;
+    padding: 8px 16px;
+}
+
+#studentDropdown .dropdown-item:hover {
+    background-color: #f1f1f1;
+}

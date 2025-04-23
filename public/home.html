@@ -65,7 +65,7 @@
         
                 <!-- Contenedor para los botones juntos -->
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Alumnos</button>
+                    <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">Agregar Alumnos</button>
                     <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
                 </div>
             </div>
@@ -80,7 +80,38 @@
                 </div>
                           
             
-        
+                
+                <div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="agregarAlumnoLabel">Agregar Alumnos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="studentForm">
+                                    <div class="mb-3">
+                                        <label for="studentName" class="form-label">Nombre del Alumno</label>
+                                        <textarea class="form-control" id="studentName" rows="4" readonly></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="studentEmail" class="form-label">Correo del Alumno</label>
+                                        <input type="email" class="form-control" id="studentEmail" placeholder="correo@ejemplo.com" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="studentID" class="form-label">ID del Alumno</label>
+                                        <input type="text" class="form-control" id="studentID" placeholder="ID de usuario o matrícula" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         
             <!-- Sección de cursos -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -108,15 +139,32 @@
                                     <textarea class="form-control" id="description" rows="4" placeholder="Escribe una breve descripción del curso"></textarea>
                                 </div>
                                 <!-- Subir archivo CSV -->
-                                <div class="mb-3" style="margin-top: 20px;">
+                                <!--n<div class="mb-3" style="margin-top: 20px;">
                                     <label for="csvUpload" class="form-label">Sube archivo:</label>
                                     <input type="file" class="form-control" id="csvUpload" accept=".csv">
-                                </div>
+                                </div>  -->
                                 <!-- Lista de alumnos -->
                                 <div class="mb-3">
-                                    <label for="studentList" class="form-label">Alumnos a Agregar</label>
-                                    <textarea class="form-control" id="studentList" rows="4" readonly></textarea>
-                                </div>                                
+                                    <label for="studentSelect" class="form-label">Alumnos a Agregar</label>
+                                    <div class="input-group">
+                                        <!-- Barra de búsqueda -->
+                                        <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+
+                                    </div>
+                                    
+                                    <!-- Lista desplegable que aparece al escribir -->
+                                    <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
+                                        <!-- Opciones se llenarán dinámicamente -->
+                                    </div>
+                                
+                                    <!-- Box donde se muestra el alumno seleccionado -->
+                                    <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
+                                        <!-- Los alumnos seleccionados se mostrarán aquí -->
+                                    </div>
+                                </div>
+                                
+                                
+                                
                             </form>
                         </div>
                         <div class="modal-footer">

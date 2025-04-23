@@ -163,14 +163,27 @@ async function log_out() {
 }
 
 document.getElementById("saveCourseButton").addEventListener("click", function() {
-    const courseName = document.getElementById("courseName").value;
-    const courseKey = document.getElementById("courseKey").value;
-    const description = document.getElementById("description").value;
-    const csvUpload = document.getElementById("csvUpload").value;
+    const courseNameElement = document.getElementById("courseName");
+    const courseKeyElement = document.getElementById("courseKey");
+    const descriptionElement = document.getElementById("description");
 
+    // Asegurar que los valores no sean null antes de usarlos
+    const courseName = courseNameElement ? courseNameElement.value : "";
+    const courseKey = courseKeyElement ? courseKeyElement.value : "";
+    const description = descriptionElement ? descriptionElement.value : "";
+
+    // Verificar que se estén enviando datos correctos antes del POST
+    console.log("Datos enviados al backend:", { cod: courseKey, nombre: courseName, descripcion: description });
+
+    // Evitar que se envíe un curso vacío
+    if (!courseName || !courseKey) {
+        alert("El nombre y la clave del curso son obligatorios.");
+        return;
+    }
+
+    // Crear tarjeta del curso en la interfaz
     const card = document.createElement("div");
     card.classList.add("card");
-
     card.innerHTML = `
         <a href="#" style="text-decoration: none; color: inherit;">
             <img class="card-img-top" src="../images/educacion.png" alt="Imagen del curso">
@@ -184,12 +197,10 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
 
     document.getElementById("coursesContainer").appendChild(card);
 
-    // 🔽🔽 Hacemos el POST a la base de datos
+    // Enviar datos al backend
     fetch('http://localhost:3000/agregar_curso', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             cod: courseKey,
             nombre: courseName,
@@ -204,52 +215,128 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
         console.error('Error al agregar curso:', error);
     });
 
-    // Limpiar campos
-    document.getElementById("courseName").value = "";
-    document.getElementById("courseKey").value = "";
-    document.getElementById("description").value = "";
-    document.getElementById("csvUpload").value = "";
+    // Limpiar campos después de guardar
+    if (courseNameElement) courseNameElement.value = "";
+    if (courseKeyElement) courseKeyElement.value = "";
+    if (descriptionElement) descriptionElement.value = "";
 
-    // Cerrar el modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
-    modal.hide();
-});
+    // Limpiar lista de alumnos seleccionados
+    selectedStudents = [];
+    mostrarAlumnosSeleccionados();
 
-
-document.getElementById("csvUpload").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const csvContent = e.target.result;
-            const rows = csvContent.split("\n");
-            const studentNames = rows.join("\n").trim(); // Convierte las líneas del CSV en texto
-            document.getElementById("studentList").value = studentNames; // Pone el contenido en el textarea
-        };
-        reader.readAsText(file); // Lee el contenido del archivo CSV
+    // Cerrar el modal asegurando que su instancia existe
+    const modalElement = document.getElementById('exampleModal');
+    if (modalElement) {
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        if (modalInstance) modalInstance.hide();
     }
 });
 
-// Seleccionamos el input del filtro y el contenedor de los cursos
-const filterInput = document.getElementById('filterInput');
-const coursesContainer = document.getElementById('coursesContainer');
+// Lista de alumnos seleccionados
+let selectedStudents = [];
 
-// Escuchamos el evento "input" para capturar lo que el usuario escribe
-filterInput.addEventListener('input', function () {
-    const filterValue = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
-    const courseCards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+// Función para cargar alumnos en el dropdown
+async function cargarAlumnosEnDropdown() {
+    try {
+        const response = await fetch('/obtener_alumnos');
+        const alumnos = await response.json();
 
-    courseCards.forEach(card => {
-        const courseTitle = card.querySelector('.card-title').textContent.toLowerCase(); // Título del curso
-        const courseDescription = card.querySelector('.card-text').textContent.toLowerCase(); // Descripción del curso
+        const searchInput = document.getElementById('searchStudent');
+        const dropdown = document.getElementById('studentDropdown');
 
-        // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
-        if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
-            card.style.display = 'block'; // Mostramos la tarjeta
-        } else {
-            card.style.display = 'none'; // Ocultamos la tarjeta
+        dropdown.innerHTML = '';
+
+        const filteredAlumnos = searchInput.value
+            ? alumnos.filter(alumno => (alumno.nombre + ' ' + alumno.apellido).toLowerCase().includes(searchInput.value.toLowerCase()))
+            : alumnos;
+
+        filteredAlumnos.forEach(alumno => {
+            const apellido = alumno.apellido ? alumno.apellido : "(Sin apellido)";
+            const option = document.createElement('button');
+            option.classList.add('dropdown-item');
+            option.textContent = `${alumno.nombre} ${apellido}`;
+            option.addEventListener('click', (event) => seleccionarAlumno(event, alumno));
+            dropdown.appendChild(option);
+        });
+
+        if (filteredAlumnos.length === 0) {
+            const noResultsOption = document.createElement('button');
+            noResultsOption.classList.add('dropdown-item');
+            noResultsOption.disabled = true;
+            noResultsOption.textContent = 'No se encontraron alumnos';
+            dropdown.appendChild(noResultsOption);
         }
+
+        dropdown.style.display = 'block';
+    } catch (err) {
+        console.error('Error al cargar alumnos:', err);
+    }
+}
+
+// Seleccionar un alumno y agregarlo a la lista, asegurando que apellido no sea null
+function seleccionarAlumno(event, alumno) {
+    event.preventDefault();
+
+    const alumnoCorregido = {
+        nombre: alumno.nombre,
+        apellido: alumno.apellido ? alumno.apellido : ""
+    };
+
+    if (!selectedStudents.some(student => student.nombre === alumno.nombre && student.apellido === alumno.apellido)) {
+        selectedStudents.push(alumnoCorregido);
+        mostrarAlumnosSeleccionados();
+    }
+
+    document.getElementById('searchStudent').value = '';
+    document.getElementById('studentDropdown').style.display = 'none';
+}
+
+// Mostrar alumnos seleccionados en el box
+function mostrarAlumnosSeleccionados() {
+    const studentListBox = document.getElementById('studentListBox');
+    studentListBox.innerHTML = '';
+
+    selectedStudents.forEach((alumno, index) => {
+        const apellido = alumno.apellido ? alumno.apellido : "";
+        const studentItem = document.createElement('div');
+        studentItem.classList.add('student-item');
+        studentItem.innerHTML = `
+            <span>${alumno.nombre} ${apellido}</span>
+            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumno(${index})">Eliminar</button>
+        `;
+        studentListBox.appendChild(studentItem);
     });
+}
+
+// Eliminar alumno de la lista
+function eliminarAlumno(index) {
+    selectedStudents.splice(index, 1);
+    mostrarAlumnosSeleccionados();
+}
+
+// Evento para mostrar dropdown al hacer clic en el campo de búsqueda
+document.getElementById('searchStudent').addEventListener('focus', async () => {
+    const dropdown = document.getElementById('studentDropdown');
+    await cargarAlumnosEnDropdown();
+    dropdown.style.display = 'block';
 });
 
+// Evento para actualizar el dropdown cuando el usuario escribe
+document.getElementById('searchStudent').addEventListener('input', cargarAlumnosEnDropdown);
 
+// Evitar que el usuario presione "Enter" y se refresque el formulario
+document.getElementById('searchStudent').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+});
+
+// Evento para ocultar el dropdown si el usuario hace clic fuera
+document.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('studentDropdown');
+    const searchInput = document.getElementById('searchStudent');
+
+    if (!event.target.closest('#searchStudent') && !event.target.closest('#studentDropdown')) {
+        dropdown.style.display = 'none';
+    }
+});

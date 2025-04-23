@@ -232,6 +232,28 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     }
 });
 
+// Seleccionamos el input del filtro y el contenedor de los cursos
+const filterInput = document.getElementById('filterInput');
+const coursesContainer = document.getElementById('coursesContainer');
+
+// Escuchamos el evento "input" para capturar lo que el usuario escribe
+filterInput.addEventListener('input', function () {
+    const filterValue = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+    const courseCards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+
+    courseCards.forEach(card => {
+        const courseTitle = card.querySelector('.card-title').textContent.toLowerCase(); // Título del curso
+        const courseDescription = card.querySelector('.card-text').textContent.toLowerCase(); // Descripción del curso
+
+        // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+        if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
+            card.style.display = 'block'; // Mostramos la tarjeta
+        } else {
+            card.style.display = 'none'; // Ocultamos la tarjeta
+        }
+    });
+});
+
 // Lista de alumnos seleccionados
 let selectedStudents = [];
 

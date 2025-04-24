@@ -112,8 +112,14 @@
       <button id="probar-juego" class="btn btn-primary me-2">Probar juego</button>
       <button class="btn btn-warning">Publicar</button>
       <div id="juego-container" style="display: none; margin-top: 1rem;">
-        <iframe id="juego-frame" src="juegos/index2.html" width="360px" height="640px" style="border: none;"></iframe>
-      </div>
+        <div id="juego-container" style="display: none;">
+          <iframe id="juego-frame"
+            width="100%"
+            height="640"
+            style="max-width: 1100px; margin-inline: auto; display: block; border: none;">
+          </iframe>
+        </div>
+              </div>
     </section>
   </div>
 
@@ -287,10 +293,26 @@
   </script>
   
   <script>
-    document.getElementById('probar-juego').addEventListener('click', () => {
-      document.getElementById('juego-container').style.display = 'block';
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const modo = params.get('modo');
+      const id = params.get('id');
+    
+      const btnProbarJuego = document.getElementById('probar-juego');
+      const iframe = document.getElementById('juego-frame');
+    
+      if (modo === 'editar' && id) {
+        btnProbarJuego.addEventListener('click', () => {
+          iframe.src = `juegos/index.html?modulo=${id}`;
+          iframe.style.display = 'block';
+        });
+      } else {
+        // Ocultar sección si estás en modo crear
+        document.getElementById('juego-container').style.display = 'none';
+      }
     });
   </script>
+  
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const params = new URLSearchParams(window.location.search);

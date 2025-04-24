@@ -174,7 +174,61 @@ router.post('/user_courses', async (req, res) => {
             }
         }
 
+
         return res.json({course_data: course_data})
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+router.post('/user_homework', async (req, res) => {
+    try{
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+
+        const {user_role, user_id, cod} = req.body;
+
+        const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+        const [current_user] = await db.query(query);
+
+
+        if (current_user.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
+
+        let num_id = current_user[0].id;
+        let homework_query;
+
+        homework_query = `SELECT titulo FROM alumnos_tareas 
+                        INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id  
+                        WHERE id_alumno = ${num_id} AND cod_curso = '${cod}' AND NOT completado
+                        ORDER BY fecha_entrega
+                        LIMIT 4`;
+        
+                
+        const [homework] = await db.query(homework_query);
+
+        if (homework.length == 0) {
+            return res.status(404).json({
+                message: 'No hay tareas asignadas.'
+            })
+        }
+
+        let homework_data = []; 
+
+        for (let row of homework) {
+            homework_data.push(row.titulo);
+        }
+
+        return res.json({homework_data: homework_data})
+
 
     } catch (err) {
         res.status(500).json({

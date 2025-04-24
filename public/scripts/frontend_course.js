@@ -75,6 +75,7 @@ async function set_up_alumno(user_role, user_id, cod) {
             const data = await response.json();
         
             const alumno_curso = document.getElementById('alumno_curso');
+            const alumno_curso_m = document.getElementById('alumno_curso_m');
 
             curso = data.course_data[0];
 
@@ -99,8 +100,46 @@ async function set_up_alumno(user_role, user_id, cod) {
                     </div>`
             
             alumno_curso.innerHTML += carta_curso;
+            alumno_curso_m.innerHTML += carta_curso;
         }
+
+        const hresponse = await fetch(`${api_url}/user_homework`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+        const tareas_lista = document.getElementById('tareas_lista');
+        const tareas_lista_m = document.getElementById('tareas_lista_m');
+        if (!hresponse.ok) {
+            if (response.status === 404) {
+                tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas que hacer</a>`;
+            }
+            throw new Error(`Error: ${response.status}`);
+        }else{
+            
+            const hdata = await hresponse.json();
+
+            for(let tarea of hdata.homework_data) {
+                let item_tarea = `<a href="#" class="list-group-item list-group-item-action">${tarea}</a>`
+                tareas_lista.innerHTML += item_tarea;
+                tareas_lista_m.innerHTML += item_tarea;
+            }
+        }
+
         
+        // if (!data.ok) {
+        //     if (response.status === 404) {
+        //         user_role_text.textContent = 'Tareas no encontradas';
+        //     }
+        //     throw new Error(`Error: ${response.status}`);
+        // }
 
     } catch (error) {
         console.error('Error:', error);

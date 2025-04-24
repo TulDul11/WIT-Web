@@ -355,6 +355,29 @@ router.put('/modulos/:id', async (req, res) => {
     console.error("Error al actualizar módulo:", err);
     res.status(500).json({ error: 'Error interno al actualizar' });
   }
-});  
+});
+
+router.post('/guardar_xp', async (req, res) => {
+  const { user_id, xp, resultado } = req.body;
+
+  try {
+    const [alumno] = await db.query('SELECT id FROM alumnos WHERE id_usuario = ?', [user_id]);
+
+    if (alumno.length === 0) {
+      return res.status(404).json({ error: 'Alumno no encontrado' });
+    }
+
+    await db.query(
+      'UPDATE alumnos SET xp = ?, resultado = ? WHERE id_usuario = ?',
+      [xp, resultado, user_id]
+    );
+
+    res.json({ message: 'XP y resultado guardados correctamente' });
+  } catch (err) {
+    console.error('Error al guardar XP:', err);
+    res.status(500).json({ error: 'Error interno al guardar XP' });
+  }
+});
+
 
 module.exports = router;

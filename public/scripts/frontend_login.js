@@ -19,60 +19,57 @@ function login_auth() {
                 user_id: user_id,
                 user_password: user_password
             })
-        })
-        .then(response => {
-            if (!response.ok) {
-                if (response.status === 404) {
-                    error_text.textContent = 'Error: Usuario no encontrado';
-                } else if (response.status === 401) {
-                    error_text.textContent = 'Contraseña incorrecta';
-                } else {
-                    error_text.textContent = 'Error: Problema con el servidor. Intente más tarde.';
-                }
-                throw new Error(`Error: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const user_info = {
-                user_id: data.user_info.user_id,
-                user_role: data.user_info.user_role
-            };
-            sessionStorage.setItem('user_info', JSON.stringify(user_info));
-            window.location.href = './home.html';
-        })
-        .catch(error => {
-            console.error('Error: ', error);
         });
-        /* -> Local development */
-        /*
-        fetch(`http://localhost:3000/login_info/${user_id}`)
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        error_text.textContent = 'Error: Usuario no encontrado';
-                    } else {
-                        error_text.textContent = 'Error: Hubo problemas consiguiendo los datos. Intente más tarde.';
-                    }
-                    throw new Error(`Error: ${response.status}`);
-                }
-                return response.json(); 
-            })
-            .then(data => {
-                if (data.contrasena === user_password) {
-                    const user_info = {
-                        'user_id': user_id,
-                        'user_role': data.rol
-                    }
-                    sessionStorage.setItem('user_info', JSON.stringify(user_info));
-                    window.location.href = './home.html';
-                } else {
-                    error_text.textContent = 'Contraseña incorrecta';
-                }
-            })
-            .catch(error =>
-                console.error('Error: ', error)
-            )
-        */
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                error_text.textContent = 'Usuario no encontrado';
+            } else if (response.status === 401) {
+                error_text.textContent = 'Contraseña incorrecta';
+            } else if (response.status === 399) {
+                error_text.textContent = 'Se requiere tanto el usuario como la contraseña.';
+            } else {
+                error_text.textContent = 'Error al iniciar sesión. Intente más tarde.';
+            }
+            error_symbol.style.display = 'grid';
+            throw new Error(`Error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+
+        // Guardar user_info en localStorage para que Unity pueda leerlo desde PlayerPrefs
+        const user_info = {
+            user_id: data.user_info.user_id,
+            user_role: data.user_info.user_role
+        };
+        localStorage.setItem('user_info', JSON.stringify(user_info));
+        
+        window.location.href = './home';
+        
+
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        login_button.disabled = false;
+        login_button_text.style.display = 'inline-block';
+        user_container.disabled = false;
+        password_container.disabled = false;
+        login_button_loading_wheel.style.display = 'none';
+        password_toggle_wrapper.style.display = 'flex';
+    }
+}
+
+function password_toggling() {
+    let passwordInput = document.getElementById("login_password");
+    let toggle_icon = document.getElementById("password_toggle");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggle_icon.classList.remove("fa-eye");
+        toggle_icon.classList.add("fa-eye-slash");
+    } else {
+        passwordInput.type = "password";
+        toggle_icon.classList.remove("fa-eye-slash");
+        toggle_icon.classList.add("fa-eye");
     }
 }

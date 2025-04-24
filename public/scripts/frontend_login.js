@@ -57,7 +57,17 @@ async function login_auth() {
             throw new Error(`Error: ${response.status}`);
         }
         
+        const data = await response.json();
+
+        // Guardar user_info en localStorage para que Unity pueda leerlo desde PlayerPrefs
+        const user_info = {
+            user_id: data.user_info.user_id,
+            user_role: data.user_info.user_role
+        };
+        localStorage.setItem('user_info', JSON.stringify(user_info));
+        
         window.location.href = './home';
+        
 
     } catch (error) {
         console.error('Error:', error);

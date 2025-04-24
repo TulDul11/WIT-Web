@@ -1,11 +1,192 @@
 let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
+window.addEventListener('load', async () => {
+    let user_role;
+    let data;
+    const course_code_text = document.getElementById('course_code');
+    const user_role_text = document.getElementById('nav_role');
+    try {
+        const response = await fetch(`${api_url}/user_home`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                user_role_text.textContent = 'Usuario no encontrado';
+            } else if (response.status === 401) {
+                window.location.href = '/';
+            }
+            return;
+        }
+
+        data = await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+    user_role = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
+    user_role_text.textContent = user_role;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseCode = urlParams.get('code');
+    course_code_text.textContent = courseCode;
+
+    if (user_role == 'Alumno') {
+        const alumno_body = document.getElementById('alumno_body');
+        alumno_body.style.display = 'flex';
+        set_up_alumno('alumnos', data.user_id, courseCode)
+    } else {
+        const profesor_body = document.getElementById('profesor_body');
+        profesor_body.style.display = 'flex';
+        set_up_profesor('profesores', data.user_id)
+    }
+
+})
+
+async function set_up_alumno(user_role, user_id, cod) {
+    try {      
+        const response = await fetch(`${api_url}/user_courses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                const course_code_text = document.getElementById('course_code');
+                const alumno_body = document.getElementById('alumno_body');
+                course_code_text.textContent = 'No esta inscrito en este curso';
+                alumno_body.style.display = 'none';
+            }
+            throw new Error(`Error: ${response.status}`);
+        }else{
+            const data = await response.json();
+        
+            const alumno_curso = document.getElementById('alumno_curso');
+            const alumno_curso_m = document.getElementById('alumno_curso_m');
+
+            curso = data.course_data[0];
+
+            let carta_curso = `<div class="card p-4" style="width: 90%;margin-inline: auto;">
+                        <p id="course_title" class="fw-bold mb-4" style="font-size: 2rem;">${curso[0].nombre}</p>
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h5 class="fw-bold">${curso[0].nombre}</h5>
+                                <p>
+                                    ${curso[0].descripcion_det}
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <img src="./images/lavadora.png" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
+                            </div>
+                        </div>
+            
+                        <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-animated bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        </div>
+                    </div>`
+            
+            alumno_curso.innerHTML += carta_curso;
+            alumno_curso_m.innerHTML += carta_curso;
+        }
+
+        const hresponse = await fetch(`${api_url}/user_homework`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+        const tareas_lista = document.getElementById('tareas_lista');
+        const tareas_lista_m = document.getElementById('tareas_lista_m');
+        if (!hresponse.ok) {
+            if (response.status === 404) {
+                tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas que hacer</a>`;
+            }
+            throw new Error(`Error: ${response.status}`);
+        }else{
+            
+            const hdata = await hresponse.json();
+
+            for(let tarea of hdata.homework_data) {
+                let item_tarea = `<a href="#" class="list-group-item list-group-item-action">${tarea}</a>`
+                tareas_lista.innerHTML += item_tarea;
+                tareas_lista_m.innerHTML += item_tarea;
+            }
+        }
+
+        const accordion = document.getElementById('accordionModulos');
+
+        try {
+            const res = await fetch('/modulos');
+            const modulos = await res.json();
+
+            if (modulos.length === 0) {
+                accordion.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
+                return;
+            }
+
+            modulos.forEach((modulo, index) => {
+                const item = document.createElement('div');
+                item.classList.add('accordion-item');
+
+                item.innerHTML = `
+                <h2 class="accordion-header" id="heading-${index}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="false" aria-controls="collapse-${index}">
+                    ${modulo.titulo}
+                    </button>
+                </h2>
+                <div id="collapse-${index}" class="accordion-collapse collapse" aria-labelledby="heading-${index}">
+                    <div class="accordion-body">
+                    <p>${modulo.descripcion || 'Contenido del módulo cargado.'}</p>
+                    <a href="verModulo.html?id=${modulo.id}" class="btn btn-sm btn-primary me-2">Ver</a>
+                    <a href="crearModulos.html?modo=editar&id=${modulo.id}" class="btn btn-sm btn-secondary">Editar</a>
+                    </div>
+                </div>
+                `;
+
+                accordion.appendChild(item);
+            });
+        } catch (err) {
+        accordion.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
+        console.error(err);
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 async function log_out() {
     try {
         const response = await fetch(`${api_url}/logout`, {
             method: 'GET',
-            credentials: 'same-origin',
+            credentials: 'include',
         });
+        if (!response.ok) {
+            if (response.status === 500) {
+                console.error('Cerrar sesión fallida.');
+            }
+        } else {
+            window.location.href = '/';
+        }
     } catch (error) {
         console.error('Error:', error);
     }

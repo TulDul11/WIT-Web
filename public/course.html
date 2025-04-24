@@ -20,13 +20,13 @@
     <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
         <div id="nav_div">
         <div id="navbar_nav">
-            <img src="./images/menu_icon_white.png" id="nav_bar_menu" />
-            <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" />
+            <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()"/>
+            <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()" />
 
             <div id="nav_modules">
             <ul class="navbar-nav">
                 <li>
-                <a class="nav-link active" href="#">Inicio</a>
+                <a class="nav-link active" onclick="home_screen()">Inicio</a>
                 </li>
                 <li>
                 <a class="nav-link" href="#"></a>
@@ -39,109 +39,46 @@
     </nav>
 
     <!-- Curso alumno -->
+    <div class="mb-3" style="margin: 10px 20px;">
+        <p id="course_code" class="fw-bold fs-4"></p>
+    </div>
     <div class="container-fluid mt-4" id="alumno_body">
-        <div class="mb-3" style="margin: 10px 20px;">
-        <p id="course_code" class="fw-bold fs-4">LVD2005B</p>
-        </div>
-        <div class="mb-3">
+        <div class="mb-3" style="width: 100%;">
             <!-- Grid web -->
             <div class="row align-items-center" id="course_grid">
-                <div class="col-md-9">
-                    <div class="card p-4" style="width: 90%;margin-inline: auto;">
-                        <p id="course_title" class="fw-bold mb-4" style="font-size: 2rem;">Introducción a lavadoras</p>
-
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-4 mb-md-0">
-                                <h5 class="fw-bold">Lavadoras</h5>
-                                <p>
-                                    Bienvenido al curso de Diagnóstico y Reparación de Lavadoras, diseñado especialmente para técnicos que buscan fortalecer sus conocimientos y habilidades en el mantenimiento y servicio de uno de los electrodomésticos más esenciales en el hogar.
-                                </p>
-                                <p>
-                                    A lo largo de este curso, exploraremos a fondo el funcionamiento de las lavadoras automáticas, desde los principios básicos de su operación hasta el diagnóstico avanzado de fallas.
-                                </p>
-                            </div>
-            
-                            <div class="col-md-6 text-center">
-                            <img src="./images/lavadora.png" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
-                            </div>
-                        </div>
-            
-                        <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-animated bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                        </div>
-                    </div>
+                <div class="col-md-9" id="alumno_curso">
+                   <!-- Aqui va el splash card del curso -->
                 </div>
                 <div class="col">
-                    <div class="d-flex flex-column align-items-center" id="tareas_container">
-                        <p id="tareas_completadas" style="font-weight: bold;"> Tareas completadas</p>
-                        <ul class="list-group"style="width: 80%; margin-bottom : 20px;">
-                            <li class="list-group-item">Tarea 1</li>
-                            <li class="list-group-item">Tarea 2</li>
-                            <li class="list-group-item">Tarea 3</li>
-                            <li class="list-group-item">Tarea 4</li>
-                        </ul>
-
+                    <div class="d-flex flex-column align-items-center" id="tareas_container" style="height: 100%; justify-content: start;">
                         <p id="tareas_por_hacer"style="font-weight: bold;">Tareas por hacer</p>
-                        <ul class="list-group"style="width: 80%; margin-bottom : 20px;">
-                            <li class="list-group-item">Tarea 1</li>
-                            <li class="list-group-item">Tarea 2</li>
-                            <li class="list-group-item">Tarea 3</li>
-                            <li class="list-group-item">Tarea 4</li>
+                        <ul class="list-group"style="width: 100%; margin-bottom : 20px;"id="tareas_lista">
                         </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Grid mobile -->
-            <div class="card p-4" id="course_grid_mobile" style="width: 90%;margin-inline: auto;">
-                <p id="course_title" class="fw-bold mb-4" style="font-size: 2rem;">Introducción a lavadoras</p>
-
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-4 mb-md-0">
-                        <h5 class="fw-bold">Lavadoras</h5>
-                        <p>
-                            Bienvenido al curso de Diagnóstico y Reparación de Lavadoras, diseñado especialmente para técnicos que buscan fortalecer sus conocimientos y habilidades en el mantenimiento y servicio de uno de los electrodomésticos más esenciales en el hogar.
-                        </p>
-                        <p>
-                            A lo largo de este curso, exploraremos a fondo el funcionamiento de las lavadoras automáticas, desde los principios básicos de su operación hasta el diagnóstico avanzado de fallas.
-                        </p>
-                    </div>
-    
-                    <div class="col-md-6 text-center">
-                    <img src="./images/lavadora.png" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
-                    </div>
-                </div>
-    
-                <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
-                <div class="progress">
-                    <div class="progress-bar progress-bar-animated bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
-                </div>
+            <div class="mb-3" style="width: 100%;" id="alumno_curso_m">
+                 <!-- Aqui va la tarjeta de curso en mobile -->
+                  
             </div>
+            <div class="mb-3" style="width: 100%;">
+                <!-- Aqui van las tareas -->
+                <div class="mb-3" id="tareas_mobile" style="margin-top: 15px;">
+                    <div class="row align-items-center" style="width:85%; margin-inline: auto;">
+                        <div class="col">
+                            <p id="tareas_por_hacer"style="font-weight: bold;">Tareas por hacer</p>
+                            <ul class="list-group"style="width: 300px; margin-bottom : 20px;" id="tareas_lista_m">
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+           </div>
 
             <!-- Tareas mobile -->
-            <div class="mb-3" id="tareas_mobile" style="margin-top: 15px;">
-                <div class="row align-items-center" style="width:85%; margin-inline: auto;">
-                    <div class="col">
-                        <p id="tareas_completadas" style="font-weight: bold;"> Tareas completadas</p>
-                        <ul class="list-group"style="width: 300px; margin-bottom : 20px;">
-                            <li class="list-group-item">Tarea 1</li>
-                            <li class="list-group-item">Tarea 2</li>
-                            <li class="list-group-item">Tarea 3</li>
-                            <li class="list-group-item">Tarea 4</li>
-                        </ul>
-                    </div>
-                    <div class="col">
-                        <p id="tareas_por_hacer"style="font-weight: bold;">Tareas por hacer</p>
-                        <ul class="list-group"style="width: 300px; margin-bottom : 20px;">
-                            <li class="list-group-item">Tarea 1</li>
-                            <li class="list-group-item">Tarea 2</li>
-                            <li class="list-group-item">Tarea 3</li>
-                            <li class="list-group-item">Tarea 4</li>
-                          </ul>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Modulos -->
             <div class="mt-4" >
@@ -170,44 +107,10 @@
   ></script>
 
  <script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    const accordion = document.getElementById('accordionModulos');
-
-    try {
-      const res = await fetch('/modulos');
-      const modulos = await res.json();
-
-      if (modulos.length === 0) {
-        accordion.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
-        return;
-      }
-
-      modulos.forEach((modulo, index) => {
-        const item = document.createElement('div');
-        item.classList.add('accordion-item');
-
-        item.innerHTML = `
-          <h2 class="accordion-header" id="heading-${index}">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="false" aria-controls="collapse-${index}">
-              ${modulo.titulo}
-            </button>
-          </h2>
-          <div id="collapse-${index}" class="accordion-collapse collapse" aria-labelledby="heading-${index}">
-            <div class="accordion-body">
-              <p>${modulo.descripcion || 'Contenido del módulo cargado.'}</p>
-              <a href="verModulo.html?id=${modulo.id}" class="btn btn-sm btn-primary me-2">Ver</a>
-              <a href="crearModulos.html?modo=editar&id=${modulo.id}" class="btn btn-sm btn-secondary">Editar</a>
-            </div>
-          </div>
-        `;
-
-        accordion.appendChild(item);
-      });
-    } catch (err) {
-      accordion.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
-      console.error(err);
-    }
-  });
+//   document.addEventListener('DOMContentLoaded', async () => {
+    
+//   });
 </script>
 </body>
 </html>
+

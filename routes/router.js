@@ -95,82 +95,146 @@ router.post('/user_home', async (req, res) => {
 
         const query = `SELECT nombre, apellido FROM ${role_table} WHERE id_usuario = '${user_id}'`
 
-      const [results] = await db.query(query);
+        const [results] = await db.query(query);
 
-      if (results.length == 0) {
-          return res.status(404).json({
-              message: 'Error: Usuario no encontrado'
-          })
-      }
+        if (results.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
 
-      results[0].user_id = user_id;
-      results[0].user_role = req.session.user.user_role;
+        results[0].user_id = user_id;
+        results[0].user_role = req.session.user.user_role;
 
-      return res.json(results[0]);
-  } catch (err) {
-      res.status(500).json({
-          error: err.message
-      });
-  }
+        return res.json(results[0]);
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
 })
 
 router.post('/user_courses', async (req, res) => {
-  try {
-      if (!req.session.user) {
-          return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
-      }
-      
-      const { user_role, user_id} = req.body;
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+        
+        const { user_role, user_id, cod} = req.body;
 
-      const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
+        const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
 
-      const [current_user] = await db.query(query);
+        const [current_user] = await db.query(query);
 
-      if (current_user.length == 0) {
-          return res.status(404).json({
-              message: 'Error: Usuario no encontrado'
-          })
-      }
 
-      let num_id = current_user[0].id;
+        if (current_user.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
 
-      let course_codes_query;
+        let num_id = current_user[0].id;
 
-      if (user_role == 'alumnos') {
-          course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`
-      } else if (user_role == 'profesores') {
-          course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`
-      }
+        let course_codes_query;
 
-      const [courses_codes] = await db.query(course_codes_query);
+        if(!cod) {
+            if (user_role == 'alumnos') {
+                course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`
+            } else if (user_role == 'profesores') {
+                course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`
+            }
+        }else{
+            if (user_role == 'alumnos') {
+                course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id} AND cod_curso = '${cod}'`
+            } else if (user_role == 'profesores') {
+                course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id} AND cod_curso = '${cod}'`
+            }
+        }
 
-      if (courses_codes.length == 0) {
-          return res.status(404).json({
-              message: 'No está inscrito en ningún curso.'
-          })
-      }
+        const [courses_codes] = await db.query(course_codes_query);
+        
 
-      let course_data = []
+        if (courses_codes.length == 0) {
+            return res.status(404).json({
+                message: 'No está inscrito en ningún curso.'
+            })
+        }
 
-      for (let row of courses_codes) {
-          let code_course = row.cod_curso;
-          
-          let course_query = `SELECT * FROM cursos WHERE cod = '${code_course}'`;
+        let course_data = []
 
-          const [course] = await db.query(course_query);
+        for (let row of courses_codes) {
+            let code_course = row.cod_curso;
+            
+            let course_query = `SELECT * FROM cursos WHERE cod = '${code_course}'`;
 
-          if (course.length > 0) {
-              course_data.push(course);
-          }
-      }
+            const [course] = await db.query(course_query);
 
-      return res.json({course_data: course_data})
+            if (course.length > 0) {
+                course_data.push(course);
+            }
+        }
 
-  } catch (err) {
-      res.status(500).json({
-          error: err.message
-      });
-  }
+
+        return res.json({course_data: course_data})
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+})
+
+router.post('/user_homework', async (req, res) => {
+    try{
+        if (!req.session.user) {
+            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+        }
+
+        const {user_role, user_id, cod} = req.body;
+
+        const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+        const [current_user] = await db.query(query);
+
+
+        if (current_user.length == 0) {
+            return res.status(404).json({
+                message: 'Error: Usuario no encontrado'
+            })
+        }
+
+        let num_id = current_user[0].id;
+        let homework_query;
+
+        homework_query = `SELECT titulo FROM alumnos_tareas 
+                        INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id  
+                        WHERE id_alumno = ${num_id} AND cod_curso = '${cod}' AND NOT completado
+                        ORDER BY fecha_entrega
+                        LIMIT 4`;
+        
+                
+        const [homework] = await db.query(homework_query);
+
+        if (homework.length == 0) {
+            return res.status(404).json({
+                message: 'No hay tareas asignadas.'
+            })
+        }
+
+        let homework_data = []; 
+
+        for (let row of homework) {
+            homework_data.push(row.titulo);
+        }
+
+        return res.json({homework_data: homework_data})
+
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
 })
 
 router.post('/agregar_curso', async (req, res) => {

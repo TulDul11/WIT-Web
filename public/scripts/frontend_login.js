@@ -1,5 +1,11 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+//let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
+document.addEventListener('keydown', function(event) {
+    if (event.key == 'Enter') {
+        document.getElementById('login_button').click();
+    }
+});
 
 async function login_auth() {
 
@@ -23,7 +29,7 @@ async function login_auth() {
     login_button_loading_wheel.style.display = 'inline-block';
     password_toggle_wrapper.style.display = 'none';
 
-    await new Promise(resolve => setTimeout(resolve, 750));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     try {
         const response = await fetch(`${api_url}/login_info`, {

@@ -1,4 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
 window.addEventListener('load', async () => {
     let user_role;
@@ -88,7 +89,7 @@ async function set_up_alumno(user_role, user_id, cod) {
                                 </p>
                             </div>
                             <div class="col-md-6 text-center">
-                                <img src="./images/lavadora.png" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
+                                <img src="./images/${curso[0].img}" class="img-fluid rounded" style="max-width: 80%; max-height: 450px;" alt="Lavadora" />
                             </div>
                         </div>
             
@@ -118,15 +119,15 @@ async function set_up_alumno(user_role, user_id, cod) {
         const tareas_lista_m = document.getElementById('tareas_lista_m');
         if (!hresponse.ok) {
             if (response.status === 404) {
-                tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas que hacer</a>`;
+                tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas pendientes</a>`;
             }
             throw new Error(`Error: ${response.status}`);
         }else{
             
             const hdata = await hresponse.json();
 
-            for(let tarea of hdata.homework_data) {
-                let item_tarea = `<a href="#" class="list-group-item list-group-item-action">${tarea}</a>`
+            for(let tarea of hdata) {
+                let item_tarea = `<a href="verModulo.html?id=${tarea.id_tarea}" class="list-group-item list-group-item-action">${tarea.titulo}</a>`
                 tareas_lista.innerHTML += item_tarea;
                 tareas_lista_m.innerHTML += item_tarea;
             }

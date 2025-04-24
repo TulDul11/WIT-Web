@@ -206,7 +206,7 @@ router.post('/user_homework', async (req, res) => {
         let num_id = current_user[0].id;
         let homework_query;
 
-        homework_query = `SELECT id_tarea, titulo FROM alumnos_tareas 
+        homework_query = `SELECT fecha_entrega, id_tarea, titulo FROM alumnos_tareas 
                         INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id  
                         WHERE id_alumno = ${num_id} AND cod_curso = '${cod}' AND NOT completado
                         ORDER BY fecha_entrega

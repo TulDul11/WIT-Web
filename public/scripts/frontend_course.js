@@ -127,7 +127,18 @@ async function set_up_alumno(user_role, user_id, cod) {
             const hdata = await hresponse.json();
 
             for(let tarea of hdata) {
-                let item_tarea = `<a href="verModulo.html?id=${tarea.id_tarea}" class="list-group-item list-group-item-action">${tarea.titulo}</a>`
+                let fecha_entrega = new Date(tarea.fecha_entrega);
+                const formatter = new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit'});
+                var options = {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                };
+                const formattedTime = formatter.format(fecha_entrega);
+
+                let item_tarea = `<a href="verModulo.html?id=${tarea.id_tarea}" class="list-group-item list-group-item-action">
+                                    <p>${tarea.titulo}<br><span class="item_tarea">${fecha_entrega.toLocaleDateString("es-ES", options)} ${formattedTime}</span><br></p>
+                                </a>`
                 tareas_lista.innerHTML += item_tarea;
                 tareas_lista_m.innerHTML += item_tarea;
             }
@@ -171,6 +182,14 @@ async function set_up_alumno(user_role, user_id, cod) {
         }
 
     } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function set_up_profesor(user_role, user_id, cod) {
+    try{
+        
+    }catch(error) {
         console.error('Error:', error);
     }
 }

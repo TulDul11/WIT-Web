@@ -166,11 +166,13 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     const courseNameElement = document.getElementById("courseName");
     const courseKeyElement = document.getElementById("courseKey");
     const descriptionElement = document.getElementById("description");
+    const studentElement = document.getElementById("studentSelect");
 
     // Asegurar que los valores no sean null antes de usarlos
     const courseName = courseNameElement ? courseNameElement.value : "";
     const courseKey = courseKeyElement ? courseKeyElement.value : "";
     const description = descriptionElement ? descriptionElement.value : "";
+    const studentSelect = studentElement ? studentElement.value : "";
 
     // Verificar que se estén enviando datos correctos antes del POST
     console.log("Datos enviados al backend:", { cod: courseKey, nombre: courseName, descripcion: description });
@@ -324,7 +326,7 @@ function mostrarAlumnosSeleccionados() {
         studentItem.classList.add('student-item');
         studentItem.innerHTML = `
             <span>${alumno.nombre} ${apellido}</span>
-            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumno(${index})">Eliminar</button>
+            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumno(${index})">X</button>
         `;
         studentListBox.appendChild(studentItem);
     });
@@ -360,5 +362,19 @@ document.addEventListener('click', (event) => {
 
     if (!event.target.closest('#searchStudent') && !event.target.closest('#studentDropdown')) {
         dropdown.style.display = 'none';
+    }
+});
+
+document.getElementById("csvUpload").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const csvContent = e.target.result;
+            const rows = csvContent.split("\n");
+            const studentNames = rows.join("\n").trim(); // Convierte las líneas del CSV en texto
+            document.getElementById("studentName").value = studentNames; // Pone el contenido en el textarea
+        };
+        reader.readAsText(file); // Lee el contenido del archivo CSV
     }
 });

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Unity WebGL Player | QuizDB</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+    </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer">
+      <div id="unity-webgl-logo"></div>
+      <div id="unity-fullscreen-button"></div>
+      <div id="unity-build-title">QuizDB</div>
+    </div>
+  </div>
+
+  <script>
+    // DATOS DINÁMICOS DEL MÓDULO
+    const moduloId = new URLSearchParams(window.location.search).get("modulo");
+    const apiBaseUrl = "http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io";
+
+    // 🧑‍💻 OBTENER EL user_id
+    let user_id = "sin_id";
+    const userInfoRaw = localStorage.getItem("user_info");
+    if (userInfoRaw) {
+      try {
+        const userInfo = JSON.parse(userInfoRaw);
+        if (userInfo.user_id) user_id = userInfo.user_id;
+      } catch {}
+    }
+
+    const configJson = JSON.stringify({
+      moduloID: parseInt(moduloId),
+      apiBaseUrl: apiBaseUrl,
+      user_id: user_id
+    });
+
+    // 🎮 CARGAR UNITY
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/juegos.loader.js";
+    const config = {
+      dataUrl: buildUrl + "/juegos.data",
+      frameworkUrl: buildUrl + "/juegos.framework.js",
+      codeUrl: buildUrl + "/juegos.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "QuizDB",
+      productVersion: "1.0",
+    };
+
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingBar = document.querySelector("#unity-loading-bar");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+      document.getElementsByTagName('head')[0].appendChild(meta);
+      container.className = "unity-mobile";
+      canvas.className = "unity-mobile";
+    } else {
+      canvas.style.width = "960px";
+      canvas.style.height = "600px";
+    }
+
+    loadingBar.style.display = "block";
+
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+    
+        // Enviar configuración cuando Unity está listo
+        const configJson = JSON.stringify({
+          moduloID: moduloId,
+          apiBaseUrl: apiBaseUrl
+        });
+    
+        console.log("Enviando config:", configJson);
+        console.log("Enviando user_id:", user_id);
+    
+        unityInstance.SendMessage("MenuManager","SetModuloConfig",configJson)
+        unityInstance.SendMessage("GameState", "ConfigurarDesdeIndex", configJson);
+        unityInstance.SendMessage("GameState", "SetUserID", user_id);
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    
+
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>

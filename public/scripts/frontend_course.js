@@ -85,7 +85,7 @@ async function set_up_alumno(user_role, user_id, cod) {
                             <div class="col-md-6 mb-4 mb-md-0">
                                 <h5 class="fw-bold">${curso[0].nombre}</h5>
                                 <p>
-                                    ${curso[0].descripcion_det}
+                                    ${curso[0].descripcion}
                                 </p>
                             </div>
                             <div class="col-md-6 text-center">

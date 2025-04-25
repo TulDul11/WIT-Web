@@ -1,4 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'; 
 
 window.addEventListener('load', async () => {
     let user_role;
@@ -186,6 +187,20 @@ async function set_up_alumno(user_role, user_id, cod) {
 }
 
 async function set_up_profesor(user_role, user_id, cod) {
+    var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+    var yValues = [55, 49, 44, 24, 15];
+    var barColors = ["red", "green","blue","orange","brown"];
+
+    new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+            }]
+        },
+    });
     try{
         
     }catch(error) {

@@ -346,17 +346,43 @@ document.addEventListener('click', (event) => {
     }
 });
 
-document.getElementById("csvUpload").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const csvContent = e.target.result;
-            const rows = csvContent.split("\n");
-            const studentNames = rows.join("\n").trim(); // Convierte las líneas del CSV en texto
-            document.getElementById("studentName").value = studentNames; // Pone el contenido en el textarea
-        };
-        reader.readAsText(file); // Lee el contenido del archivo CSV
-    }
-});
+document.getElementById('csvUpload').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const content = e.target.result.trim();
+        const rows = content.split("\n");
+
+        const tableBody = document.getElementById("userTable").querySelector("tbody");
+        tableBody.innerHTML = ""; // Limpiar tabla
+
+        rows.forEach((row, index) => {
+            const cols = row.split(",");
+            if (cols.length < 5) return; // Evitar filas incompletas
+
+            const tr = document.createElement("tr");
+
+            cols.forEach(col => {
+                const td = document.createElement("td");
+                td.textContent = col.trim();
+                tr.appendChild(td);
+            });
+
+            // Agregar evento para llenar los campos al hacer clic
+            tr.addEventListener("click", () => {
+                document.getElementById('userID').value = cols[0].trim();
+                document.getElementById('firstName').value = cols[1].trim();
+                document.getElementById('lastName').value = cols[2].trim();
+                document.getElementById('username').value = cols[3].trim();
+                document.getElementById('password').value = cols[4].trim();
+            });
+
+            tableBody.appendChild(tr);
+        });
+    };
+
+    reader.readAsText(file);
+});

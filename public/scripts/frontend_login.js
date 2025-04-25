@@ -2,6 +2,12 @@
 let api_url = 'http://localhost:3000';
 
 
+document.addEventListener('keydown', function(event) {
+    if (event.key == 'Enter') {
+        document.getElementById('login_button').click();
+    }
+});
+
 async function login_auth() {
 
     const error_text = document.getElementById('error_text');

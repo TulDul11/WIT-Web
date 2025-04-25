@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-<html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,130 +58,129 @@
                 </section>
             </div>
         </div>
-        <div style="display: none;" id="profesor_body">
-            <div class="inicio-header" style="margin-top: 20px; margin-left: 80px; display: flex; justify-content: space-between; align-items: center; margin-right: 80px;">
-                <h2>Inicio</h2>
-        
-                <!-- Contenedor para los botones juntos -->
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">Agregar Alumnos</button>
-                    <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
+        <div style="display: none;" id="profesor_body" class="profesor_body">
+                <div class="inicio-header" style="margin-top: 20px; margin-left: 80px; display: flex; justify-content: space-between; align-items: center; margin-right: 80px;">
+                    <h2>Inicio</h2>
+                    
+                    <!-- Contenedor para los botones juntos -->
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">Agregar Alumnos</button>
+                        <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
+                    </div>
                 </div>
-            </div>
-        
-            <hr class="linea-header" style="width: 95.5%;">
-        </div>
-        
-
-            <!-- Filtro de cursos -->
-                <div style="margin: 0 auto; width: 91%; text-align: center;">
-                    <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
-                </div>
-                          
             
-                
-                <div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                <hr class="linea-header" style="width: 95.5%;">
+         
+            
+
+                <!-- Filtro de cursos -->
+                    <div style="margin: 0 auto; width: 91%; text-align: center;">
+                        <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
+                    </div>
+                    <div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="agregarAlumnoLabel">Agregar Alumnos</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="studentForm">
+                                        <div class="mb-3" style="margin-top: 20px;">
+                                            <label for="csvUpload" class="form-label">Sube archivo:</label>
+                                            <input type="file" class="form-control" id="csvUpload" accept=".csv">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="studentName" class="form-label">Nombre del Alumno</label>
+                                            <textarea class="form-control" id="studentName" rows="4" readonly></textarea>
+                                        </div>
+                                        <!--<div class="mb-3">
+                                            <label for="studentEmail" class="form-label">Correo del Alumno</label>
+                                            <input type="email" class="form-control" id="studentEmail" placeholder="correo@ejemplo.com" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="studentID" class="form-label">ID del Alumno</label>
+                                            <input type="text" class="form-control" id="studentID" placeholder="ID de usuario o matrícula" required>
+                                        </div> -->
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                <!-- Sección de cursos -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="agregarAlumnoLabel">Agregar Alumnos</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                <h5 class="modal-title" id="exampleModalLabel">Agregar Curso</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="studentForm">
-                                    <div class="mb-3" style="margin-top: 20px;">
+                                <form id="courseForm">
+                                    <!-- Nombre del Curso -->
+                                    <div class="mb-3">
+                                        <label for="courseName" class="form-label">Nombre del Curso</label>
+                                        <input type="text" class="form-control" id="courseName" placeholder="Escribe el nombre del curso" required>
+                                    </div>
+                                    <!-- Clave del Curso -->
+                                    <div class="mb-3">
+                                        <label for="courseKey" class="form-label">Clave del Curso</label>
+                                        <input type="text" class="form-control" id="courseKey" placeholder="Escribe la clave del curso" required>
+                                    </div>
+                                    <!-- Descripción del curso -->
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Descripción del curso</label>
+                                        <textarea class="form-control" id="description" rows="4" placeholder="Escribe una breve descripción del curso"></textarea>
+                                    </div>
+                                    <!-- Subir archivo CSV -->
+                                    <!--n<div class="mb-3" style="margin-top: 20px;">
                                         <label for="csvUpload" class="form-label">Sube archivo:</label>
                                         <input type="file" class="form-control" id="csvUpload" accept=".csv">
-                                    </div>
+                                    </div>  -->
+                                    <!-- Lista de alumnos -->
                                     <div class="mb-3">
-                                        <label for="studentName" class="form-label">Nombre del Alumno</label>
-                                        <textarea class="form-control" id="studentName" rows="4" readonly></textarea>
+                                        <label for="studentSelect" class="form-label">Alumnos a Agregar</label>
+                                        <div class="input-group">
+                                            <!-- Barra de búsqueda -->
+                                            <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+
+                                        </div>
+                                        
+                                        <!-- Lista desplegable que aparece al escribir -->
+                                        <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
+                                            <!-- Opciones se llenarán dinámicamente -->
+                                        </div>
+                                    
+                                        <!-- Box donde se muestra el alumno seleccionado -->
+                                        <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
+                                            <!-- Los alumnos seleccionados se mostrarán aquí -->
+                                        </div>
                                     </div>
-                                    <!--<div class="mb-3">
-                                        <label for="studentEmail" class="form-label">Correo del Alumno</label>
-                                        <input type="email" class="form-control" id="studentEmail" placeholder="correo@ejemplo.com" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="studentID" class="form-label">ID del Alumno</label>
-                                        <input type="text" class="form-control" id="studentID" placeholder="ID de usuario o matrícula" required>
-                                    </div> -->
+                                    
+                                    
+                                    
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno
-                                </div>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" id="saveCourseButton">Guardar Curso</button>
                             </div>
                         </div>
                     </div>
                 </div>
-        
-            <!-- Sección de cursos -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Agregar Curso</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="courseForm">
-                                <!-- Nombre del Curso -->
-                                <div class="mb-3">
-                                    <label for="courseName" class="form-label">Nombre del Curso</label>
-                                    <input type="text" class="form-control" id="courseName" placeholder="Escribe el nombre del curso" required>
-                                </div>
-                                <!-- Clave del Curso -->
-                                <div class="mb-3">
-                                    <label for="courseKey" class="form-label">Clave del Curso</label>
-                                    <input type="text" class="form-control" id="courseKey" placeholder="Escribe la clave del curso" required>
-                                </div>
-                                <!-- Descripción del curso -->
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Descripción del curso</label>
-                                    <textarea class="form-control" id="description" rows="4" placeholder="Escribe una breve descripción del curso"></textarea>
-                                </div>
-                                <!-- Subir archivo CSV -->
-                                <!--n<div class="mb-3" style="margin-top: 20px;">
-                                    <label for="csvUpload" class="form-label">Sube archivo:</label>
-                                    <input type="file" class="form-control" id="csvUpload" accept=".csv">
-                                </div>  -->
-                                <!-- Lista de alumnos -->
-                                <div class="mb-3">
-                                    <label for="studentSelect" class="form-label">Alumnos a Agregar</label>
-                                    <div class="input-group">
-                                        <!-- Barra de búsqueda -->
-                                        <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno..." aria-label="Buscar alumno">
-
-                                    </div>
-                                    
-                                    <!-- Lista desplegable que aparece al escribir -->
-                                    <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
-                                        <!-- Opciones se llenarán dinámicamente -->
-                                    </div>
-                                
-                                    <!-- Box donde se muestra el alumno seleccionado -->
-                                    <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
-                                        <!-- Los alumnos seleccionados se mostrarán aquí -->
-                                    </div>
-                                </div>
-                                
-                                
-                                
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" id="saveCourseButton">Guardar Curso</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+            </body>    
             
         </div>
-         <!-- Contenedor de tarjetas de cursos -->
-        <div id="coursesContainer" class="card-container" style="display: flex; flex-wrap: wrap; gap: 1rem;"></div>
+        <!-- Contenedor de tarjetas de cursos -->
+        <div id="profesor_cursos" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;">
+            <!-- Aquí van los cursos -->
+        </div>
+
         <script src="./scripts/frontend_home.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

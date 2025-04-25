@@ -177,21 +177,21 @@ router.post('/agregar_curso', async (req, res) => {
     try {
         const { cod, nombre, descripcion } = req.body;
 
-        // Verificar si los campos están completos
+        
         if (!cod || !nombre || !descripcion) {
             return res.status(400).json({ message: 'Faltan campos obligatorios' });
         }
 
-        // Verifica si el curso ya existe en la base de datos
+        
         const [existingCourse] = await db.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
         if (existingCourse.length > 0) {
             return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
         }
 
-        // Agregar el curso a la base de datos
+        
         await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
 
-        // Obtener ID del profesor usando el id de usuario en sesión
+        
         const user_id = req.session.user.user_id;
         const [profesorData] = await db.query('SELECT id FROM profesores WHERE id_usuario = ?', [user_id]);
 
@@ -201,7 +201,7 @@ router.post('/agregar_curso', async (req, res) => {
 
         const id_profesor = profesorData[0].id;
 
-        // Insertar en profesores_cursos
+        
         await db.query('INSERT INTO profesores_cursos (id_profesor, cod_curso) VALUES (?, ?)', [id_profesor, cod]);
 
         res.status(201).json({ message: 'Curso y asociación con profesor agregados exitosamente' });
@@ -214,25 +214,24 @@ router.post('/agregar_curso', async (req, res) => {
 
 router.get('/obtener_alumnos', async (req, res) => {
     try {
-        // Consulta a la base de datos para obtener los nombres y apellidos de los alumnos
-        const [results] = await db.query('SELECT nombre, apellido FROM alumnos');
+        const [results] = await db.query('SELECT id_usuario, nombre FROM alumnos');
 
-        // Si no hay alumnos en la base de datos
         if (results.length === 0) {
             return res.status(404).json({ message: 'No se encontraron alumnos' });
         }
 
-        // Formateamos los resultados y enviamos solo nombre y apellido
         const alumnos = results.map(alumno => ({
-            nombre: alumno.nombre,
-            apellido: alumno.apellido
+            id_usuario: alumno.id_usuario,
+            nombre: alumno.nombre
         }));
 
-        // Respondemos con los alumnos encontrados
         res.json(alumnos);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
 
 module.exports = router;

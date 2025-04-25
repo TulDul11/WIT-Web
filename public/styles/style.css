@@ -253,99 +253,7 @@
     gap: 2rem;
 }
 
-/* Profesor Content Section */
-.profesor-content {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 2rem;
-}
 
-/* Card Container */
-#profesor_cursos {
-    flex: 3;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding-left: 0;
-    margin: 0;
-}
-
-/* Card Style */
-.card {
-    width: 18rem;
-    background-color: #ffffff;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
-}
-
-/* Course (course.html) Styles */
-.course_body div.course_code_container {
-    display: flex;
-    margin: 20px 0px 15px 0px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-.course_body div.course_code_container p#course_code {
-    font-size: 1.2rem;
-    color: rgba(0, 0, 0, 0.6);
-    letter-spacing: 0.5px;
-    font-weight: 400;
-    margin: 10px 15px;  
-}
-
-.course_body div.course_card_container p#course_title {
-    font-size: 2rem;
-    color: black;
-    letter-spacing: 0.5px;
-    font-weight: 550;
-    margin: 10px 0px;  
-}
-
-
-.course_card_container {
-    margin: 10px 100px 10px 40px;
-    width: 80%;
-}
-
-.course_card_container table#card_grid {
-    border-collapse: collapse; 
-    background-color: #000000;
-}
-
-.course_card_container td#grid_txt {
-
-    height: 23px; 
-    padding: 10px; 
-    vertical-align: middle;
-}
-
-.course_card_container img{
-    width: clamp(30px, 30vw, 300px);
-}
-
-.btn-agregar-curso {
-    background-color: #093454; /* Color principal */
-    color: white; /* Color del texto */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-
-}
-
-.btn-agregar-alumno {
-    background-color: #093454; /* Color principal */
-    color: white; /* Color del texto */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-
-}
 /* Card Style */
 .card {
     width: 18rem;
@@ -384,14 +292,7 @@
     margin: 0.3rem 0 0.8rem;
 }
 
-.card-container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 2rem 5rem;
-    flex-wrap: wrap;
-}
+
 
 /* Course (course.html) Styles */
 .course_body div.course_code_container {
@@ -438,6 +339,115 @@
     width: clamp(30px, 30vw, 300px);
 }
 
+
+
+/* Profesor Content Section */
+.profesor-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    margin: 2rem;
+}
+
+/* Card Container */
+#profesor_cursos {
+    flex: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-left: 0;
+    margin: 0;
+}
+
+.btn-agregar-curso {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+
+.btn-agregar-alumno {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+.profesor-card {
+    width: 250px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    margin-top: 20px;
+    margin-left: 70px;
+    margin-right: -70px;
+}
+  
+
+  
+.profesor-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+
+
+.profesor-card-title {
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    margin-bottom: 0.2rem;
+}
+
+.profesor-card-code {
+    font-size: 0.625rem;
+    margin-bottom: 0.2rem;
+    display: block;
+}
+
+.profesor-card-body {
+    height: 7rem; /* Tamaño fijo */
+    padding: 0.5rem;
+    overflow: hidden; /* Evita que el contenedor crezca */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profesor-card-text {
+    max-height: 3.5rem; /* Mantiene la altura limitada */
+    overflow-y: auto; /* Permite desplazamiento si hay mucho contenido */
+    text-overflow: ellipsis; /* Agrega "..." si el texto es muy largo */
+    word-wrap: break-word; /* Rompe palabras largas */
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limita el texto a 3 líneas */
+    -webkit-box-orient: vertical;
+}
+
+/* Oculta la barra de desplazamiento pero permite el scroll */
+.profesor-card-text::-webkit-scrollbar {
+    width: 4px;
+    background: transparent;
+}
+
+.profesor-card-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+  
 .linea-header {
     width: 95.5%;
     margin-top: -20px; /* Ajusta según necesites */

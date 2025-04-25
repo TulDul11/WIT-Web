@@ -264,6 +264,7 @@
     box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
     display: flex;
     flex-direction: column;
+    margin-top: 10px !important;
     
 }
 .in-flex .card-body {
@@ -371,7 +372,36 @@
     text-align: center;
 }
 
+@media (max-width: 770px) {
+    .in-flex {
+        display: flex;
+        flex-wrap: wrap; /* Permite que los elementos pasen a la siguiente línea */
+        flex-direction: column; /* Acomoda las tarjetas en vertical */
+        align-items: center; /* Centra los elementos para mejor presentación */
+    }
+
+    .in-flex .card {
+        width: 90%; /* Las tarjetas ocuparán casi todo el ancho disponible */
+        max-width: 400px; /* Limita el ancho en pantallas pequeñas */
+        margin-bottom: 20px; /* Espaciado entre tarjetas */
+    }
+}
+
+
+
+
+@media (max-width: 360px) {
+    .in-flex .card {
+        width: clamp(220px, 80vw, 320px); /* Mantiene tamaño flexible pero sin ocupar todo el ancho */
+        margin-left: 0px; /* Separa del borde izquierdo */
+        margin-right: 40px!important; /* Separa del borde derecho */
+        margin-bottom: 30px;
+    }
+}
+
+
 @media (max-width: 768px) {
+    
     .searchbar {
         width: 80% !important; /* Usa !important para forzar la reducción */
         margin-left: 40px; /* Ajusta el margen para alinearlo mejor */
@@ -387,6 +417,13 @@
         margin: auto; /* Centra horizontalmente */
         margin-bottom: 50px;
         align-items: center;
+
+    }
+    .in-flex .card {
+        width: clamp(220px, 65vw, 700px); /* Reduce el tamaño mínimo a 220px */
+        transform: scale(calc(0.95 + (100vw - 320px) / 1800)); 
+        margin: auto;
+        margin-bottom: 40px;
     }
     .carddemas{
         transform: scale(1.15) !important; /* Aumenta en un 10% */ ;
@@ -395,7 +432,8 @@
         margin-bottom: 40px !important;
         margin-right: 10px !important;
         margin-top: -10px !important;
-       
+        visibility: hidden;
+        display: none;
         order: -1;
         
     }
@@ -413,6 +451,8 @@
         margin-right: 10px !important;
         order: -1;
         align-items: center;
+        visibility: hidden;
+        display: none;
         
     }
     .Alumno {
@@ -447,7 +487,6 @@
     margin-bottom: 1rem; 
     margin-right: 31px;
 }
-
 
 .headeralumno{
     margin-left: 50px;

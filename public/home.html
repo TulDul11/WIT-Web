@@ -32,18 +32,17 @@
                 <div id="nav_role"></div>
             </div>
         </nav>
-        <div class="headeralumno" style="margin-top: 20px;">
-            <h2>Inicio</h2>
-            <hr class="linea-header" style="width: 95.5%;">
-        </div>
-        
-        <!--Search Batr-->
-        <div class = "searchbar" >
-            <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
-        </div>
         
         
         <div class = "Alumno" id="alumno_body">
+            <div class="headeralumno" style="margin-top: 20px;">
+                <h2>Inicio</h2>
+            </div>
+            <hr class="linea-header" style="width: 95.5%;">
+            <!--Search Batr-->
+            <div class = "searchbar" >
+                <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
+            </div>
             <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;" id="alumno_cursos">
                 <!-- Añade más tarjetas de cursos si es necesario -->
             </div>
@@ -116,15 +115,10 @@
                 <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
             </div>
             <hr class="linea-header" style="width: 95.5%; border-top: -200px;">
-
-                <!-- Filtro de cursos -->
-                <div style="margin: 0 auto; width: 91%; text-align: center;">
-                    <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
-                </div>
-                          
-            
-        
-        
+            <!-- Filtro de cursos -->
+            <div style="margin: 0 auto; width: 91%; text-align: center;">
+                <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
+            </div>              
             <!-- Sección de cursos -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
@@ -170,10 +164,11 @@
                 </div>
                 <div id="nav_role"></div>
             </div>
-            
+             <!-- Contenedor de tarjetas de cursos -->
+             <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;" id="profesor_cursos">
+                <!-- Añade más tarjetas de cursos si es necesario -->
+            </div>
         </div>
-         <!-- Contenedor de tarjetas de cursos -->
-        <div id="coursesContainer" class="card-container" style="display: flex; flex-wrap: wrap; gap: 1rem;"></div>
         <script src="./scripts/frontend_home.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

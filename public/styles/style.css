@@ -262,11 +262,34 @@
     background-color: #ffffff;
     border-radius: 0.5rem;
     box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
-    width: 18rem; 
-    margin-left: 0px;
-    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
     
 }
+.in-flex .card-body {
+    height: 7rem; /* Tamaño fijo */
+    padding: 0.5rem; /* Espacio uniforme */
+    overflow: hidden; /* Evita desbordamiento */
+    display: flex;
+    flex-direction: column;
+}
+
+.in-flex .card-text {
+    max-height: 100%;
+    overflow-y: auto; /* Permite desplazamiento */
+    padding: 0.1rem; /* Agrega espacio interno */
+    box-sizing: border-box; /* Asegura que el padding no rompa la estructura */
+}
+
+/* Ocultar la barra de desplazamiento */
+.in-flex .card-text::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+
+
+
 
 /* Course (course.html) Styles */
 .course_body div.course_code_container {

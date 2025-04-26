@@ -20,16 +20,16 @@
     </div>
 
     <div id="navbar_profile">
-      <span>Perfil</span>
+      <!-- <span>Perfil</span> -->
     </div>
   </nav>
-  <div id="sidebar">
-    <div id="sidebar_top">
-      <div id="sidebar_role">
+  <div id="sidebar" class="active">
+    <div id="sidebar_top" class="active">
+      <div id="sidebar_role" class="active">
         <img src="images/teacher_icon.png">
         <span>Profesor</span>
       </div>
-      <div id="sidebar_home">
+      <div id="sidebar_home" class="active">
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
             width="100%" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve">
           <path fill="#FFFFFF" opacity="1.000000" stroke="none" 
@@ -65,7 +65,7 @@
           </svg>
         <span>Inicio</span>
       </div>
-      <div id="sidebar_previous">
+      <div id="sidebar_previous" class="active">
         <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" class="bi bi-clock-history">
           <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
           <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
@@ -77,7 +77,7 @@
           <span id="sidebar_previous_course">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
         </div>
       </div>
-      <div id="sidebar_courses">
+      <div id="sidebar_courses" class="active">
         <div id="sidebar_courses_title" onclick="coursesOpenSidebar()">
           <svg fill="#ffffff" height="800px" width="800px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
               viewBox="0 0 487.3 487.3" xml:space="preserve">
@@ -97,31 +97,28 @@
           </svg>
           <span>Tus cursos</span>
         </div>
-        <div id="sidebar_courses_list">
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
-          <div class="sidebar_courses_item"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+        <div id="sidebar_courses_list" class="active">
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
+          <div class="sidebar_courses_item active"><span class="sidebar_courses_item_text">LI1001. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span></div>
         </div>
-        <div id="sidebar_courses_all">Ver todos los cursos</div>
+        <div id="sidebar_courses_all" class="active">Ver todos los cursos</div>
       </div>
     </div>
-    <div id="sidebar_bottom">
-      <div id="sidebar_logout">
+    <div id="sidebar_bottom" class="active">
+      <div id="sidebar_logout" class="active">
         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
           <path fill="#FFFFFF" opacity="1.000000" stroke="none" 
             d="
@@ -165,7 +162,7 @@
     </div>
   </div>
   <div id="content_body">
-    <div id="main_content">
+    <div id="main_content" class="active">
       <h1>Lorem ipsum</h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
 
@@ -229,88 +226,7 @@
   </div>
   <script>
     window.addEventListener('load', () => {
-      const sidebar_previous = document.getElementById('sidebar_previous');
-      const sidebar_previous_course = document.getElementById("sidebar_previous_course");
-      let animationFrame;
-      let resetTimeout;
-      let pos = 0;
-      let isAnimating = false;
-
-      sidebar_previous.addEventListener('mouseenter', () => {
-        const containerWidth = sidebar_previous.offsetWidth;
-        const textWidth = sidebar_previous_course.scrollWidth;
-
-        console.log(textWidth);
-        console.log(containerWidth);
-
-        if (textWidth > containerWidth) {
-            pos = 0;
-
-            function animate() {
-                pos -= 1;
-                sidebar_previous_course.style.transform = `translateX(${pos}px)`;
-
-                if (Math.abs(pos) >= textWidth - containerWidth + 61) {
-                    cancelAnimationFrame(animationFrame);
-                    resetTimeout = setTimeout(() => {
-                        pos = 0;
-                        sidebar_previous_course.style.transform = `translateX(0)`;
-                        animationFrame = requestAnimationFrame(animate);
-                    }, 1000);
-                } else {
-                    animationFrame = requestAnimationFrame(animate);
-                }
-            }
-
-            animationFrame = requestAnimationFrame(animate);
-        }
-    });
-
-      sidebar_previous.addEventListener('mouseleave', () => {
-          cancelAnimationFrame(animationFrame);
-          clearTimeout(resetTimeout);
-          sidebar_previous_course.style.transform = 'translateX(0)';
-          pos = 0;
-          isAnimating = false;
-      });
-
-      const sidebar_courses_items = document.querySelectorAll('.sidebar_courses_item');
-
-      sidebar_courses_items.forEach(course => {
-        const text = course.querySelector('.sidebar_courses_item_text');
-        let containerWidth = course.offsetWidth;
-        let textWidth = text.scrollWidth;
-
-        course.addEventListener('mouseenter', () => {
-          if (textWidth > containerWidth) {
-            let pos = 0;
-            function animate() {
-              pos -= 1;
-              text.style.transform = `translateX(${pos}px)`;
-
-              if (Math.abs(pos) >= textWidth - containerWidth + 30) {
-                cancelAnimationFrame(animationFrame);
-                resetTimeout = setTimeout(() => {
-                  pos = 0;
-                  text.style.transform = `translateX(0)`;
-                  animationFrame = requestAnimationFrame(animate);
-                }, 1000);
-              } else {
-                animationFrame = requestAnimationFrame(animate);
-              }
-            }
-            animationFrame = requestAnimationFrame(animate);
-          }
-        });
-
-        course.addEventListener('mouseleave', () => {
-          cancelAnimationFrame(animationFrame);
-          clearTimeout(resetTimeout);
-          text.style.transform = 'translateX(0)';
-          pos = 0;
-          isAnimating = false;
-        });
-      });
+      animationSetup();
     });
 
     function toggleSidebar() {
@@ -322,14 +238,118 @@
       items.forEach((item) => {
         document.getElementById(item).classList.toggle("active");
       })
+
+      const sidebar_courses_items = document.querySelectorAll('.sidebar_courses_item');
+
+      sidebar_courses_items.forEach(course => {
+        course.classList.toggle("active");
+      });
     }
 
     function coursesOpenSidebar() {
       const sidebar_courses = document.getElementById('sidebar_courses');
 
-      if (sidebar_courses.classList.contains('active')) {
+      if (!sidebar_courses.classList.contains('active')) {
         toggleSidebar();
       }
-    }
+    };
+
+    function addAnimation(containerElement, textElement, offset) {
+      let animationFrame;
+      let resetTimeout;
+      let pos = 0;
+
+      containerElement.addEventListener('mouseenter', () => {
+        if (!containerElement.classList.contains('active')) {
+          return;
+        }
+
+        const containerWidth = containerElement.offsetWidth;
+        const textWidth = textElement.scrollWidth;
+
+        console.log(containerWidth, textWidth);
+
+        if (textWidth > containerWidth) {
+          pos = 0;
+
+          function animate() {
+              pos -= 2;
+              textElement.style.transform = `translateX(${pos}px)`;
+
+              if (Math.abs(pos) >= textWidth - containerWidth + offset) {
+                  cancelAnimationFrame(animationFrame);
+                  resetTimeout = setTimeout(() => {
+                      pos = 0;
+                      textElement.style.transform = `translateX(0)`;
+                      animationFrame = requestAnimationFrame(animate);
+                  }, 1000);
+              } else {
+                  animationFrame = requestAnimationFrame(animate);
+              }
+          }
+
+          resetTimeout = setTimeout(() => {
+            animationFrame = requestAnimationFrame(animate);
+          }, 300);
+        };
+      });
+      
+      containerElement.addEventListener('mouseleave', () => {
+        if (!containerElement.classList.contains('active')) {
+          return;
+        }
+        
+        cancelAnimationFrame(animationFrame);
+        clearTimeout(resetTimeout);
+        textElement.style.transform = 'translateX(0)';
+        pos = 0;
+      });
+    };
+
+    function animationSetup() {
+      const sidebar_previous = document.getElementById('sidebar_previous');
+      const sidebar_previous_course = document.getElementById("sidebar_previous_course");
+      
+      addAnimation(sidebar_previous, sidebar_previous_course, 61);
+
+      const sidebar_courses_items = document.querySelectorAll('.sidebar_courses_item');
+
+      sidebar_courses_items.forEach(course => {
+        const text = course.querySelector('.sidebar_courses_item_text');
+        
+        addAnimation(course, text, 30);
+        //   let containerWidth = course.offsetWidth;
+        //   let textWidth = text.scrollWidth;
+
+        //   if (textWidth > containerWidth) {
+        //     let pos = 0;
+        //     function animate() {
+        //       pos -= 1;
+        //       text.style.transform = `translateX(${pos}px)`;
+
+        //       if (Math.abs(pos) >= textWidth - containerWidth + 30) {
+        //         cancelAnimationFrame(animationFrame);
+        //         resetTimeout = setTimeout(() => {
+        //           pos = 0;
+        //           text.style.transform = `translateX(0)`;
+        //           animationFrame = requestAnimationFrame(animate);
+        //         }, 1000);
+        //       } else {
+        //         animationFrame = requestAnimationFrame(animate);
+        //       }
+        //     }
+        //     animationFrame = requestAnimationFrame(animate);
+        //   }
+        // });
+
+        // course.addEventListener('mouseleave', () => {
+        //   cancelAnimationFrame(animationFrame);
+        //   clearTimeout(resetTimeout);
+        //   text.style.transform = 'translateX(0)';
+        //   pos = 0;
+        //   isAnimating = false;
+        // });
+      });
+    };
   </script>
 </body>

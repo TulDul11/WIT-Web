@@ -212,6 +212,35 @@ router.post('/agregar_curso', async (req, res) => {
     }
 });
 
+router.post('/agregar_alumno', async (req, res) => {
+    try {
+        const { id_usuario, nombre, apellido, username, password } = req.body;
+
+        // Validar campos
+        if (!id_usuario || !nombre || !apellido || !username || !password) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios' });
+        }
+
+        // Verificar si ya existe el alumno
+        const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+        if (existingStudent.length > 0) {
+            return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+        }
+
+        // Insertar en la tabla usuarios, añadiendo 'rol' con el valor 'alumno'
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, username, password, 'alumno']);
+
+        // Ahora que id_usuario existe en usuarios, insertamos en la tabla alumnos
+        await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+
+        res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
+    } catch (err) {
+        console.error('Error al agregar alumno:', err); // Detalle del error
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 router.get('/obtener_alumnos', async (req, res) => {
     try {
         const [results] = await db.query('SELECT id_usuario, nombre FROM alumnos');

@@ -386,3 +386,46 @@ document.getElementById('csvUpload').addEventListener('change', function (e) {
 
     reader.readAsText(file);
 });
+
+document.getElementById('saveStudentButton').addEventListener('click', async () => {
+    // Obtener los datos de los inputs
+    const id_usuario = document.getElementById('userID').value.trim();
+    const nombre = document.getElementById('firstName').value.trim();
+    const apellido = document.getElementById('lastName').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!id_usuario || !nombre || !apellido || !username || !password) {
+        alert('Por favor completa todos los campos.');
+        return;
+    }
+
+    try {
+        const response = await fetch('/agregar_alumno', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id_usuario,
+                nombre,
+                apellido,
+                username,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message);
+            // Aquí podrías limpiar el formulario o cerrar el modal si quieres
+        } else {
+            alert(data.message || 'Error al agregar alumno.');
+        }
+    } catch (error) {
+        console.error('Error al enviar los datos:', error);
+        alert('Ocurrió un error al enviar los datos.');
+    }
+});
+

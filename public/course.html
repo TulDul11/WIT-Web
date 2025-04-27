@@ -99,8 +99,64 @@
     <!-- Curso profesor -->
     <div class="container-fluid mt-4" id="profesor_body">
         <div class="mb-3" style="width: 100%;">
-            <div class="card p-4" style="width: 100%;margin-inline: auto;">
-                <canvas id="myChart" style="width:100%;max-width:700px;height: 500px;"></canvas>
+            <div class="card p-4" style="width: 95%;margin-inline: auto;">
+                <p id="course_name" class="fw-bold fs-4"> Introduccion a las lavadoras</p>
+                <div class="row align-items-center" style="margin-bottom: 20px;">
+                    <div class="col-md">
+                        <p>Progreso de alumnos (%)</p>
+                        <div class ="mb-3" id = "bar_container">
+                            <div class = "mb-3" id="bar_body" style="max-width: 700px;">
+                                <canvas id="bar_chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <p>Progreso promedio por lección</p>
+                        <div class ="mb-3" id = "radar_container">
+                            <div class = "mb-3" id="radar_body" style="height: 300px; max-height: 300px; max-width: 700px;">
+                                <canvas id="radar_chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md" id>
+                        <div class="card text-bg-primary mb-3">
+                            <div class="card-header">Header</div>
+                            <div class="card-body">
+                              <h5 class="card-title">Primary card title</h5>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md" id>
+                        <div class="card text-bg-secondary mb-3">
+                            <div class="card-header">Header</div>
+                            <div class="card-body">
+                              <h5 class="card-title">Secondary card title</h5>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md" id>
+                        <div class="card text-bg-warning mb-3">
+                            <div class="card-header">Header</div>
+                            <div class="card-body">
+                              <h5 class="card-title">Warning card title</h5>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md" id>
+                        <div class="card text-bg-light mb-3">
+                            <div class="card-header">Header</div>
+                            <div class="card-body">
+                              <h5 class="card-title">Light card title</h5>
+                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>  
@@ -110,7 +166,11 @@
     crossorigin="anonymous"
   ></script>
     <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+        src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+
+    <script>
+        
     </script>
 </body>
 </html>

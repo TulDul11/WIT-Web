@@ -818,6 +818,13 @@ html, body {
     color:rgba(183, 183, 183, 0.918);
 }
 
+#bar_container {
+    height: 300px; 
+    max-height: 300px; 
+    overflow-y: scroll; 
+    max-width: 700px;
+}
+
 
 @media (max-width: 992px){
     #alumno_curso_m {

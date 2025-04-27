@@ -187,22 +187,140 @@ async function set_up_alumno(user_role, user_id, cod) {
 }
 
 async function set_up_profesor(user_role, user_id, cod) {
-    var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-    var yValues = [55, 49, 44, 24, 15];
-    var barColors = ["red", "green","blue","orange","brown"];
-
-    new Chart("myChart", {
-        type: "bar",
-        data: {
-            labels: xValues,
-            datasets: [{
-            backgroundColor: barColors,
-            data: yValues
-            }]
-        },
-    });
     try{
+        set_up_charts(user_role, user_id, cod);
         
+    }catch(error) {
+        console.error('Error:', error);
+    }
+}
+
+async function set_up_charts(user_role, user_id, cod) {
+    try{
+        var labels = [
+            "Emma", "Liam", "Olivia", "Noah", "Ava", "Elijah", "Isabella", "James", "Sophia", "Benjamin",
+            "Mia", "Lucas", "Charlotte", "Mason", "Amelia", "Ethan", "Harper", "Alexander", "Evelyn", "Henry",
+            "Abigail", "Sebastian", "Emily", "Jack", "Ella", "Daniel", "Scarlett", "Matthew", "Luna", "Michael"
+        ];
+        var yValues = [
+            71, 98, 73, 95, 70, 99, 74, 100, 76, 97,
+            72, 96, 78, 93, 75, 94, 77, 92, 79, 91,
+            80, 90, 81, 89, 82, 88, 83, 87, 84, 85
+        ];    
+          
+        var data = {
+            labels: labels,
+            datasets: [{
+              axis: 'y',
+              label: 'Progreso',
+              data: yValues,
+              fill: false,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+              ],
+              borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+              ],
+              borderWidth: 1,
+              barThickness: 50,
+            }]
+        };
+    
+        let config = {
+            type: 'bar',
+            data,
+            options: {
+              indexAxis: 'y',
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                    display: false
+                }
+              },
+              scales: {
+                x: {
+                    position: 'top' // <-- move the numeric scale to the top
+                },
+                y: {
+                    position: 'left' // (this keeps the names on the left, default)
+                }
+              }
+            }
+        };
+    
+        const bar_chart = new Chart(document.getElementById('bar_chart'),config);
+    
+        const bar_body = document.getElementById('bar_body');
+        if(bar_chart.data.labels.length > 5){
+            const newHeight = 700 + (bar_chart.data.labels.length - 5) * 50;
+            bar_body.style.height = `${newHeight}px`;
+        }
+
+        data = {
+            labels: [
+                'Introducción a las lavadoras',
+                'Principios de funcionamiento',
+                'Diagnóstico de fallas comunes',
+                'Reemplazo de bombas de agua',
+                'Reparación de motores',
+                'Mantenimiento preventivo',
+                'Solución de problemas eléctricos'
+            ],
+            datasets: [{
+              label: 'My First Dataset',
+              data: [65, 59, 90, 81, 56, 55, 40],
+              fill: true,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgb(255, 99, 132)',
+              pointBackgroundColor: 'rgb(255, 99, 132)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(255, 99, 132)'
+            }, {
+              label: 'My Second Dataset',
+              data: [28, 48, 40, 19, 96, 27, 100],
+              fill: true,
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgb(54, 162, 235)',
+              pointBackgroundColor: 'rgb(54, 162, 235)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(54, 162, 235)'
+            }]
+        };
+
+        config = {
+            type: 'radar',
+            data: data,
+            options: {
+              maintainAspectRatio: false,
+              elements: {
+                line: {
+                  borderWidth: 3
+                }
+              },
+              plugins: {
+                legend: {
+                    display: false
+                }
+              },
+            }
+        };
+
+        const radar_chart = new Chart(document.getElementById('radar_chart'), config);
+
     }catch(error) {
         console.error('Error:', error);
     }

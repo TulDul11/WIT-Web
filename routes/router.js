@@ -174,68 +174,87 @@ router.post('/user_courses', async (req, res) => {
 })
 
 router.post('/agregar_curso', async (req, res) => {
+    const connection = await db.getConnection();
     try {
-        const { cod, nombre, descripcion } = req.body;
-
+        await connection.beginTransaction();
         
+        const { cod, nombre, descripcion, alumnos } = req.body;
         if (!cod || !nombre || !descripcion) {
             return res.status(400).json({ message: 'Faltan campos obligatorios' });
         }
-
         
-        const [existingCourse] = await db.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+        const [existingCourse] = await connection.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
         if (existingCourse.length > 0) {
             return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
         }
-
         
-        await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
-
+        await connection.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
         
+        // Asociación al profesor (suponiendo que ya tienes el id del profesor)
         const user_id = req.session.user.user_id;
-        const [profesorData] = await db.query('SELECT id FROM profesores WHERE id_usuario = ?', [user_id]);
-
+        const [profesorData] = await connection.query('SELECT id FROM profesores WHERE id_usuario = ?', [user_id]);
         if (profesorData.length === 0) {
             return res.status(404).json({ message: 'Profesor no encontrado' });
         }
-
         const id_profesor = profesorData[0].id;
-
+        await connection.query('INSERT INTO profesores_cursos (id_profesor, cod_curso) VALUES (?, ?)', [id_profesor, cod]);
         
-        await db.query('INSERT INTO profesores_cursos (id_profesor, cod_curso) VALUES (?, ?)', [id_profesor, cod]);
-
-        res.status(201).json({ message: 'Curso y asociación con profesor agregados exitosamente' });
-
+        // Inserción de alumnos en alumnos_cursos
+        if (alumnos && Array.isArray(alumnos)) {
+            for (let id_alumno of alumnos) {
+                await connection.query(
+                    'INSERT INTO alumnos_cursos (id_alumno, cod_curso) VALUES (?, ?)',
+                    [id_alumno, cod]
+                );
+            }
+        }
+        
+        await connection.commit();
+        res.status(201).json({ message: 'Curso y asociaciones creados exitosamente.' });
     } catch (err) {
-        console.error('Error al agregar curso:', err);
+        await connection.rollback();
+        console.error('Error en inserción en transacción:', err);
         res.status(500).json({ error: err.message });
+    } finally {
+        connection.release();
     }
 });
+
 
 router.post('/agregar_alumno', async (req, res) => {
     try {
         const { id_usuario, nombre, apellido, username, password } = req.body;
 
-        // Validar campos
+        
         if (!id_usuario || !nombre || !apellido || !username || !password) {
             return res.status(400).json({ message: 'Faltan campos obligatorios' });
         }
 
-        // Verificar si ya existe el alumno
+        
         const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
         if (existingStudent.length > 0) {
             return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
         }
 
-        // Insertar en la tabla usuarios, añadiendo 'rol' con el valor 'alumno'
-        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, username, password, 'alumno']);
+        
+        const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+        if (existingUser.length > 0) {
+            return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
+        }
 
-        // Ahora que id_usuario existe en usuarios, insertamos en la tabla alumnos
+        
+        const salt = await bcrypt.genSalt(10); 
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+
+        
         await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
 
         res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
     } catch (err) {
-        console.error('Error al agregar alumno:', err); // Detalle del error
+        console.error('Error al agregar alumno:', err); 
         res.status(500).json({ error: err.message });
     }
 });
@@ -243,14 +262,14 @@ router.post('/agregar_alumno', async (req, res) => {
 
 router.get('/obtener_alumnos', async (req, res) => {
     try {
-        const [results] = await db.query('SELECT id_usuario, nombre FROM alumnos');
+        const [results] = await db.query('SELECT id, nombre FROM alumnos');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'No se encontraron alumnos' });
         }
 
         const alumnos = results.map(alumno => ({
-            id_usuario: alumno.id_usuario,
+            id: alumno.id,
             nombre: alumno.nombre
         }));
 
@@ -260,6 +279,63 @@ router.get('/obtener_alumnos', async (req, res) => {
     }
 });
 
+router.post('/delete_course', async (req, res) => {
+    try {
+        const { course_id } = req.body;
+
+        if (!course_id) {
+            return res.status(400).json({ message: 'El ID del curso es necesario' });
+        }
+
+        // Paso 1: Eliminar los registros dependientes en la tabla profesores_cursos
+        const deleteProfessorsCoursesQuery = `DELETE FROM profesores_cursos WHERE cod_curso = ?`;
+        await db.query(deleteProfessorsCoursesQuery, [course_id]);
+
+        // Paso 2: Eliminar el curso de la tabla cursos
+        const deleteCourseQuery = `DELETE FROM cursos WHERE cod = ?`;
+        const [result] = await db.query(deleteCourseQuery, [course_id]);
+
+        if (result.affectedRows > 0) {
+            return res.json({ message: 'Curso eliminado exitosamente' });
+        } else {
+            return res.status(404).json({ message: 'Curso no encontrado' });
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error al eliminar el curso', error: err.message });
+    }
+});
+
+router.post('/agregar_alumno_curso', async (req, res) => {
+    console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
+    try {
+        const { id_alumno, cod_curso } = req.body;
+        if (!id_alumno || !cod_curso) {
+            return res.status(400).json({ message: 'Faltan campos obligatorios' });
+        }
+
+        const [existingAssociation] = await db.query(
+            'SELECT * FROM alumnos_cursos WHERE id_alumno = ? AND cod_curso = ?',
+            [id_alumno, cod_curso]
+        );
+
+        if (existingAssociation.length > 0) {
+            return res.status(409).json({ message: 'El alumno ya está asignado a este curso.' });
+        }
+
+        await db.query(
+            'INSERT INTO alumnos_cursos (id_alumno, cod_curso) VALUES (?, ?)',
+            [id_alumno, cod_curso]
+        );
+
+        console.log(`Inserción exitosa para id_alumno: ${id_alumno} en cod_curso: ${cod_curso}`);
+        res.status(201).json({ message: 'Alumno asignado al curso exitosamente.' });
+    } catch (err) {
+        console.error('Error al asignar el alumno al curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 

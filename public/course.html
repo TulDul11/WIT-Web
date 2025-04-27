@@ -16,7 +16,7 @@
   crossorigin="anonymous">
   <link href="./styles/style.css" rel="stylesheet" />
 </head>
-<body class="course_body">
+<body class="course_body" style="min-height: 100vh; background-color: #e5e5e5;">
     <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
         <div id="nav_div">
         <div id="navbar_nav">
@@ -51,7 +51,7 @@
                 </div>
                 <div class="col">
                     <div class="d-flex flex-column align-items-center" id="tareas_container" style="height: 100%; justify-content: start;">
-                        <p id="tareas_por_hacer"style="font-weight: bold;">Tareas por hacer</p>
+                        <p id="tareas_por_hacer"style="font-weight: bold; font-size: 1.2rem">Tareas por hacer</p>
                         <ul class="list-group"style="width: 100%; margin-bottom : 20px;"id="tareas_lista">
                         </ul>
                     </div>
@@ -100,15 +100,26 @@
     <div class="container-fluid mt-4" id="profesor_body">
         <div class="mb-3" style="width: 100%;">
             <div class="card p-4" style="width: 95%;margin-inline: auto;">
-                <p id="course_name" class="fw-bold fs-4"> Introduccion a las lavadoras</p>
+                <p id="course_name" class="fw-bold fs-4"> Introducción a las lavadoras</p>
                 <div class="row align-items-center" style="margin-bottom: 20px;">
-                    <div class="col-md">
+                    <div class="col-md" style="margin-bottom: 20px;">
                         <p>Progreso de alumnos (%)</p>
                         <div class ="mb-3" id = "bar_container">
                             <div class = "mb-3" id="bar_body" style="max-width: 700px;">
                                 <canvas id="bar_chart"></canvas>
                             </div>
                         </div>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Orden
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li onclick="sort_chart(3)"><a class="dropdown-item">A-z</a></li>
+                                <li onclick="sort_chart(4)"><a class="dropdown-item">Z-a</a></li>
+                                <li onclick="sort_chart(2)"><a class="dropdown-item">Mayor a menor</a></li>
+                                <li onclick="sort_chart(1)"><a class="dropdown-item">Menor a mayor</a></li>
+                            </ul>
+                          </div>
                     </div>
                     <div class="col-md">
                         <p>Progreso promedio por lección</p>
@@ -121,38 +132,34 @@
                 </div>  
                 <div class="row">
                     <div class="col-md" id>
-                        <div class="card text-bg-primary mb-3">
-                            <div class="card-header">Header</div>
+                        <div class="card text-bg-light mb-3">
                             <div class="card-body">
-                              <h5 class="card-title">Primary card title</h5>
-                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md" id>
-                        <div class="card text-bg-secondary mb-3">
-                            <div class="card-header">Header</div>
-                            <div class="card-body">
-                              <h5 class="card-title">Secondary card title</h5>
-                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md" id>
-                        <div class="card text-bg-warning mb-3">
-                            <div class="card-header">Header</div>
-                            <div class="card-body">
-                              <h5 class="card-title">Warning card title</h5>
-                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                              <h5 class="card-title"># de Tecnicos</h5>
+                              <p class="kpi_text">32</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md" id>
                         <div class="card text-bg-light mb-3">
-                            <div class="card-header">Header</div>
                             <div class="card-body">
-                              <h5 class="card-title">Light card title</h5>
-                              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                              <h5 class="card-title">Promedio del curso</h5>
+                              <p class="kpi_text">89.5</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md" id>
+                        <div class="card text-bg-light mb-3">
+                            <div class="card-body">
+                              <h5 class="card-title">% de avance promedio</h5>
+                              <p class="kpi_text">60%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md" id>
+                        <div class="card text-bg-light mb-3">
+                            <div class="card-body">
+                              <h5 class="card-title">Mediana promedio</h5>
+                              <p class="kpi_text">89</p>
                             </div>
                         </div>
                     </div>

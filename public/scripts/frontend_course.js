@@ -188,14 +188,36 @@ async function set_up_alumno(user_role, user_id, cod) {
 
 async function set_up_profesor(user_role, user_id, cod) {
     try{
-        set_up_charts(user_role, user_id, cod);
+        const response = await fetch(`${api_url}/user_courses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                const course_code_text = document.getElementById('course_code');
+                const profesor_body = document.getElementById('profesor_body');
+                course_code_text.textContent = 'No esta asignado a este curso';
+                profesor_body.style.display = 'none';
+            }
+            throw new Error(`Error: ${response.status}`);
+        }
+        set_up_charts();
         
     }catch(error) {
         console.error('Error:', error);
     }
 }
 
-async function set_up_charts(user_role, user_id, cod) {
+async function set_up_charts() {
     try{
         var labels = [
             "Emma", "Liam", "Olivia", "Noah", "Ava", "Elijah", "Isabella", "James", "Sophia", "Benjamin",
@@ -206,14 +228,23 @@ async function set_up_charts(user_role, user_id, cod) {
             71, 98, 73, 95, 70, 99, 74, 100, 76, 97,
             72, 96, 78, 93, 75, 94, 77, 92, 79, 91,
             80, 90, 81, 89, 82, 88, 83, 87, 84, 85
-        ];    
-          
+        ];
+        
+        var result = {};
+        for (var i = 0; i < labels.length; i++) {
+            result[labels[i]] = yValues[i];
+        }
+
+        const entries = Object.entries(result);
+        entries.sort();
+        result = Object.fromEntries(entries);
+
         var data = {
-            labels: labels,
+            labels: Object.keys(result),
             datasets: [{
               axis: 'y',
               label: 'Progreso',
-              data: yValues,
+              data: Object.values(result),
               fill: false,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -279,7 +310,7 @@ async function set_up_charts(user_role, user_id, cod) {
                 'Solución de problemas eléctricos'
             ],
             datasets: [{
-              label: 'My First Dataset',
+              label: 'Progreso',
               data: [65, 59, 90, 81, 56, 55, 40],
               fill: true,
               backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -288,16 +319,6 @@ async function set_up_charts(user_role, user_id, cod) {
               pointBorderColor: '#fff',
               pointHoverBackgroundColor: '#fff',
               pointHoverBorderColor: 'rgb(255, 99, 132)'
-            }, {
-              label: 'My Second Dataset',
-              data: [28, 48, 40, 19, 96, 27, 100],
-              fill: true,
-              backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgb(54, 162, 235)',
-              pointBackgroundColor: 'rgb(54, 162, 235)',
-              pointBorderColor: '#fff',
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: 'rgb(54, 162, 235)'
             }]
         };
 
@@ -324,6 +345,49 @@ async function set_up_charts(user_role, user_id, cod) {
     }catch(error) {
         console.error('Error:', error);
     }
+}
+
+async function sort_chart(order) {
+
+    const chart = Chart.getChart('bar_chart');
+
+    var labels = chart.data.labels;
+    var values = chart.data.datasets[0].data;
+
+    var result = {};
+    for (var i = 0; i < labels.length; i++) {
+        result[labels[i]] = values[i];
+    }
+
+    const entries = Object.entries(result);
+
+    switch (order) {
+        case 1:
+            entries.sort((a, b) => a[1] - b[1]); 
+            const sortedAsc = Object.fromEntries(entries);
+            chart.data.labels = Object.keys(sortedAsc);
+            chart.data.datasets[0].data = Object.values(sortedAsc);
+            break;
+        case 2:
+            entries.sort((a, b) => b[1] - a[1]); 
+            const sortedDesc = Object.fromEntries(entries);
+            chart.data.labels = Object.keys(sortedDesc);
+            chart.data.datasets[0].data = Object.values(sortedDesc);
+            break;
+        case 3:
+            entries.sort();
+            const sortedAz = Object.fromEntries(entries);
+            chart.data.labels = Object.keys(sortedAz);
+            chart.data.datasets[0].data = Object.values(sortedAz);
+            break;
+        case 4:
+            entries.sort().reverse();
+            const sortedZa = Object.fromEntries(entries);
+            chart.data.labels = Object.keys(sortedZa);
+            chart.data.datasets[0].data = Object.values(sortedZa);
+            break;
+    }
+    chart.update();
 }
 
 async function log_out() {

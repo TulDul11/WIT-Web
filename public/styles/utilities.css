@@ -80,7 +80,7 @@ html, body {
     height: 38px;
 
     padding: 6px;
-    padding-top: 3px;
+    padding-top: 5px;
 
     color: white;
     background-color: #d6d6d60f;
@@ -199,7 +199,7 @@ html, body {
     height: 38px;
 
     padding: 6px;
-    padding-top: 4px;
+    padding-top: 5px;
 
     color: white;
     background-color: #d6d6d60f;
@@ -688,32 +688,27 @@ html, body {
     }
 }
 
-#content_body {
-    display: flex;
-    width: 100%;
-    margin-top: 70px;
-    padding: 30px 30px;
-    z-index: 1;
-}
-#main_content {
+.content_body {
     width: calc(100% - 85px);
     
+    margin-top: 70px;
+
     margin-left: 85px;
 
     transition: margin-left 0.1s cubic-bezier(0.23, 1, 0.32, 1);
 }
-#main_content.active {
+.content_body.active {
     width: calc(100% - 340px);
 
     margin-left: 340px;
 }
 @media (max-width: 767px) {
-    #main_content {
+    .content_body {
         width: 100%;
         
         margin-left: 0px;
     }
-    #main_content.active {
+    .content_body.active {
         width: 100%;
     
         margin-left: 0px;

@@ -29,42 +29,52 @@ router.post('/', async (req, res) => {
 })
 */
 
+/*
+Método POST para iniciar sesión.
+Cuerpo: Usuario, Contraseña.
+*/
 router.post('/login_info', async (req, res) => {
     try {
+        // Conseguimos los datos del cuerpo
         const { user_id, user_password } = req.body;
 
+        // Checamos si el campo de usuario o de contraseña están vacios.
         if (!user_id || !user_password) {
-            return res.status(399).json({ message: 'Se requiere tanto el usuario como la contraseña.' });
+            // Caso: No hay usuario, contraseña o ambos.
+            return res.status(399).json({message: 'Se requiere tanto el usuario como la contraseña.'});
         }
-
+        
+        // Query con la base de datos donde conseguimos los datos del usuario.
         const [results] = await db.query(`SELECT hashing, salt, rol FROM usuarios WHERE id = ?`, [user_id]);
 
+        // Si los resultados están vacíos, significa que no hubo usuario.
         if (results.length == 0) {
-            return res.status(404).json({
-                message: 'Error: Usuario no encontrado'
-            })
+            // Caso: No se encontró el usuario.
+            return res.status(404).json({message: 'El usuario no ha sido encontrado'}); 
+
         } else {
+            // Utilizando los datos conseguidos de la base de datos, encriptamos la contraseña proporcionada
             const hashed_password = await bcrypt.hash(user_password, results[0].salt);
+
+            // Comparamos la contraseña proporcionada y encriptada con la contraseña encriptada de la base de datos.
+            // Si no son iguales significa que la contraseña es incorrecta.
             if (hashed_password != results[0].hashing) {
-                return res.status(401).json({
-                    message: 'Error: Contraseña incorrecta'
-                })
+                // Caso: La contraseña es incorrecta.
+                return res.status(401).json({message: 'La contraseña es incorrecta'}); 
             }
-        } 
+        }
+        
+        // Si se pasaron todas las pruebas anteriores, podemos organizar nuestros datos y mandarlos.
         const user_role = results[0].rol;
 
+        // Guardamos nuestros datos en una sesión (guardada en base de datos y cookies).
         req.session.user = {user_id: user_id, user_role: user_role};
 
-        return res.json({
-            user_info: {
-                user_id: user_id,
-                user_role: user_role
-            }
-        });
+        return;
+        
     } catch (err) {
-        res.status(500).json({
-            error: err.message
-        });
+        // Caso: Error de conexión
+        res.status(500) .json({message: 'Error al iniciar sesión. Intente más tarde.'})
     }
 })
 

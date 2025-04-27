@@ -1,8 +1,14 @@
 //let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 let api_url = 'http://localhost:3000';
 
+/*
+Función que cargará cuando todo el contenido html y css cargé en home.html.
+*/
+window.addEventListener('DOMContentLoaded', async () => {
+    // Llamada a función que agregará el contenido de las barras laterales y de navegación.
+    // La llamada incluye la función que se encarga de la configuración de 
+    load_utilities(setup_utilities);
 
-window.addEventListener('load', async () => {
     let user_role;
     let data;
     try {
@@ -15,9 +21,7 @@ window.addEventListener('load', async () => {
         });
 
         if (!response.ok) {
-            if (response.status === 404) {
-                user_role_text.textContent = 'Usuario no encontrado';
-            } else if (response.status === 401) {
+            if (response.status === 401) {
                 window.location.href = '/';
             }
             return;
@@ -50,6 +54,27 @@ window.addEventListener('load', async () => {
         set_up_profesor('profesores', data.user_id)
     }
 })
+
+/*
+Cargamos las barras lateral y de navegación.
+*/
+function load_utilities(callback) {
+    fetch('/utilities.html')
+    .then(response => response.text())
+    .then(html => {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        while (temp.firstChild) {
+            document.body.insertBefore(temp.firstChild, document.body.firstChild);
+        }
+        
+        // Llamamos la función que se ha pasado de parámetro (si es que está presente).
+        if (callback && typeof callback === "function") {
+            callback();
+        }
+    })
+    .catch(err => console.error('Error al cargar utilidades:', err));
+}
 
 async function set_up_alumno(user_role, user_id) {
     try {

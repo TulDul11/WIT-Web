@@ -1,0 +1,66 @@
+* {
+    box-sizing: border-box;
+}
+
+#alumno_curso_m {
+    display: none;
+}
+
+#tareas_mobile {
+    display: none;
+}
+
+#alumno_body {
+    display: none;
+}
+
+#profesor_body {
+    display: none;
+}
+
+.item_tarea {
+    color:rgba(183, 183, 183, 0.918);
+}
+
+.course_body div.course_code_container {
+    display: flex;
+    margin: 20px 0px 15px 0px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.course_body div.course_code_container p#course_code {
+    font-size: 1.2rem;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 0.5px;
+    font-weight: 400;
+    margin: 10px 15px;  
+}
+
+.course_body div.course_card_container p#course_title {
+    font-size: 2rem;
+    color: black;
+    letter-spacing: 0.5px;
+    font-weight: 550;
+    margin: 10px 0px;  
+}
+
+.course_card_container {
+    margin: 10px 100px 10px 40px;
+    width: 80%;
+}
+
+.course_card_container table#card_grid {
+    border-collapse: collapse; 
+    background-color: #000000;
+}
+
+.course_card_container td#grid_txt {
+
+    height: 23px; 
+    padding: 10px; 
+    vertical-align: middle;
+}
+
+.course_card_container img{
+    width: clamp(30px, 30vw, 300px);
+}

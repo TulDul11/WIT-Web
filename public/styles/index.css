@@ -5,8 +5,7 @@
 }
 
 /* Login (index.html) styles*/
-
-.login_body {
+#login_body {
     position: relative;
     background-color: #093454;
     width: 100vw;
@@ -111,7 +110,6 @@
     color: gray;
     transition: color 0.2s ease-in-out;
 }
-
 
 #login_button {
     width: clamp(400px,20vw,600px);

@@ -32,6 +32,7 @@ window.addEventListener('load', async () => {
 async function loadCourse(){
     const urlParams = new URLSearchParams(window.location.search);
     const courseCode = urlParams.get('code');
+    const course_code_text = document.getElementById('course_code');
 
     let user_role;
     let data;
@@ -51,7 +52,7 @@ async function loadCourse(){
 
         if (!response.ok) {
             if (response.status === 404) {
-                user_role_text.textContent = 'Usuario no encontrado';
+                course_code_text.textContent = 'Usuario no encontrado';
             } else if (response.status === 401) {
                 sessionStorage.setItem('login_error', 'Se requiere iniciar sesión para utilizar la aplicación.');
                 window.location.href = '/';
@@ -88,6 +89,7 @@ async function loadCourse(){
     }
 
     user_role = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
+    course_code_text.textContent = courseCode;
 
     if (user_role == 'Alumno') {
         const alumno_body = document.getElementById('alumno_body');

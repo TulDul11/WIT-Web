@@ -10,40 +10,13 @@
     rel="stylesheet"
     crossorigin="anonymous"
   />
-  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" 
-  rel="stylesheet" 
-  integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" 
-  crossorigin="anonymous">
-  <link href="./styles/style.css" rel="stylesheet" />
+  <link href="./styles/course.css" rel="stylesheet" />
+  <link href="./styles/utilities.css" rel="stylesheet" />
 </head>
 <body class="course_body">
-    <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
-        <div id="nav_div">
-        <div id="navbar_nav">
-            <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()"/>
-            <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()" />
-
-            <div id="nav_modules">
-            <ul class="navbar-nav">
-                <li>
-                <a class="nav-link active" onclick="home_screen()">Inicio</a>
-                </li>
-                <li>
-                <a class="nav-link" href="#"></a>
-                </li>
-            </ul>
-            </div>
-        </div>
-        <div id="nav_role"></div>
-        </div>
-    </nav>
-
     <!-- Curso alumno -->
-    <div class="mb-3" style="margin: 10px 20px;">
-        <p id="course_code" class="fw-bold fs-4"></p>
-    </div>
-    <div class="container-fluid mt-4" id="alumno_body">
-        <div class="mb-3" style="width: 100%;">
+    <div class="Course content-body" id="alumno_body" style="display: none; margin-top: 70px;">
+        <div class="mb-3" style="width: 100%; margin-left: 50px;">
             <!-- Grid web -->
             <div class="row align-items-start" id="course_grid">
                 <div class="col-md-9" id="alumno_curso">
@@ -103,13 +76,11 @@
         </div>
     </div>  
   <script src="./scripts/frontend_course.js"></script>
+  <script src="./scripts/utilities.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"
   ></script>
-
- <script>
-</script>
 </body>
 </html>
 

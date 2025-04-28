@@ -2,6 +2,13 @@
     box-sizing: border-box;
 }
 
+html, body {
+    background-color: #dee0e3;
+    color: #000;
+    font-family: sans-serif;
+    overflow-y: auto;
+}
+
 #alumno_curso_m {
     display: none;
 }
@@ -20,6 +27,18 @@
 
 .item_tarea {
     color:rgba(183, 183, 183, 0.918);
+}
+
+@media (max-width: 992px){
+    #alumno_curso_m {
+        display: flex;
+    }
+    #course_grid {
+        display: none;
+    }
+    #tareas_mobile {
+        display: flex;
+    }
 }
 
 .course_body div.course_code_container {

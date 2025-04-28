@@ -10,7 +10,7 @@ html, body {
     color: #000;
     font-family: sans-serif;
     overflow-y: auto;
-  }
+}
   
 #page-title {
     margin-bottom: 1rem;
@@ -68,18 +68,6 @@ html, body {
     background-color: #28a745 !important;
     color: white !important;
     border: none !important;
-}
-
-@media (max-width: 992px){
-    #alumno_curso_m {
-        display: flex;
-    }
-    #course_grid {
-        display: none;
-    }
-    #tareas_mobile {
-        display: flex;
-    }
 }
 
 /* Styling for Alumno Screen */

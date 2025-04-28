@@ -280,6 +280,8 @@ router.get('/obtener_alumnos', async (req, res) => {
 });
 
 router.post('/delete_course', async (req, res) => {
+    let connection; // Declarar la conexión fuera del bloque try para que sea accesible en finally
+
     try {
         const { course_id } = req.body;
 
@@ -287,25 +289,40 @@ router.post('/delete_course', async (req, res) => {
             return res.status(400).json({ message: 'El ID del curso es necesario' });
         }
 
-        // Paso 1: Eliminar los registros dependientes en la tabla profesores_cursos
-        const deleteProfessorsCoursesQuery = `DELETE FROM profesores_cursos WHERE cod_curso = ?`;
-        await db.query(deleteProfessorsCoursesQuery, [course_id]);
+        // Obtener conexión a la base de datos
+        connection = await db.getConnection();
+        await connection.beginTransaction();
 
-        // Paso 2: Eliminar el curso de la tabla cursos
+        // Paso 1: Eliminar registros dependientes en la tabla profesores_cursos
+        const deleteProfessorsCoursesQuery = `DELETE FROM profesores_cursos WHERE cod_curso = ?`;
+        await connection.query(deleteProfessorsCoursesQuery, [course_id]);
+
+        // Paso 2: Eliminar registros dependientes en la tabla alumnos_cursos
+        const deleteStudentsCoursesQuery = `DELETE FROM alumnos_cursos WHERE cod_curso = ?`;
+        await connection.query(deleteStudentsCoursesQuery, [course_id]);
+
+        // Paso 3: Eliminar el curso de la tabla cursos
         const deleteCourseQuery = `DELETE FROM cursos WHERE cod = ?`;
-        const [result] = await db.query(deleteCourseQuery, [course_id]);
+        const [result] = await connection.query(deleteCourseQuery, [course_id]);
 
         if (result.affectedRows > 0) {
-            return res.json({ message: 'Curso eliminado exitosamente' });
+            await connection.commit();
+            res.json({ message: 'Curso eliminado exitosamente' });
         } else {
-            return res.status(404).json({ message: 'Curso no encontrado' });
+            await connection.rollback();
+            res.status(404).json({ message: 'Curso no encontrado' });
         }
 
     } catch (err) {
-        console.error(err);
+        if (connection) await connection.rollback(); // Solo hacer rollback si connection existe
+        console.error('Error al eliminar el curso:', err);
         res.status(500).json({ message: 'Error al eliminar el curso', error: err.message });
+
+    } finally {
+        if (connection) connection.release(); // Evitar ReferenceError
     }
 });
+
 
 router.post('/agregar_alumno_curso', async (req, res) => {
     console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
@@ -336,6 +353,29 @@ router.post('/agregar_alumno_curso', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+router.get('/obtener_curso', async (req, res) => {
+    const connection = await db.getConnection();
+    try {
+        const { cod } = req.query;
+        if (!cod) {
+            return res.status(400).json({ message: 'Código de curso requerido.' });
+        }
+
+        const [curso] = await connection.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+        if (curso.length === 0) {
+            return res.status(404).json({ message: 'Curso no encontrado.' });
+        }
+
+        res.status(200).json(curso[0]);
+    } catch (err) {
+        console.error('Error al obtener curso:', err);
+        res.status(500).json({ error: err.message });
+    } finally {
+        connection.release();
+    }
+});
+
 
 
 

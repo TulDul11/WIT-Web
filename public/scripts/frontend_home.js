@@ -221,9 +221,11 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
 
         console.log("Curso agregado:", data);
 
-        // Aquí se crea la tarjeta del curso, como ya lo tenías.
+        
         const card = document.createElement("div");
         card.classList.add("profesor-card");
+        card.setAttribute("data-course-id", courseKey); 
+        
         card.innerHTML = `
             <a href="#" style="text-decoration: none; color: inherit;">
                 <div class="profesor-card-img-container" style="position: relative;">
@@ -241,6 +243,7 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
                 </div>
             </a>
         `;
+        
         document.getElementById("profesor_cursos").appendChild(card);
 
         const threeDotsIcon = card.querySelector('.three-dots-icon');
@@ -305,6 +308,64 @@ if (alumnosSeleccionados.length > 0) {
     });
 });
 
+
+function editarCurso(courseKey) {
+    fetch(`${api_url}/obtener_curso?cod=${courseKey}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data || data.message) {
+                alert("No se encontró el curso.");
+                return;
+            }
+
+            // Rellenar los campos del modal con la información obtenida
+            document.getElementById("courseName").value = data.nombre || "";
+            document.getElementById("courseKey").value = data.cod || "";
+            document.getElementById("description").value = data.descripcion || "";
+
+            // Mostrar el modal
+            const modalElement = document.getElementById("exampleModal");
+            if (modalElement) {
+                const modalInstance = new bootstrap.Modal(modalElement);
+                modalInstance.show();
+            }
+        })
+        .catch(error => {
+            console.error("Error al obtener los datos del curso:", error);
+        });
+}
+
+function eliminarCurso(codCurso) {
+    if (!confirm("¿Estás seguro de que deseas eliminar este curso?")) {
+        return;
+    }
+
+    fetch('/delete_course', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ course_id: codCurso })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Curso eliminado exitosamente') {
+            // Busca la tarjeta con el atributo data-course-id
+            const cursoElement = document.querySelector(`[data-course-id="${codCurso}"]`);
+            if (cursoElement) {
+                console.log("Elemento encontrado en el DOM:", cursoElement);
+                cursoElement.remove();
+            } else {
+                console.error(`No se encontró un elemento con data-course-id="${codCurso}" en el DOM.`);
+            }
+        } else {
+            console.error('Error al eliminar el curso:', data.message);
+        }
+    })
+    .catch(err => {
+        console.error('Error al eliminar el curso:', err);
+    });
+}
 
 
 

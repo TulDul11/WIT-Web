@@ -129,9 +129,9 @@ async function load_home_alumno(loading_data) {
         // Insertamos los cursos en la página principal.
         const alumno_cursos = document.getElementById('alumno_cursos');
 
-        for (let curso of data.course_data) {
+        for (let course of data.course_data) {
             let course_card =`<div class="card">
-                    <a href="course?code=${curso[0].cod}" style="text-decoration: none; color: inherit;">
+                    <a href="course?code=${course[0].cod}" style="text-decoration: none; color: inherit;">
                         <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
                             style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
                         <div class="card-body" style="height: 7rem; padding: 0.5rem;">

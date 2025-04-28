@@ -45,7 +45,7 @@ function coursesOpenSidebar() {
 Función que agrega la animación a cada cuadro de texto.
 La animación se centra en mover el texto a través de todo el contenedor (de derecha a izquieda) hasta que todo el texto se haya desplegado y se haya podido leer.
 */
-function addAnimation(containerElement, textElement, offset) {
+function addAnimation(containerElement, textElement, offset, offset_2) {
     let animationFrame;
     let resetTimeout;
     let pos = 0;
@@ -59,7 +59,7 @@ function addAnimation(containerElement, textElement, offset) {
         const containerWidth = containerElement.offsetWidth;
         const textWidth = textElement.scrollWidth;
 
-        if (textWidth > containerWidth) {
+        if (textWidth > containerWidth - offset_2) {
         pos = 0;
 
         function animate() {
@@ -105,7 +105,7 @@ function animationSetup() {
     const sidebar_previous = document.getElementById('sidebar_previous');
     const sidebar_previous_course = document.getElementById("sidebar_previous_course");
 
-    addAnimation(sidebar_previous, sidebar_previous_course, 62);
+    addAnimation(sidebar_previous, sidebar_previous_course, 65, 53);
 
     // Contenedores y textos de cada curso perteneciente al usuario.
     const sidebar_courses_items = document.querySelectorAll('.sidebar_courses_item');
@@ -113,7 +113,7 @@ function animationSetup() {
     sidebar_courses_items.forEach(course => {
         const text = course.querySelector('.sidebar_courses_item_text');
         
-        addAnimation(course, text, 30);
+        addAnimation(course, text, 30, 0);
     });
 };
 

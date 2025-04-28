@@ -11,6 +11,25 @@ document.addEventListener('keydown', function(event) {
 });
 
 /*
+Función que despliega mensaje de error al entrar a páginas de la aplicación sin haber iniciado sesión.
+*/
+window.addEventListener('load', () => {
+    // Cargamos el mensaje de error.
+    const login_error = sessionStorage.getItem('login_error');
+
+    // Si existe mensaje de error, significa que se intentó ingresar a la página web sin haber iniciado sesión.
+    if (login_error) {
+        const error_text = document.getElementById('error_text');
+        const error_symbol = document.getElementById('error_symbol');
+        
+        error_text.textContent = login_error;
+        error_symbol.style.display = 'grid';
+
+        sessionStorage.removeItem('login_error');
+    }
+});
+
+/*
 Función llamada por el botón de inicio de sesión.
 Se encarga de la llamada al API para verificar los datos de inicio de sesión.
 También hace modificaciones al front-end por UI/UX y prevención de errores.

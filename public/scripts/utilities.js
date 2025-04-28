@@ -1,18 +1,4 @@
 /*
-Función que configurará las barras lateral y de navegación, junto con sus animaciones.
-La única configuración en este momento involucra abriendo la barra lateral si la pantalla es mayor a 767 pixeles.
-*/
-function setup_utilities() {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-
-    if (!mediaQuery.matches) {
-        toggleSidebar();
-    }
-
-    animationSetup();
-}
-
-/*
 Función que cambiará los estados de la barra lateral entre activo y no activo.
 */
 function toggleSidebar() {
@@ -130,3 +116,108 @@ function animationSetup() {
         addAnimation(course, text, 30);
     });
 };
+
+/*
+Función para agregar los datos de la barra lateral con la conexión API.
+*/
+async function load_sidebar_data() {
+    try {
+        // Llamada
+        const response = await fetch(`${api_url}/sidebar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        });
+
+        // Checamos si hubo errores en la llamada
+        if (!response.ok) {
+            // Caso: No se ha iniciado sesión.
+            if (response.status === 401) {
+                sessionStorage.setItem('login_error', 'Se requiere iniciar sesión para utilizar la aplicación.');
+                window.location.href = '/';
+            }
+
+            // Caso: Cualquier otro error.
+            return;
+        }
+
+        data = await response.json();
+
+        // Modificando la barra lateral.
+        const sidebar_role_text = document.querySelector('#sidebar_role span');
+        const sidebar_role_image = document.querySelector('#sidebar_role img');
+        sidebar_role_text.textContent = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
+        sidebar_role_image.src = data.user_role == 'alumno' ? './images/student_icon.png' : './images/teacher_icon.png';
+
+        const sidebar_previous_text = document.getElementById('sidebar_previous_text');
+        const sidebar_previous_course = document.getElementById('sidebar_previous_course');
+        const sidebar_previous = document.getElementById('sidebar_previous');
+
+        // Insertamos el curso previamente visto.
+        if (data.previous_course == 'Abre tu primer curso!') {
+            sidebar_previous_text.textContent = 'Explora tus cursos!';
+            sidebar_previous_course.textContent = data.previous_course;
+            sidebar_previous.style.cursor = 'default';
+            sidebar_previous.style.pointerEvents = 'none';
+        } else {
+            sidebar_previous_text.textContent = 'Curso visto previamente';
+            sidebar_previous_course.textContent = `${data.previous_course.cod}. ${data.previous_course.nombre}`;
+            sidebar_previous.style.cursor = 'pointer';
+            sidebar_previous.style.pointerEvents = 'auto';
+            sidebar_previous.onclick = function() {
+                window.location.href = `/course?code=${data.previous_course.cod}`;
+            };
+        }
+
+        // Insertamos los cursos en la barra lateral.
+        if (data.course_data) {
+            const sidebar_courses_list = document.getElementById('sidebar_courses_list');
+            data.course_data.forEach((course) => {
+                
+                let course_tag = `<a href="/course?code=${course.cod}">
+                                        <div class="sidebar_courses_item">
+                                            <span class="sidebar_courses_item_text">
+                                                    ${course.cod}. ${course.nombre}
+                                            </span>
+                                        </div>
+                                    </a>`
+                sidebar_courses_list.innerHTML += course_tag;
+            });
+        }
+    
+    // Mostramos cualquier error que haya ocurrido.
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+/*
+Función para volver a la página de inicio.
+*/
+function home_screen() {
+    window.location.href = '/home';
+}
+
+/*
+Función para cerrar sesión. Se coloca en las parte de las utilidades porque es parte de la barra lateral.
+*/
+async function log_out() {
+    try {
+        const response = await fetch(`${api_url}/logout`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            if (response.status === 500) {
+                console.error('Cerrar sesión fallida.');
+            }
+        }
+        
+        window.location.href = '/';
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}

@@ -4,10 +4,6 @@
     box-sizing: border-box;
 }
 
-html, body {
-    background-color: #E8F0FF;
-}
-
 /* Navigation Bar Styles */
 #navbar {
     position: fixed;
@@ -351,7 +347,7 @@ html, body {
 }
 #sidebar_previous svg {
     width: 35px;
-    height: auto;
+    height: 35px;
     transition: all 0.1s ease;
 }
 #sidebar_previous div {
@@ -377,6 +373,8 @@ html, body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    text-decoration: none;
 
     transform: translateY(-3px);
 }
@@ -495,8 +493,12 @@ html, body {
 #sidebar_courses_list::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.6);
 }
+#sidebar_courses_list a {
+    text-decoration: none;
+}
 .sidebar_courses_item {
-    display: inline-block;
+    display: flex;
+    align-self: center;
 
     width: 240px;
     
@@ -506,10 +508,6 @@ html, body {
     border: 2px solid #093454;
     border-radius: 15px;
 
-    font-size: 13px;
-    font-weight: 550;
-
-    color: rgba(242, 242, 242, 0.829);
     background-color: #072c48;
 
     overflow: hidden;
@@ -525,15 +523,23 @@ html, body {
     text-overflow: ellipsis;
 
     width: 100%;
+
+    font-size: 13px;
+    font-weight: 550;
+
+    color: rgba(242, 242, 242, 0.829);
+
+    
 }
 .sidebar_courses_item:hover {
     overflow: hidden;
 
     border: 2px solid #F1B300;
-    color: #F1B300;
 }
 .sidebar_courses_item:hover span {
     overflow: visible;
+
+    color: #F1B300;
 }
 #sidebar_courses_all {
     display: none;

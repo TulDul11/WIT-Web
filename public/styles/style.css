@@ -1,12 +1,12 @@
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 /* Home (home.html) Styles */
 html, body {
-    margin: 0;
-    padding: 0;
-    background-color: #f0f8ff;
+    background-color: #dee0e3;
     color: #000;
     font-family: sans-serif;
     overflow-y: auto;

@@ -96,28 +96,25 @@
                 </section>
             </div>
         </div>
-        <div class="Profesor content_body" id="profesor_body" style="display: none">
+        <div style="display: none;" id="profesor_body" class="profesor content_body">
             <div class="inicio-header" style="margin-top: 20px; margin-left: 80px; display: flex; justify-content: space-between; align-items: center; margin-right: 80px;">
                 <h2>Inicio</h2>
-        
+                
                 <!-- Contenedor para los botones juntos -->
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-agregar-alumno" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">Agregar Alumnos</button>
-                    <button class="btn-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
+                    <button class="btn-profesor-agregar-alumno" data-bs-toggle="modal" data-bs-target="#agregarAlumnoModal">Agregar Alumnos</button>
+                    <button class="btn-profesor-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
                 </div>
             </div>
         
-            <hr class="linea-header" style="width: 95.5%;">
-        </div>
+            <hr class="profesor-linea-header" style="width: 95.5%;">
+     
         
 
             <!-- Filtro de cursos -->
                 <div style="margin: 0 auto; width: 91%; text-align: center;">
                     <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
                 </div>
-                          
-            
-                
                 <div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -131,24 +128,36 @@
                                         <label for="csvUpload" class="form-label">Sube archivo:</label>
                                         <input type="file" class="form-control" id="csvUpload" accept=".csv">
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="studentName" class="form-label">Nombre del Alumno</label>
-                                        <textarea class="form-control" id="studentName" rows="4" readonly></textarea>
-                                    </div>
-                                    <!--<div class="mb-3">
-                                        <label for="studentEmail" class="form-label">Correo del Alumno</label>
-                                        <input type="email" class="form-control" id="studentEmail" placeholder="correo@ejemplo.com" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="studentID" class="form-label">ID del Alumno</label>
-                                        <input type="text" class="form-control" id="studentID" placeholder="ID de usuario o matrícula" required>
-                                    </div> -->
+                        
+                                    <!-- Campos ocultos para almacenar el alumno seleccionado -->
+                                    <input type="hidden" id="userID">
+                                    <input type="hidden" id="firstName">
+                                    <input type="hidden" id="lastName">
+                                    <input type="hidden" id="username">
+                                    <input type="hidden" id="password">
                                 </form>
+                            
+                            
+                                <h5>Lista de Usuarios:</h5>
+                                <table class="table table-bordered mt-4" id="userTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Usuario</th>
+                                            <th>Contraseña</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Aquí se agregan los usuarios -->
+                                    </tbody>
+                                </table>
                             </div>
+                            
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno
-                                </div>
+                                <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno</button>
                             </div>
                         </div>
                     </div>
@@ -219,7 +228,11 @@
              <!-- Contenedor de tarjetas de cursos -->
              <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 50px; margin: 0;" id="profesor_cursos">
                 <!-- Añade más tarjetas de cursos si es necesario -->
-            </div>
+            </div>    
+        
+        <!-- Contenedor de tarjetas de cursos -->
+        <div id="profesor_cursos" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;">
+            <!-- Aquí van los cursos -->
         </div>
 
         <!-- Scripts de funcionalidad y de diseño -->

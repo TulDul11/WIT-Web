@@ -228,15 +228,6 @@ html, body {
     gap: 2rem;
 }
 
-/* Profesor Content Section */
-.profesor-content {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 2rem;
-}
-
 /* Card Container */
 #profesor_cursos {
     flex: 3;
@@ -247,16 +238,15 @@ html, body {
     margin: 0;
 }
 
-/* Card Style */
-.card {
-    width: 18rem;
-    background-color: #ffffff;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 12px rgba(1, 28, 44, 0.3), 0 0 22px rgba(0, 163, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    margin-top: 10px !important;
-    
+.btn-profesor-agregar-curso,
+.btn-profesor-agregar-alumno {
+    background-color: #093454;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
 }
 .in-flex .card-body {
     height: 7rem; /* Tamaño fijo */
@@ -283,8 +273,7 @@ html, body {
 
 
 
-/* Course (course.html) Styles */
-.course_body div.course_code_container {
+.profesor-card {
     display: flex;
     flex-direction: column;
     margin-top: 10px !important;
@@ -494,99 +483,62 @@ html, body {
 .card-img-top {
     height: 8rem;
     object-fit: cover;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
-.card-body {
-    height: 7rem;
-    padding: 0.5rem;
-}
-
-.card-title {
+.profesor-card-title {
     font-size: 1rem;
     font-weight: bold;
     font-family: Arial, sans-serif;
     margin-bottom: 0.2rem;
 }
 
-.card-code {
+.profesor-card-code {
     font-size: 0.625rem;
     margin-bottom: 0.2rem;
     display: block;
 }
 
-.card-text {
-    font-size: 0.75rem;
-    margin: 0.3rem 0 0.8rem;
-}
-
-.card-container {
+.profesor-card-body {
+    min-height: 7rem; /* Permitir altura flexible */
+    padding: 0.5rem;
+    overflow: auto; /* Permitir desplazamiento si el contenido es demasiado grande */
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 2rem 5rem;
-    flex-wrap: wrap;
-}
-
-/* Course (course.html) Styles */
-.course_body div.course_code_container {
-    display: flex;
-    margin: 20px 0px 15px 0px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-}
-
-.course_body div.course_code_container p#course_code {
-    font-size: 1.2rem;
-    color: rgba(0, 0, 0, 0.6);
-    letter-spacing: 0.5px;
-    font-weight: 400;
-    margin: 10px 15px;  
-}
-
-.course_body div.course_card_container p#course_title {
-    font-size: 2rem;
-    color: black;
-    letter-spacing: 0.5px;
-    font-weight: 550;
-    margin: 10px 0px;  
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 
-.course_card_container {
-    margin: 10px 100px 10px 40px;
-    width: 80%;
+
+.profesor-card-text {
+    height: auto; /* Permitir que el contenido expanda */
+    overflow-y: auto; /* Agregar desplazamiento si es necesario */    
+    max-height: 4rem; /* Aumentado un poco */
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    padding: 0.5rem 0.2rem;
 }
 
-.course_card_container table#card_grid {
-    border-collapse: collapse; 
-    background-color: #000000;
+/* Oculta la barra de desplazamiento pero permite el scroll */
+.profesor-card-text::-webkit-scrollbar {
+    width: 4px;
+    background: transparent;
 }
 
-.course_card_container td#grid_txt {
-
-    height: 23px; 
-    padding: 10px; 
-    vertical-align: middle;
+.profesor-card-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
-.course_card_container img{
-    width: clamp(30px, 30vw, 300px);
-}
-
-.linea-header {
+.profesor-linea-header {
     width: 95.5%;
-    margin-top: -20px; /* Ajusta según necesites */
-}
-
-#studentDropdown .dropdown-item {
-    cursor: pointer;
-    padding: 8px 16px;
-}
-
-#studentDropdown .dropdown-item:hover {
-    background-color: #f1f1f1;
+    margin-top: -20px;
 }
 .headeralumno{
     margin-left: 50px;

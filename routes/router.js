@@ -114,6 +114,7 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
+// Obtener la información de los cursos del usuario
 router.post('/user_courses', async (req, res) => {
     try {
         if (!req.session.user) {
@@ -184,6 +185,7 @@ router.post('/user_courses', async (req, res) => {
     }
 })
 
+// obtener tareas de un curso
 router.post('/user_homework', async (req, res) => {
     try{
         if (!req.session.user) {
@@ -236,6 +238,16 @@ router.post('/user_homework', async (req, res) => {
         });
     }
 })
+
+router.post('/sats', async (req, res) => {
+  try {
+
+  }catch (err) {
+    res.status(500).json({
+        error: err.message
+    });
+  }
+});
 
 router.post('/agregar_curso', async (req, res) => {
   try {

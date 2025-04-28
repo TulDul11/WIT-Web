@@ -197,7 +197,6 @@ async function set_up_alumno(user_role, user_id, cod) {
 }
 
 async function set_up_profesor(user_role, user_id, cod) {
-    
     try{
         const response = await fetch(`${api_url}/user_courses`, {
             method: 'POST',
@@ -237,9 +236,12 @@ async function set_up_profesor(user_role, user_id, cod) {
         
         const dashboard_data = await dashboard_response.json();
 
-        console.log(dashboard_data);
+        document.getElementById('course_name').textContent = dashboard_data[0];
+        document.getElementById('num_tec').textContent = dashboard_data[1];
 
-        set_up_charts();
+        console.log(dashboard_data[2]);
+
+        set_up_charts(dashboard_data[2]);
         
 
     }catch(error) {
@@ -247,18 +249,15 @@ async function set_up_profesor(user_role, user_id, cod) {
     }
 }
 
-async function set_up_charts() {
+async function set_up_charts(stats) {
     console.log('Setting up charts...');
-    var labels = [
-        "Emma", "Liam", "Olivia", "Noah", "Ava", "Elijah", "Isabella", "James", "Sophia", "Benjamin",
-        "Mia", "Lucas", "Charlotte", "Mason", "Amelia", "Ethan", "Harper", "Alexander", "Evelyn", "Henry",
-        "Abigail", "Sebastian", "Emily", "Jack", "Ella", "Daniel", "Scarlett", "Matthew", "Luna", "Michael"
-    ];
-    var yValues = [
-        71, 98, 73, 95, 70, 99, 74, 100, 76, 97,
-        72, 96, 78, 93, 75, 94, 77, 92, 79, 91,
-        80, 90, 81, 89, 82, 88, 83, 87, 84, 85
-    ];
+    var labels = [];
+    var yValues = [];
+
+    for(let tecnico of stats){
+        labels.push(tecnico.nombre);
+        yValues.push(Math.round((tecnico.tareas_completadas / tecnico.tareas) * 100));
+    }
     
     var result = {};
     for (var i = 0; i < labels.length; i++) {
@@ -312,7 +311,10 @@ async function set_up_charts() {
             },
             scales: {
             x: {
-                position: 'top' // <-- move the numeric scale to the top
+                beginAtZero: true,
+                grace: 10,
+                position: 'top', // <-- move the numeric scale to the top
+                max: 100
             },
             y: {
                 position: 'left' // (this keeps the names on the left, default)

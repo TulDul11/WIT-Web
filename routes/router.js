@@ -265,6 +265,33 @@ router.post('/dashboard', async (req, res) => {
     let dashboard_data = [];
     dashboard_data.push(course[0].nombre);
 
+    query = `SELECT COUNT(*) AS num_alumnos FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+
+    const [alumnos] = await db.query(query);
+
+    dashboard_data.push(alumnos[0].num_alumnos);
+
+    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+
+    const [nombres] = await db.query(query);
+
+    let progress = [];
+
+    for (let name of nombres){
+        let nombre = name.nombre;
+        query = `SELECT * FROM (SELECT count(*) AS tareas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND cod_curso = '${cod}') AS A
+                JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND completado = true AND cod_curso = '${cod}') AS B;`;
+        let [tareas] = await db.query(query);
+        progress.push({nombre: nombre, tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+    }
+    dashboard_data.push(progress);
+
     return res.json(dashboard_data);
 
 

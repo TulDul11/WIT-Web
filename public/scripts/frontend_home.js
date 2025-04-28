@@ -1,5 +1,6 @@
 let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
+
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */

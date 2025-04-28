@@ -353,7 +353,6 @@ html, body {
 
 }
 /* Card Style */
-.card {
 .in-flex{
     flex: 3; 
     display: flex; 

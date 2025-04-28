@@ -1,8 +1,41 @@
 let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
 window.addEventListener('load', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const courseCode = urlParams.get('code');
+
     let user_role;
     let data;
+
+    // Llamada para cambiar el curso previamente abierto.
+    try {
+        const response = await fetch(`${api_url}/previous_course`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                cod: courseCode
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                user_role_text.textContent = 'Usuario no encontrado';
+            } else if (response.status === 401) {
+                sessionStorage.setItem('login_error', 'Se requiere iniciar sesión para utilizar la aplicación.');
+                window.location.href = '/';
+            }
+            return;
+        }
+
+        data = await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+    
     const course_code_text = document.getElementById('course_code');
     const user_role_text = document.getElementById('nav_role');
     try {
@@ -31,8 +64,7 @@ window.addEventListener('load', async () => {
     user_role = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
     user_role_text.textContent = user_role;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const courseCode = urlParams.get('code');
+    
     course_code_text.textContent = courseCode;
 
     if (user_role == 'Alumno') {

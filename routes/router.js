@@ -162,6 +162,40 @@ router.post('/sidebar', async (req, res) => {
 })
 
 /*
+Método POST para cambiar el curso previo.
+*/
+router.post('/previous_course', async (req, res) => {
+  try {
+      const {cod} = req.body;
+
+      if (!req.session.user) {
+          return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+      }
+
+      const user_id = req.session.user.user_id;
+
+      const query = `SELECT cod_curso FROM usuarios_cursos_previos WHERE id_usuario = '${user_id}'`
+      const [results] = await db.query(query);
+
+      if (results.length != 0) {
+          const query = `DELETE FROM usuarios_cursos_previos WHERE id_usuario = '${user_id}'`
+          await db.query(query);
+      }
+
+      const insert_query = `INSERT INTO usuarios_cursos_previos (id_usuario, cod_curso) VALUES ('${user_id}', '${cod}')`
+      const [insert_result] = await db.query(insert_query);
+
+      return res.json(insert_result);
+
+  } catch (err) {
+      // Caso: Error de conexión
+      res.status(500).json({
+          error: err.message
+      });
+  }
+})
+
+/*
 Método POST para cargar datos de la página de inicio.
 */
 router.post('/user_home', async (req, res) => {
@@ -202,6 +236,7 @@ router.post('/user_home', async (req, res) => {
         });
     }
 })
+
 
 
 router.post('/user_courses', async (req, res) => {

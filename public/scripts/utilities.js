@@ -105,7 +105,7 @@ function animationSetup() {
     const sidebar_previous = document.getElementById('sidebar_previous');
     const sidebar_previous_course = document.getElementById("sidebar_previous_course");
 
-    addAnimation(sidebar_previous, sidebar_previous_course, 61);
+    addAnimation(sidebar_previous, sidebar_previous_course, 62);
 
     // Contenedores y textos de cada curso perteneciente al usuario.
     const sidebar_courses_items = document.querySelectorAll('.sidebar_courses_item');

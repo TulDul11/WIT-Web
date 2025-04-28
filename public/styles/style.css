@@ -360,7 +360,7 @@
     margin: 0;
 }
 
-.btn-agregar-curso {
+.btn-profesor-agregar-curso {
     background-color: #093454; /* Color principal */
     color: white; /* Color del texto */
     border: none;
@@ -371,7 +371,7 @@
 
 }
 
-.btn-agregar-alumno {
+.btn-profesor-agregar-alumno {
     background-color: #093454; /* Color principal */
     color: white; /* Color del texto */
     border: none;
@@ -448,7 +448,7 @@
 }
 
   
-.linea-header {
+.profesor-linea-header {
     width: 95.5%;
     margin-top: -20px; /* Ajusta según necesites */
 }

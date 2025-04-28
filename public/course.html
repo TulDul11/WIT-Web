@@ -18,36 +18,42 @@
 </head>
 <body class="course_body">
     <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
-        <div id="nav_div">
-        <div id="navbar_nav">
-            <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()"/>
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+      
+          <!-- IZQUIERDA: Logo + Breadcrumb juntos -->
+          <div class="d-flex align-items-center gap-3">
+            <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()" />
             <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()" />
-
-            <div id="nav_modules">
-            <ul class="navbar-nav">
-                <li>
-                <a class="nav-link active" onclick="home_screen()">Inicio</a>
-                </li>
-                <li>
-                <a class="nav-link" href="#"></a>
-                </li>
-            </ul>
-            </div>
+      
+                <div id="breadcrumb-container" class="d-flex align-items-center text-white">
+                    <a id="breadcrumb-inicio" class="nav-link p-0 me-2 text-white" href="#" onclick="home_screen()">Inicio</a>
+                    <span id="breadcrumb-sep-1" class="text-muted mx-2 d-none">></span>
+                    <a id="breadcrumb-curso" class="nav-link p-0 me-2 text-white d-none" href="#">Curso</a>
+                    <span id="breadcrumb-sep-2" class="text-muted mx-2 d-none">></span>
+                    <span id="breadcrumb-extra" class="text-white d-none"></span>
+                </div>              
+          </div>
+      
+          <!-- DERECHA: Rol (Profesor/Alumno) -->
+          <div id="nav_role" class="text-white fw-semibold"></div>
+      
         </div>
-        <div id="nav_role"></div>
-        </div>
-    </nav>
+      </nav>
+      
+      
 
     <!-- Curso alumno -->
-    <div class="mb-3" style="margin: 10px 20px;">
-        <p id="course_code" class="fw-bold fs-4"></p>
-    </div>
-    <div class="container-fluid mt-4" id="alumno_body">
+     <div id="alumno_body" class="container-fluid mt-4" style="display: none;">
+        <div class="mb-3" style="margin: 10px 20px;">
+            <p id="course_code" class="fw-bold fs-4"></p>
+        </div>
+
         <div class="mb-3" style="width: 100%;">
             <!-- Grid web -->
             <div class="row align-items-start" id="course_grid">
                 <div class="col-md-9" id="alumno_curso">
                    <!-- Aqui va el splash card del curso -->
+                  
                 </div>
                 <div class="col">
                     <div class="d-flex flex-column align-items-center" id="tareas_container" style="height: 100%; justify-content: start;">
@@ -63,6 +69,14 @@
                  <!-- Aqui va la tarjeta de curso en mobile -->
                   
             </div>
+
+            <div class="container mt-5" id="modulos-alumno-container">
+                <h5 class="fw-bold mb-3">Contenido del Curso</h5>
+                <div id="modulos-alumno-lista" class="list-group">
+                  <!-- Aquí se insertarán dinámicamente los módulos -->
+                </div>
+              </div>
+
             <div class="mb-3" style="width: 100%;">
                 <!-- Aqui van las tareas -->
                 <div class="mb-3" id="tareas_mobile" style="margin-top: 15px;">
@@ -76,40 +90,45 @@
                     </div>
                 </div>
            </div>
+        </div>
 
-            <!-- Tareas mobile -->
-            
+    </div>
 
-            <!-- Modulos -->
-            <div class="mt-4" >
-                <div class="d-flex flex-column align-items-center" id="_container">
-                    <h5 class="fw-bold" style="width: 90%; margin-inline: auto;">Modulos</h5>
-                    <div class="mb-3" style="width: 90%; margin-inline: auto; text-align: right;">
-                        <a href="crearModulos.html?modo=crear" class="btn btn-success btn-sm">+ Crear nuevo módulo</a>
-                      </div>
-                      
-                    <div class="accordion" id="accordionModulos" style="width: 90%; margin-inline: auto;">
-                        <!-- Aquí se insertarán dinámicamente los módulos -->
-                      </div>
+    <!-- Curso profesor -->
+    <div id="profesor_body" class="container-fluid mt-4" style="display: none;">
+        <div class="mb-3" style="margin: 10px 20px;">
+            <p id="course_code_profesor" class="fw-bold fs-4"></p>
+        </div>
+    
+        <div class="card p-4" style="width: 90%;margin-inline: auto;">
+            <h5 class="fw-bold mb-4">Dashboard del curso</h5>
+            <canvas id="myChart" style="width:100%;max-width:700px;height: 500px;"></canvas>
+        </div>
+
+        <!-- Modulos -->
+        <div class="mt-4">
+            <div class="d-flex flex-column align-items-center" id="_container">
+                <h5 class="fw-bold" style="width: 90%; margin-inline: auto;">Módulos</h5>
+
+                <div class="mb-3" style="width: 90%; margin-inline: auto; text-align: right;">
+                    <a href="#" class="btn btn-success btn-sm" id="btn-crear-modulo">
+                        + Crear nuevo módulo
+                    </a>
+                </div>
+
+                <div id="modulos_profesor" class="list-group" style="width: 90%; margin-inline: auto;">
+                    <!-- Aquí se insertarán dinámicamente los módulos -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Curso profesor -->
-    <div class="container-fluid mt-4" id="profesor_body">
-        <div class="card p-4" style="width: 90%;margin-inline: auto;">
-            <canvas id="myChart" style="width:100%;max-width:700px;height: 500px;"></canvas>
-        </div>
-    </div>  
   <script src="./scripts/frontend_course.js"></script>
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"
   ></script>
-
- <script>
-</script>
+  
 </body>
 </html>
 

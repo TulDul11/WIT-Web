@@ -27,7 +27,9 @@
   <script>
     // DATOS DINÁMICOS DEL MÓDULO
     const moduloId = new URLSearchParams(window.location.search).get("modulo");
+    const tareaId = new URLSearchParams(window.location.search).get("tarea");
     const apiBaseUrl = "http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io";
+    //const apiBaseUrl = "http://localhost:3000";
 
     // 🧑‍💻 OBTENER EL user_id
     let user_id = "sin_id";
@@ -39,11 +41,11 @@
       } catch {}
     }
 
-    const configJson = JSON.stringify({
-      moduloID: parseInt(moduloId),
-      apiBaseUrl: apiBaseUrl,
-      user_id: user_id
-    });
+    //const configJson = JSON.stringify({
+      //moduloID: parseInt(moduloId),
+      //apiBaseUrl: apiBaseUrl,
+      //user_id: user_id
+    //});
 
     // 🎮 CARGAR UNITY
     const buildUrl = "Build";
@@ -91,9 +93,11 @@
     
         // Enviar configuración cuando Unity está listo
         const configJson = JSON.stringify({
-          moduloID: moduloId,
-          apiBaseUrl: apiBaseUrl
+          moduloID: parseInt(moduloId),
+          apiBaseUrl: apiBaseUrl,
+          id_tarea: parseInt(tareaId) || 0 // o el ID real de la tarea si lo tienes separado
         });
+        
     
         console.log("Enviando config:", configJson);
         console.log("Enviando user_id:", user_id);

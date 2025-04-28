@@ -223,7 +223,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-size: 20px;
+    font-size: 1rem;
     color: white;
 }
 #side_menu div.side_menu_top_bar div.side_menu_button:hover {
@@ -1135,5 +1135,46 @@ html, body {
 .headeralumno{
     margin-left: 50px;
 }
+
+#breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 10px;
+    font-size: 1rem;
+}
+
+#breadcrumb-container span {
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+#breadcrumb-inicio {
+    cursor: pointer;
+    /*text-decoration: underline; */
+}
+
+#breadcrumb-inicio:hover {
+    color: #F1B300;
+}
+
+#breadcrumb-curso {
+    color: #F1B300; /* El código del curso */
+    font-weight: bold;
+}
+
+#breadcrumb-extra {
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+#breadcrumb-container .text-muted {
+    color: white !important;
+  }
+  
+
+  
 
 

@@ -261,16 +261,16 @@ router.post('/agregar_curso', async (req, res) => {
       console.error('Error al agregar curso:', err);
       res.status(500).json({ error: err.message });
   }
-});
+})
 
 //guardar contenido del modulo
 router.post('/modulos', async (req, res) => {
-    const { titulo, contenido } = req.body;
+    const { titulo, contenido, tarea, cod_curso, fecha_entrega} = req.body;
   
     try {
       const [result] = await db.query(
-        'INSERT INTO modulos (titulo, contenido_html) VALUES (?, ?)',
-        [titulo, contenido]
+        'INSERT INTO modulos (titulo, contenido_html, tarea, cod_curso, fecha_entrega) VALUES (?, ?, ?, ?, ?)',
+        [titulo, contenido, tarea, cod_curso, fecha_entrega]
       );
   
       res.json({ moduloId: result.insertId });
@@ -278,7 +278,7 @@ router.post('/modulos', async (req, res) => {
       console.error(err);
       res.status(500).json({ error: 'Error al guardar el módulo' });
     }
-  });
+})
   
 
 // Ruta para guardar las preguntas asociadas al módulo
@@ -320,7 +320,7 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
   } finally {
     conn.release();
   }
-});
+})
 
 //get las preguntas del modulo
 router.get('/modulos/:id/preguntas', async (req, res) => {
@@ -356,7 +356,7 @@ router.get('/modulos/:id/preguntas', async (req, res) => {
     console.error("Error al obtener preguntas:", err);
     res.status(500).json({ error: 'Error al obtener preguntas del módulo' });
   }
-});
+})
 
 //get titulo del modulo
 router.get('/modulos/:id/titulo', async (req, res) => {
@@ -377,7 +377,7 @@ router.get('/modulos/:id/titulo', async (req, res) => {
     console.error("Error al obtener título del módulo:", err);
     res.status(500).json({ error: 'Error interno' });
   }
-});
+})
 
 
 // Obtener un módulo completo por ID
@@ -401,24 +401,36 @@ router.get('/modulos/:id', async (req, res) => {
   }
 });
 
-// Obtener todos los módulos
+// Filtrar modulos por curso 
 router.get('/modulos', async (req, res) => {
+  const { cod } = req.query; // Leer el parámetro cod de la URL
+
   try {
-    const [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos');
+    let rows;
+
+    if (cod) {
+      // ⚡ Si viene cod, filtrar por curso
+      [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos WHERE cod_curso = ?', [cod]);
+    } else {
+      // ⚡ Si no viene cod, traer todos
+      [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos');
+    }
+
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener módulos:", err);
     res.status(500).json({ error: 'Error interno' });
   }
-});
+})
+
 router.put('/modulos/:id', async (req, res) => {
   const moduloId = parseInt(req.params.id);
-  const { titulo, contenido } = req.body;
+  const { titulo, contenido, fecha_entrega} = req.body;
 
   try {
     const [result] = await db.query(
-      'UPDATE modulos SET titulo = ?, contenido_html = ? WHERE id = ?',
-      [titulo, contenido, moduloId]
+      'UPDATE modulos SET titulo = ?, contenido_html = ?, fecha_entrega = ?, WHERE id = ?',
+      [titulo, contenido, fecha_entrega, moduloId]
     );
 
     if (result.affectedRows === 0) {
@@ -430,29 +442,50 @@ router.put('/modulos/:id', async (req, res) => {
     console.error("Error al actualizar módulo:", err);
     res.status(500).json({ error: 'Error interno al actualizar' });
   }
-});
+})
 
-router.post('/guardar_xp', async (req, res) => {
-  const { user_id, xp, resultado } = req.body;
+router.delete('/modulos/:id', async (req, res) => {
+  const moduloId = req.params.id;
 
   try {
-    const [alumno] = await db.query('SELECT id FROM alumnos WHERE id_usuario = ?', [user_id]);
+      const [result] = await db.query('DELETE FROM modulos WHERE id = ?', [moduloId]);
 
-    if (alumno.length === 0) {
-      return res.status(404).json({ error: 'Alumno no encontrado' });
-    }
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Módulo no encontrado' });
+      }
 
+      res.json({ message: 'Módulo eliminado correctamente' });
+  } catch (err) {
+      console.error("Error al eliminar módulo:", err);
+      res.status(500).json({ error: 'Error interno al eliminar' });
+  }
+})
+
+router.post('/guardar_resultado', async (req, res) => {
+  console.log("[SERVER] Entró a /guardar_resultado");
+  const { user_id, id_tarea, resultado, completado } = req.body;
+
+  if (!user_id || id_tarea == null || resultado == null || completado == null) {
+    return res.status(400).json({ message: 'Datos incompletos' });
+  }
+
+  try {
     await db.query(
-      'UPDATE alumnos SET xp = ?, resultado = ? WHERE id_usuario = ?',
-      [xp, resultado, user_id]
+      `UPDATE alumnos_tareas 
+       SET resultado = ?, completado = ?
+       WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
+       AND id_tarea = ?`,
+      [resultado, completado, user_id, id_tarea]
     );
 
-    res.json({ message: 'XP y resultado guardados correctamente' });
-  } catch (err) {
-    console.error('Error al guardar XP:', err);
-    res.status(500).json({ error: 'Error interno al guardar XP' });
+    res.status(200).json({ message: 'Resultado actualizado exitosamente' });
+  } catch (error) {
+    console.error('Error en guardar_resultado:', error);
+    res.status(500).json({ message: 'Error interno al guardar el resultado' });
   }
 });
+
+
 
 
 module.exports = router;

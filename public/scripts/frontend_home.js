@@ -1,7 +1,12 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+//let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'
 
 
 window.addEventListener('load', async () => {
+    //construirBreadcrumb([
+      //  { nombre: 'Inicio', url: '/home.html' }
+    //]);
+
     let user_role;
     let data;
     try {
@@ -32,6 +37,8 @@ window.addEventListener('load', async () => {
     const user_role_text = document.getElementById('nav_role');
     user_role_text.textContent = user_role;
     const card_name = document.getElementById('card_name');
+
+    actualizarBreadcrumb({}); // Actualiza el breadcrumb al cargar la página
 
     if (data.apellido) {
         card_name.innerHTML = data.nombre + ' ' + data.apellido;
@@ -185,8 +192,8 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
 
     document.getElementById("coursesContainer").appendChild(card);
 
-    // 🔽🔽 Hacemos el POST a la base de datos
-    fetch('http://localhost:3000/agregar_curso', {
+    // acemos el POST a la base de datos
+    fetch(`${api_url}/agregar_curso`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -253,4 +260,35 @@ filterInput.addEventListener('input', function () {
     });
 });
 
-
+function actualizarBreadcrumb({ curso = null, extra = null }) {
+    const inicio = document.getElementById('breadcrumb-inicio');
+    const cursoElem = document.getElementById('breadcrumb-curso');
+    const extraElem = document.getElementById('breadcrumb-extra');
+    const sep1 = document.getElementById('breadcrumb-sep-1');
+    const sep2 = document.getElementById('breadcrumb-sep-2');
+  
+    if (!inicio || !cursoElem || !extraElem) return;
+  
+    // Siempre visible el inicio
+    inicio.classList.remove('d-none');
+  
+    if (curso) {
+      cursoElem.textContent = curso;
+      cursoElem.classList.remove('d-none');
+      sep1.classList.remove('d-none');
+    } else {
+      cursoElem.classList.add('d-none');
+      sep1.classList.add('d-none');
+    }
+  
+    if (extra) {
+      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
+      extraElem.textContent = recortado;
+      extraElem.classList.remove('d-none');
+      sep2.classList.remove('d-none');
+    } else {
+      extraElem.classList.add('d-none');
+      sep2.classList.add('d-none');
+    }
+  }
+  

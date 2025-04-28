@@ -1,9 +1,10 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+//let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'
 
 window.addEventListener('load', async () => {
     let user_role;
     let data;
-    const course_code_text = document.getElementById('course_code');
+    //const course_code_text = document.getElementById('course_code');
     const user_role_text = document.getElementById('nav_role');
     try {
         const response = await fetch(`${api_url}/user_home`, {
@@ -24,6 +25,25 @@ window.addEventListener('load', async () => {
         }
 
         data = await response.json();
+        
+        const alumno_body = document.getElementById('alumno_body');
+        const profesor_body = document.getElementById('profesor_body');
+        
+        //mostrar seccion correspondiente
+        if (data.user_role === 'profesor') {
+            alumno_body.style.display = 'none';
+            profesor_body.style.display = 'block';
+        } else {
+            profesor_body.style.display = 'none';
+            alumno_body.style.display = 'flex'; // flex porque las tarjetas de alumno usan flex
+        }
+
+        //Ocultar boton de crear modulo si no eres profesor
+        const botonCrearModulo = document.getElementById('btn-crear-modulo'); // recuerda poner id al botón
+        if (botonCrearModulo && data.user_role !== 'profesor') {
+            botonCrearModulo.style.display = 'none';
+        }
+
     } catch (error) {
         console.error('Error:', error);
     }
@@ -33,7 +53,8 @@ window.addEventListener('load', async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const courseCode = urlParams.get('code');
-    course_code_text.textContent = courseCode;
+    //course_code_text.textContent = courseCode;
+
 
     if (user_role == 'Alumno') {
         const alumno_body = document.getElementById('alumno_body');
@@ -42,8 +63,26 @@ window.addEventListener('load', async () => {
     } else {
         const profesor_body = document.getElementById('profesor_body');
         profesor_body.style.display = 'flex';
-        set_up_profesor('profesores', data.user_id)
+        set_up_profesor('profesores', data.user_id, courseCode)
     }
+
+    const params = new URLSearchParams(window.location.search);
+    const codCurso = params.get('code') || 'Curso'; // Usa el nombre correcto de tu parámetro (puede ser "code" o "cod")
+
+    const btnCrearModulo = document.getElementById('btn-crear-modulo');
+    if (codCurso && btnCrearModulo) {
+        btnCrearModulo.href = `crearModulos.html?modo=crear&cod=${codCurso}`;
+    } else {
+        console.error('No se encontró código del curso en el URL');
+        btnCrearModulo.href = '#'; // No hace nada si no hay código
+    }
+
+    if (courseCode) {
+        actualizarBreadcrumb({ curso: courseCode });
+    } else {
+        actualizarBreadcrumb({});
+    }
+
 
 })
 
@@ -64,9 +103,9 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                const course_code_text = document.getElementById('course_code');
+                //const course_code_text = document.getElementById('course_code');
                 const alumno_body = document.getElementById('alumno_body');
-                course_code_text.textContent = 'No esta inscrito en este curso';
+                //course_code_text.textContent = 'No esta inscrito en este curso';
                 alumno_body.style.display = 'none';
             }
             throw new Error(`Error: ${response.status}`);
@@ -143,55 +182,119 @@ async function set_up_alumno(user_role, user_id, cod) {
             }
         }
 
-        const accordion = document.getElementById('accordionModulos');
+        const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
 
         try {
-            const res = await fetch('/modulos');
+            const res = await fetch(`/modulos?cod=${cod}`);
             const modulos = await res.json();
-
+        
             if (modulos.length === 0) {
-                accordion.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
+                leccionesContainer.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
                 return;
             }
-
-            modulos.forEach((modulo, index) => {
-                const item = document.createElement('div');
-                item.classList.add('accordion-item');
-
+        
+            modulos.forEach(modulo => {
+                const item = document.createElement('a');
+                item.className = 'list-group-item list-group-item-action';
+                item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
                 item.innerHTML = `
-                <h2 class="accordion-header" id="heading-${index}">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="false" aria-controls="collapse-${index}">
-                    ${modulo.titulo}
-                    </button>
-                </h2>
-                <div id="collapse-${index}" class="accordion-collapse collapse" aria-labelledby="heading-${index}">
-                    <div class="accordion-body">
-                    <p>${modulo.descripcion || 'Contenido del módulo cargado.'}</p>
-                    <a href="verModulo.html?id=${modulo.id}" class="btn btn-sm btn-primary me-2">Ver</a>
-                    <a href="crearModulos.html?modo=editar&id=${modulo.id}" class="btn btn-sm btn-secondary">Editar</a>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold">${modulo.titulo}</span>
+                        ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
                     </div>
-                </div>
                 `;
-
-                accordion.appendChild(item);
+                modulosListaAlumno.appendChild(item);
             });
         } catch (err) {
-        accordion.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
-        console.error(err);
+            modulosListaAlumno.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
+            console.error(err);
         }
-
+        
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
 async function set_up_profesor(user_role, user_id, cod) {
-    try{
+    try {
+        const modulos_profesor = document.getElementById('modulos_profesor');
+
+        // Llamamos al backend para traer los módulos
+        const res = await fetch(`/modulos?cod=${cod}`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            modulos_profesor.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
+            throw new Error('Error al obtener módulos');
+        }
+
+        const modulos = await res.json();
+
+        // Verificamos si hay módulos
+        if (modulos.length === 0) {
+            modulos_profesor.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
+            return;
+        }
+
+        // Creamos una tarjeta para cada módulo
+        modulos.forEach(modulo => {
+            const item = document.createElement('div');
+            item.className = 'list-group-item d-flex justify-content-between align-items-center border-0 border-bottom';
+            
+            item.innerHTML = `
+            <div class="d-flex align-items-center gap-3">
+                <i class="fas fa-file-alt text-muted"></i>
+                <div class="fw-semibold">${modulo.titulo}</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="crearModulos.html?modo=editar&id=${modulo.id}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <button class="btn btn-sm btn-outline-danger" onclick="eliminarModulo(${modulo.id})">Eliminar</button>
+            </div>
+        `;
         
-    }catch(error) {
-        console.error('Error:', error);
+            
+            modulos_profesor.appendChild(item);
+            
+        });
+
+    } catch (error) {
+        console.error('Error en set_up_profesor:', error);
     }
 }
+
+async function eliminarModulo(moduloId) {
+    if (!confirm('¿Estás seguro de que quieres eliminar este módulo? Esta acción no se puede deshacer.')) {
+        return;
+    }
+
+    try {
+        const res = await fetch(`/modulos/${moduloId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!res.ok) {
+            throw new Error('Error al eliminar el módulo');
+        }
+
+        alert('Módulo eliminado exitosamente.');
+        window.location.reload(); // Recargamos para refrescar la lista
+
+    } catch (error) {
+        console.error('Error al eliminar módulo:', error);
+        alert('No se pudo eliminar el módulo.');
+    }
+}
+
+
 
 async function log_out() {
     try {
@@ -214,3 +317,40 @@ async function log_out() {
 function home_screen() {
     window.location.href = './home';
 }
+
+function actualizarBreadcrumb({ curso = null, extra = null }) {
+    const inicio = document.getElementById('breadcrumb-inicio');
+    const cursoElem = document.getElementById('breadcrumb-curso');
+    const extraElem = document.getElementById('breadcrumb-extra');
+    const sep1 = document.getElementById('breadcrumb-sep-1');
+    const sep2 = document.getElementById('breadcrumb-sep-2');
+  
+    if (!inicio || !cursoElem || !extraElem) return;
+  
+    // Siempre visible el inicio
+    inicio.classList.remove('d-none');
+  
+    if (curso) {
+      cursoElem.textContent = curso;
+      cursoElem.classList.remove('d-none');
+      sep1.classList.remove('d-none');
+    } else {
+      cursoElem.classList.add('d-none');
+      sep1.classList.add('d-none');
+    }
+  
+    if (extra) {
+      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
+      extraElem.textContent = recortado;
+      extraElem.classList.remove('d-none');
+      sep2.classList.remove('d-none');
+    } else {
+      extraElem.classList.add('d-none');
+      sep2.classList.add('d-none');
+    }
+  }
+  
+
+
+
+

@@ -1,5 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
-
+//let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'; // Trabajando en local
 
 document.addEventListener('keydown', function(event) {
     if (event.key == 'Enter') {
@@ -8,10 +8,8 @@ document.addEventListener('keydown', function(event) {
 });
 
 async function login_auth() {
-
     const error_text = document.getElementById('error_text');
     const error_symbol = document.getElementById('error_symbol');
-
     const user_container = document.getElementById('login_user');
     const password_container = document.getElementById('login_password');
     const login_button = document.getElementById('login_button');
@@ -37,7 +35,7 @@ async function login_auth() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
+            credentials: 'include', // credenciales
             body: JSON.stringify({
                 user_id: user_container.value,
                 user_password: password_container.value
@@ -60,15 +58,13 @@ async function login_auth() {
         
         const data = await response.json();
 
-        // Guardar user_info en localStorage para que Unity pueda leerlo desde PlayerPrefs
         const user_info = {
             user_id: data.user_info.user_id,
             user_role: data.user_info.user_role
         };
         localStorage.setItem('user_info', JSON.stringify(user_info));
-        
+
         window.location.href = './home';
-        
 
     } catch (error) {
         console.error('Error:', error);

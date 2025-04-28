@@ -175,7 +175,6 @@ router.post('/user_courses', async (req, res) => {
             }
         }
 
-
         return res.json({course_data: course_data})
 
     } catch (err) {
@@ -239,8 +238,35 @@ router.post('/user_homework', async (req, res) => {
     }
 })
 
-router.post('/sats', async (req, res) => {
+router.post('/dashboard', async (req, res) => {
   try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
+
+    const {user_id, user_role, cod} = req.body;
+
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+    const [current_user] = await db.query(query);
+
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT nombre FROM cursos WHERE cod = '${cod}';`
+
+    const [course] = await db.query(query);
+
+    let dashboard_data = [];
+    dashboard_data.push(course[0].nombre);
+
+    return res.json(dashboard_data);
+
 
   }catch (err) {
     res.status(500).json({

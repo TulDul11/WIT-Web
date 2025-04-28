@@ -43,7 +43,7 @@ window.addEventListener('load', async () => {
     } else {
         const profesor_body = document.getElementById('profesor_body');
         profesor_body.style.display = 'flex';
-        set_up_profesor('profesores', data.user_id)
+        set_up_profesor('profesores', data.user_id, courseCode)
     }
 
 })
@@ -80,9 +80,11 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         curso = data.course_data[0];
 
+        console.log(data);
+
         const imgSrc = curso[0].img;
         const result = await fetch(`images/${imgSrc}`);
-        console.log(result.ok);
+        
         if (!result.ok) {
             curso[0].img = 'whirlpool_logo.png';
         }
@@ -109,9 +111,6 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         alumno_curso.innerHTML += carta_curso;
         alumno_curso_m.innerHTML += carta_curso;
-
-        
-        
 
         const hresponse = await fetch(`${api_url}/user_homework`, {
             method: 'POST',
@@ -198,6 +197,7 @@ async function set_up_alumno(user_role, user_id, cod) {
 }
 
 async function set_up_profesor(user_role, user_id, cod) {
+    
     try{
         const response = await fetch(`${api_url}/user_courses`, {
             method: 'POST',
@@ -221,13 +221,34 @@ async function set_up_profesor(user_role, user_id, cod) {
             }
             throw new Error(`Error: ${response.status}`);
         }
+
+        const dashboard_response = await fetch(`${api_url}/dashboard`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+        
+        const dashboard_data = await dashboard_response.json();
+
+        console.log(dashboard_data);
+
+        set_up_charts();
+        
+
     }catch(error) {
         console.error('Error:', error);
     }
-    set_up_charts();
 }
 
 async function set_up_charts() {
+    console.log('Setting up charts...');
     var labels = [
         "Emma", "Liam", "Olivia", "Noah", "Ava", "Elijah", "Isabella", "James", "Sophia", "Benjamin",
         "Mia", "Lucas", "Charlotte", "Mason", "Amelia", "Ethan", "Harper", "Alexander", "Evelyn", "Henry",

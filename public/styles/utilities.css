@@ -66,6 +66,40 @@
     }
 }
 
+/* Breadcrumb Styles */
+#breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 10px;
+    font-size: 1rem;
+}
+#breadcrumb-container span {
+    color: white;
+    font-weight: 500;
+    font-size: 1rem;
+}
+#breadcrumb-inicio {
+    cursor: pointer;
+    /*text-decoration: underline; */
+}
+#breadcrumb-inicio:hover {
+    color: #F1B300;
+}
+#breadcrumb-curso {
+    color: #F1B300; /* El código del curso */
+    font-weight: bold;
+}
+#breadcrumb-extra {
+    display: flex;
+    align-items: center;
+    color: white;
+}
+#breadcrumb-container .text-muted {
+    color: white !important;
+}
+
+/* Menu Button in Nav Bar Styles */
 #menu_button {
     display: flex;
     align-items: center;
@@ -109,6 +143,7 @@
     font-weight: 550;
 }  
 
+/* Sidebar Styles */
 #sidebar {
     display: flex;
     flex-direction: column;

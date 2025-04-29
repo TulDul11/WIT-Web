@@ -1,4 +1,8 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
+<<<<<<< HEAD
+=======
+
+>>>>>>> breadcrumb
 
 
 // --- Evento principal ---

@@ -568,3 +568,25 @@ html, body {
 .headeralumno{
     margin-left: 50px;
 }
+
+.content_body {
+    margin-left: 250px; /* O el ancho exacto de tu sidebar */
+    transition: margin-left 0.3s ease;
+    margin-top: auto;
+    padding: 20px;
+  }
+  #sidebar.active + .content_body {
+    margin-left: 80px; /* si el sidebar se colapsa */
+  }
+
+  .info-tarea {
+    background-color: #d1ecf1;      /* azul claro */
+    border: 1px solid #bee5eb;      /* borde azul más oscuro */
+    color: #0c5460;                 /* texto azul oscuro */
+    padding: 1rem;
+    border-radius: 0.25rem;         /* bordes redondeados */
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+  
+  

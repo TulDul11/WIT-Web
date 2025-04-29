@@ -1,5 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
-
+//let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
 
 
@@ -220,7 +220,7 @@ async function load_home_profesor(loading_data) {
                 }
             });
 
-            editarBtn.addEventListener('click', function (event) {
+            editarBtn.addEventListener('click', async function (event) {
                 event.preventDefault();
                 event.stopPropagation();
                 editarCurso(curso[0].cod);
@@ -230,7 +230,7 @@ async function load_home_profesor(loading_data) {
                 event.preventDefault();
                 event.stopPropagation();
                 await eliminarCurso(curso[0].cod);
-                location.reload();
+                location.reload(true);
             });
         }
 
@@ -388,37 +388,39 @@ function editarCurso(courseKey) {
         });
 }
 
-function eliminarCurso(codCurso) {
+async function eliminarCurso(codCurso) {
     if (!confirm("¿Estás seguro de que deseas eliminar este curso?")) {
-        return;
+        return false; // cancelado por el usuario
     }
 
-    fetch('/delete_course', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ course_id: codCurso })
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+        const response = await fetch('/delete_course', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ course_id: codCurso })
+        });
+
+        const data = await response.json();
+
         if (data.message === 'Curso eliminado exitosamente') {
-            // Busca la tarjeta con el atributo data-course-id
             const cursoElement = document.querySelector(`[data-course-id="${codCurso}"]`);
             if (cursoElement) {
                 console.log("Elemento encontrado en el DOM:", cursoElement);
                 cursoElement.remove();
-            } else {
-                console.error(`No se encontró un elemento con data-course-id="${codCurso}" en el DOM.`);
             }
+            return true; // éxito
         } else {
             console.error('Error al eliminar el curso:', data.message);
+            return false;
         }
-    })
-    .catch(err => {
+    } catch (err) {
         console.error('Error al eliminar el curso:', err);
-    });
+        return false;
+    }
 }
+
 
 
 
@@ -547,6 +549,22 @@ document.addEventListener('click', (event) => {
     }
 });
 
+
+    // Función para actualizar los contadores de caracteres
+function updateCharacterCount(inputId, countId, maxLength) {
+    const input = document.getElementById(inputId);
+    const count = document.getElementById(countId);
+    input.addEventListener('input', function() {
+        const currentLength = input.value.length;
+        count.textContent = `${currentLength}/${maxLength} caracteres`;
+    });
+}
+
+    // Inicializar los contadores de caracteres
+updateCharacterCount('courseName', 'courseNameCount', 50);
+updateCharacterCount('courseKey', 'courseKeyCount', 16);
+updateCharacterCount('description', 'descriptionCount', 3000);
+
 document.getElementById('csvUpload').addEventListener('change', function (e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -588,16 +606,39 @@ document.getElementById('csvUpload').addEventListener('change', function (e) {
     reader.readAsText(file);
 });
 
-document.getElementById('saveStudentButton').addEventListener('click', async () => {
-    
-    const id_usuario = document.getElementById('userID').value.trim();
-    const nombre = document.getElementById('firstName').value.trim();
-    const apellido = document.getElementById('lastName').value.trim();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
 
-    if (!id_usuario || !nombre || !apellido || !username || !password) {
-        alert('Por favor completa todos los campos.');
+
+document.getElementById('saveStudentButton').addEventListener('click', async () => {
+    // 🔵 Cerrar el modal al instante
+    let modal = bootstrap.Modal.getInstance(document.getElementById('agregarAlumnoModal'));
+    if (!modal) {
+        modal = new bootstrap.Modal(document.getElementById('agregarAlumnoModal'));
+    }
+    modal.hide();
+
+    // Luego sigues con la lógica para enviar los datos
+    const rows = document.querySelectorAll('#userTable tbody tr');
+    const alumnos = [];
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 5) return;
+
+        const alumno = {
+            id_usuario: cells[0].textContent.trim(),
+            nombre: cells[1].textContent.trim(),
+            apellido: cells[2].textContent.trim(),
+            username: cells[3].textContent.trim(),
+            password: cells[4].textContent.trim()
+        };
+
+        if (Object.values(alumno).every(val => val !== '')) {
+            alumnos.push(alumno);
+        }
+    });
+
+    if (alumnos.length === 0) {
+        alert('No hay alumnos válidos para enviar.');
         return;
     }
 
@@ -607,27 +648,42 @@ document.getElementById('saveStudentButton').addEventListener('click', async () 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                id_usuario,
-                nombre,
-                apellido,
-                username,
-                password
-            })
+            body: JSON.stringify({ alumnos })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            alert(data.message);
-            
+            alert(`✅ Agregados: ${data.agregados.length}\n⚠️ Duplicados: ${data.duplicados.length}`);
         } else {
-            alert(data.message || 'Error al agregar alumno.');
+            alert(data.message || 'Error al agregar alumnos.');
         }
     } catch (error) {
         console.error('Error al enviar los datos:', error);
         alert('Ocurrió un error al enviar los datos.');
     }
+});
+
+
+const agregarAlumnoModal = document.getElementById('agregarAlumnoModal');
+
+agregarAlumnoModal.addEventListener('hidden.bs.modal', () => {
+    // Limpiar campos ocultos
+    document.getElementById('userID').value = '';
+    document.getElementById('firstName').value = '';
+    document.getElementById('lastName').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+
+    // Limpiar archivo subido
+    document.getElementById('csvUpload').value = '';
+
+    // Opcional: limpiar la tabla de usuarios si quieres
+    const tbody = document.getElementById('userTable').querySelector('tbody');
+    tbody.innerHTML = '';
+
+    // Opcional: resetear todo el formulario
+    document.getElementById('studentForm').reset();
 });
 
 

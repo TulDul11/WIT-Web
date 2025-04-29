@@ -125,7 +125,7 @@
                             <div class="modal-body">
                                 <form id="studentForm">
                                     <div class="mb-3" style="margin-top: 20px;">
-                                        <label for="csvUpload" class="form-label">Sube archivo:</label>
+                                        <label for="csvUpload" class="form-label">Sube un archivo .csv que contenga las credenciales de los alumnos</label>
                                         <input type="file" class="form-control" id="csvUpload" accept=".csv">
                                     </div>
                         
@@ -176,45 +176,36 @@
                                 <!-- Nombre del Curso -->
                                 <div class="mb-3">
                                     <label for="courseName" class="form-label">Nombre del Curso</label>
-                                    <input type="text" class="form-control" id="courseName" placeholder="Escribe el nombre del curso" required>
+                                    <input type="text" class="form-control" id="courseName" placeholder="Escribe el nombre del curso" maxlength="50" required>
+                                    <small id="courseNameCount" class="form-text text-muted">0/50 caracteres</small>
                                 </div>
                                 <!-- Clave del Curso -->
                                 <div class="mb-3">
                                     <label for="courseKey" class="form-label">Clave del Curso</label>
-                                    <input type="text" class="form-control" id="courseKey" placeholder="Escribe la clave del curso" required>
+                                    <input type="text" class="form-control" id="courseKey" placeholder="Escribe la clave del curso" maxlength="16" required>
+                                    <small id="courseKeyCount" class="form-text text-muted">0/16 caracteres</small>
                                 </div>
                                 <!-- Descripción del curso -->
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Descripción del curso</label>
-                                    <textarea class="form-control" id="description" rows="4" placeholder="Escribe una breve descripción del curso"></textarea>
+                                    <textarea class="form-control" id="description" rows="4" placeholder="Escribe una breve descripción del curso" maxlength="3000"></textarea>
+                                    <small id="descriptionCount" class="form-text text-muted">0/3000 caracteres</small>
                                 </div>
-                                <!-- Subir archivo CSV -->
-                                <!--n<div class="mb-3" style="margin-top: 20px;">
-                                    <label for="csvUpload" class="form-label">Sube archivo:</label>
-                                    <input type="file" class="form-control" id="csvUpload" accept=".csv">
-                                </div>  -->
                                 <!-- Lista de alumnos -->
                                 <div class="mb-3">
                                     <label for="studentSelect" class="form-label">Alumnos a Agregar</label>
                                     <div class="input-group">
-                                        <!-- Barra de búsqueda -->
                                         <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno..." aria-label="Buscar alumno">
-
                                     </div>
-                                    
-                                    <!-- Lista desplegable que aparece al escribir -->
+                                
                                     <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
                                         <!-- Opciones se llenarán dinámicamente -->
                                     </div>
                                 
-                                    <!-- Box donde se muestra el alumno seleccionado -->
                                     <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
                                         <!-- Los alumnos seleccionados se mostrarán aquí -->
                                     </div>
                                 </div>
-                                
-                                
-                                
                             </form>
                         </div>
                         <div class="modal-footer">

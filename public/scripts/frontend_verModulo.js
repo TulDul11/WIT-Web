@@ -1,4 +1,6 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
+
 
 
 
@@ -19,42 +21,63 @@ async function cargarModulo() {
   const id = params.get('id');
 
   try {
-      const res = await fetch(`/modulos/${id}`);
-      if (!res.ok) throw new Error('No encontrado');
-      const modulo = await res.json();
+    const res = await fetch(`/modulos/${id}`);
+    if (!res.ok) throw new Error('No encontrado');
+    const modulo = await res.json();
 
-      // Rellenar contenido del módulo
-      document.getElementById('modulo_titulo').textContent = modulo.titulo;
-      document.getElementById('modulo_html').innerHTML = modulo.contenido_html;
+    // Rellenar contenido del módulo
+    document.getElementById('modulo_titulo').textContent = modulo.titulo;
+    document.getElementById('modulo_html').innerHTML = modulo.contenido_html;
 
-      // Rellenar iframe del juego
-      const juegoSrc = `juegos/index.html?modulo=${modulo.id}`;
-      document.getElementById('juego-frame').src = juegoSrc;
+    // Preparar iframe del juego
+    let tareaParam = '';
+    if (modulo.tarea === 1) {
+      const userInfoRaw = localStorage.getItem('user_info');
+      const userInfo = JSON.parse(userInfoRaw);
+      const body = {
+        user_id: userInfo.user_id,
+        user_role: userInfo.user_role,
+        moduloID: modulo.id
+      };
 
-      // --- NUEVO: Rellenar Breadcrumb ---
-      document.getElementById('breadcrumb-sep-1').classList.remove('d-none');
-      document.getElementById('breadcrumb-curso').classList.remove('d-none');
-      document.getElementById('breadcrumb-curso').textContent = modulo.cod_curso;
-      document.getElementById('breadcrumb-curso').href = `course.html?code=${modulo.cod_curso}`;
+      const tareaRes = await fetch(`${api_url}/tarea_id`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
-      document.getElementById('breadcrumb-sep-2').classList.remove('d-none');
-      document.getElementById('breadcrumb-extra').classList.remove('d-none');
-      document.getElementById('breadcrumb-extra').textContent = modulo.titulo;
+      const tareaData = await tareaRes.json();
+      tareaParam = `&tarea=${tareaData.id_tarea}`;
+    }
 
-      if (modulo.fecha_entrega) {
-        const fechaEntregaFormatted = new Date(modulo.fecha_entrega).toLocaleString('es-ES');
-        const contenedor = document.getElementById('modulo_content');
-        const fechaEntregaHTML = `
-          <div class="alert alert-info mt-4">
-            <strong>Fecha límite de entrega:</strong> ${fechaEntregaFormatted}
-          </div>`;
-        contenedor.insertAdjacentHTML('beforeend', fechaEntregaHTML);
+    const juegoSrc = `juegos/index.html?modulo=${modulo.id}${tareaParam}`;
+    document.getElementById('juego-frame').src = juegoSrc;
+
+    // Rellenar Breadcrumb
+    document.getElementById('breadcrumb-sep-1').classList.remove('d-none');
+    document.getElementById('breadcrumb-curso').classList.remove('d-none');
+    document.getElementById('breadcrumb-curso').textContent = modulo.cod_curso;
+    document.getElementById('breadcrumb-curso').href = `course.html?code=${modulo.cod_curso}`;
+
+    document.getElementById('breadcrumb-sep-2').classList.remove('d-none');
+    document.getElementById('breadcrumb-extra').classList.remove('d-none');
+    document.getElementById('breadcrumb-extra').textContent = modulo.titulo;
+
+    // Fecha de entrega
+    if (modulo.fecha_entrega) {
+      const fechaEntregaFormatted = new Date(modulo.fecha_entrega).toLocaleString('es-ES');
+      const contenedor = document.getElementById('modulo_content');
+      const fechaEntregaHTML = `
+        <div class="alert alert-info mt-4">
+          <strong>Fecha límite de entrega:</strong> ${fechaEntregaFormatted}
+        </div>`;
+      contenedor.insertAdjacentHTML('afterbegin', fechaEntregaHTML);
     }
 
   } catch (err) {
-      console.error('Error al cargar el módulo:', err);
-      document.getElementById('modulo_content').innerHTML = `
-          <div class="alert alert-danger">Módulo no encontrado</div>
-      `;
+    console.error('Error al cargar el módulo:', err);
+    document.getElementById('modulo_content').innerHTML = `
+      <div class="alert alert-danger">Módulo no encontrado</div>
+    `;
   }
 }

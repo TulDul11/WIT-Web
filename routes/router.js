@@ -649,28 +649,39 @@ router.delete('/modulos/:id', async (req, res) => {
 })
 
 router.post('/guardar_resultado', async (req, res) => {
-  console.log("[SERVER] Entró a /guardar_resultado");
+  console.log("Endpoint /guardar_resultado recibido!");
+
   const { user_id, id_tarea, resultado, completado } = req.body;
+
+  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
 
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
     return res.status(400).json({ message: 'Datos incompletos' });
   }
 
   try {
-    await db.query(
-      `UPDATE alumnos_tareas 
-       SET resultado = ?, completado = ?
-       WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
-       AND id_tarea = ?`,
-      [resultado, completado, user_id, id_tarea]
-    );
+    const updateQuery = `
+      UPDATE alumnos_tareas 
+      SET resultado = ?, completado = ?
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
+      AND id_tarea = ?`;
+
+    console.log('Query que se ejecutará:', updateQuery);
+    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
+
+    const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
+
+    console.log('Resultado de db.query:', result);
 
     res.status(200).json({ message: 'Resultado actualizado exitosamente' });
   } catch (error) {
     console.error('Error en guardar_resultado:', error);
-    res.status(500).json({ message: 'Error interno al guardar el resultado' });
+    res.status(500).json({ message: 'Error interno al guardar el resultado', error: error.message });
   }
 });
+
+
+
 
 // ROUTER PROFESOR 
 
@@ -876,6 +887,27 @@ router.get('/obtener_curso', async (req, res) => {
       connection.release();
   }
 });
+
+router.post('/tarea_id', async (req, res) => {
+  const { user_id, user_role, moduloID } = req.body;
+
+  try {
+    const [alumno] = await db.query('SELECT id FROM alumnos WHERE id_usuario = ?', [user_id]);
+    if (alumno.length === 0) return res.status(404).json({ message: 'Alumno no encontrado' });
+
+    const id_alumno = alumno[0].id;
+
+    const [tarea] = await db.query('SELECT id_tarea FROM alumnos_tareas WHERE id_alumno = ? AND id_tarea = ?', [id_alumno, moduloID]);
+
+    if (tarea.length === 0) return res.status(404).json({ message: 'Tarea no encontrada' });
+
+    res.json({ id_tarea: tarea[0].id_tarea });
+  } catch (error) {
+    console.error('Error al obtener id_tarea:', error);
+    res.status(500).json({ message: 'Error interno' });
+  }
+});
+
 
 
 

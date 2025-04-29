@@ -25,28 +25,24 @@
   </div>
 
   <script>
-    // DATOS DINÁMICOS DEL MÓDULO
+    // --- DATOS DINÁMICOS DEL MÓDULO ---
     const moduloId = new URLSearchParams(window.location.search).get("modulo");
     const tareaId = new URLSearchParams(window.location.search).get("tarea");
     const apiBaseUrl = "http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io";
 
-    // 🧑‍💻 OBTENER EL user_id
+    // --- OBTENER EL user_id ---
     let user_id = "sin_id";
     const userInfoRaw = localStorage.getItem("user_info");
     if (userInfoRaw) {
       try {
         const userInfo = JSON.parse(userInfoRaw);
         if (userInfo.user_id) user_id = userInfo.user_id;
-      } catch {}
+      } catch (error) {
+        console.error("Error parsing user_info:", error);
+      }
     }
 
-    //const configJson = JSON.stringify({
-      //moduloID: parseInt(moduloId),
-      //apiBaseUrl: apiBaseUrl,
-      //user_id: user_id
-    //});
-
-    // 🎮 CARGAR UNITY
+    // --- CARGAR UNITY ---
     const buildUrl = "Build";
     const loaderUrl = buildUrl + "/juegos.loader.js";
     const config = {
@@ -89,26 +85,24 @@
         fullscreenButton.onclick = () => {
           unityInstance.SetFullscreen(1);
         };
-    
-        // Enviar configuración cuando Unity está listo
+
+        // --- Enviar configuración cuando Unity esté listo ---
         const configJson = JSON.stringify({
           moduloID: parseInt(moduloId),
           apiBaseUrl: apiBaseUrl,
-          id_tarea: parseInt(tareaId) || 0 // o el ID real de la tarea si lo tienes separado
+          id_tarea: parseInt(tareaId) || 0 // Importante enviar también tarea
         });
-        
-    
+
         console.log("Enviando config:", configJson);
         console.log("Enviando user_id:", user_id);
-    
-        unityInstance.SendMessage("MenuManager","SetModuloConfig",configJson)
+
+        unityInstance.SendMessage("MenuManager", "SetModuloConfig", configJson);
         unityInstance.SendMessage("GameState", "ConfigurarDesdeIndex", configJson);
         unityInstance.SendMessage("GameState", "SetUserID", user_id);
       }).catch((message) => {
         alert(message);
       });
     };
-    
 
     document.body.appendChild(script);
   </script>

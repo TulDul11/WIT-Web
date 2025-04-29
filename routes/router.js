@@ -238,7 +238,7 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
-
+// Obtener la información de los cursos del usuario
 router.post('/user_courses', async (req, res) => {
   try {
       if (!req.session.user) {
@@ -306,7 +306,7 @@ router.post('/user_courses', async (req, res) => {
   }
 })
 
-
+// obtener tareas de un curso
 router.post('/user_homework', async (req, res) => {
     try{
         if (!req.session.user) {
@@ -360,6 +360,95 @@ router.post('/user_homework', async (req, res) => {
     }
 })
 
+router.post('/dashboard', async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
+
+    const {user_id, user_role, cod} = req.body;
+
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+    const [current_user] = await db.query(query);
+
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT nombre FROM cursos WHERE cod = '${cod}';`
+
+    const [course] = await db.query(query);
+
+    let dashboard_data = [];
+    dashboard_data.push(course[0].nombre);
+
+    query = `SELECT COUNT(*) AS num_alumnos FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+
+    const [alumnos] = await db.query(query);
+
+    dashboard_data.push(alumnos[0].num_alumnos);
+
+    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+
+    const [nombres] = await db.query(query);
+
+    let progress = [];
+
+    for (let name of nombres){
+        let nombre = name.nombre;
+        query = `SELECT * FROM (SELECT count(*) AS tareas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND cod_curso = '${cod}') AS A
+                JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND completado = true AND cod_curso = '${cod}') AS B;`;
+        let [tareas] = await db.query(query);
+        progress.push({nombre: nombre, tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+    }
+    dashboard_data.push(progress);
+
+    return res.json(dashboard_data);
+
+
+  }catch (err) {
+    res.status(500).json({
+        error: err.message
+    });
+  }
+});
+
+router.post('/agregar_curso', async (req, res) => {
+  try {
+      const { cod, nombre, descripcion } = req.body;
+
+      // Verificar si los campos están completos
+      if (!cod || !nombre || !descripcion) {
+          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+      }
+
+      // Verifica si el curso ya existe en la base de datos
+      const [existingCourse] = await db.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+      if (existingCourse.length > 0) {
+          return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
+      }
+
+      // Agregar el curso a la base de datos
+      await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
+
+      // Retornar respuesta exitosa
+      res.status(201).json({ message: 'Curso agregado exitosamente' });
+  } catch (err) {
+      console.error('Error al agregar curso:', err);
+      res.status(500).json({ error: err.message });
+  }
+});
 
 //guardar contenido del modulo
 router.post('/modulos', async (req, res) => {

@@ -219,6 +219,7 @@ router.post('/user_home', async (req, res) => {
         // Caso: Si no se encuentra el usuario.
         if (results.length == 0) {
             return res.status(404).json({
+                // Caso: No se encontró el usuario.
                 message: 'Error: Usuario no encontrado'
             })
         }
@@ -237,69 +238,75 @@ router.post('/user_home', async (req, res) => {
     }
 })
 
-
-
+// Obtener la información de los cursos del usuario
 router.post('/user_courses', async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
-        }
-        
-        const { user_role, user_id, cod} = req.body;
+  try {
+      if (!req.session.user) {
+          return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+      }
 
-        const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
+      const { user_role, user_id, cod } = req.body;
 
-        const [current_user] = await db.query(query);
+      const query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`
 
+      const [current_user] = await db.query(query);
 
-        if (current_user.length == 0) {
-            return res.status(404).json({
-                message: 'Error: Usuario no encontrado'
-            })
-        }
+      if (current_user.length == 0) {
+          return res.status(404).json({
+              message: 'Error: Usuario no encontrado'
+          })
+      }
 
-        let num_id = current_user[0].id;
+      let num_id = current_user[0].id;
 
-        let course_codes_query;
+      let course_codes_query;
 
-        if(!cod) {
-          course_codes_query = `SELECT cod_curso FROM ${user_role}_cursos WHERE id_alumno = ${num_id}`
-        }else{
-          course_codes_query = `SELECT cod_curso FROM ${user_role}_cursos WHERE id_alumno = ${num_id} AND cod_curso = '${cod}'`
-        }
+      if (user_role == 'alumnos') {
+          if (!cod) {
+              course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id}`;
+          } else {
+              course_codes_query = `SELECT cod_curso FROM alumnos_cursos WHERE id_alumno = ${num_id} AND cod_curso = '${cod}'`;
+          }
+      } else if (user_role == 'profesores') {
+          if (!cod) {
+              course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id}`;
+          } else {
+              course_codes_query = `SELECT cod_curso FROM profesores_cursos WHERE id_profesor = ${num_id} AND cod_curso = '${cod}'`;
+          }
+      }
 
-        const [courses_codes] = await db.query(course_codes_query);
+      const [courses_codes] = await db.query(course_codes_query);
 
-        if (courses_codes.length == 0) {
-            return res.status(404).json({
-                message: 'No está inscrito en ningún curso.'
-            })
-        }
+      if (courses_codes.length == 0) {
+          return res.status(404).json({
+              message: 'No está inscrito en ningún curso.'
+          })
+      }
 
-        let course_data = []
+      let course_data = [];
 
-        for (let row of courses_codes) {
-            let code_course = row.cod_curso;
-            
-            let course_query = `SELECT * FROM cursos WHERE cod = '${code_course}'`;
+      for (let row of courses_codes) {
+          let code_course = row.cod_curso;
 
-            const [course] = await db.query(course_query);
+          let course_query = `SELECT * FROM cursos WHERE cod = '${code_course}'`;
 
-            if (course.length > 0) {
-                course_data.push(course);
-            }
-        }
+          const [course] = await db.query(course_query);
 
+          if (course.length > 0) {
+              course_data.push(course);
+          }
+      }
 
-        return res.json({course_data: course_data})
+      return res.json({ course_data: course_data })
 
-    } catch (err) {
-        res.status(500).json({
-            error: err.message
-        });
-    }
+  } catch (err) {
+      res.status(500).json({
+          error: err.message
+      });
+  }
 })
 
+// obtener tareas de un curso
 router.post('/user_homework', async (req, res) => {
     try{
         if (!req.session.user) {
@@ -353,63 +360,80 @@ router.post('/user_homework', async (req, res) => {
     }
 })
 
-router.post('/agregar_curso', async (req, res) => {
+router.post('/dashboard', async (req, res) => {
   try {
-      const { cod, nombre, descripcion } = req.body;
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
 
-      // Verificar si los campos están completos
-      if (!cod || !nombre || !descripcion) {
-          return res.status(400).json({ message: 'Faltan campos obligatorios' });
-      }
+    const {user_id, user_role, cod} = req.body;
 
-      // Verifica si el curso ya existe en la base de datos
-      const [existingCourse] = await db.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
-      if (existingCourse.length > 0) {
-          return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
-      }
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
 
-      // Agregar el curso a la base de datos
-      await db.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
+    const [current_user] = await db.query(query);
 
-      // Retornar respuesta exitosa
-      res.status(201).json({ message: 'Curso agregado exitosamente' });
-  } catch (err) {
-      console.error('Error al agregar curso:', err);
-      res.status(500).json({ error: err.message });
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT nombre FROM cursos WHERE cod = '${cod}';`
+
+    const [course] = await db.query(query);
+
+    let dashboard_data = [];
+    dashboard_data.push(course[0].nombre);
+
+    query = `SELECT COUNT(*) AS num_alumnos FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+
+    const [alumnos] = await db.query(query);
+
+    dashboard_data.push(alumnos[0].num_alumnos);
+
+    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+
+    const [nombres] = await db.query(query);
+
+    let progress = [];
+
+    for (let name of nombres){
+        let nombre = name.nombre;
+        query = `SELECT * FROM (SELECT count(*) AS tareas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND cod_curso = '${cod}') AS A
+                JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+                INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+                INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+                WHERE nombre = '${nombre}' AND completado = true AND cod_curso = '${cod}') AS B;`;
+        let [tareas] = await db.query(query);
+        progress.push({nombre: nombre, tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+    }
+    dashboard_data.push(progress);
+
+    return res.json(dashboard_data);
+
+
+  }catch (err) {
+    res.status(500).json({
+        error: err.message
+    });
   }
 });
 
-router.get('/obtener_alumnos', async (req, res) => {
-    try {
-        // Consulta a la base de datos para obtener los nombres y apellidos de los alumnos
-        const [results] = await db.query('SELECT nombre, apellido FROM alumnos');
 
-        // Si no hay alumnos en la base de datos
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron alumnos' });
-        }
-
-        // Formateamos los resultados y enviamos solo nombre y apellido
-        const alumnos = results.map(alumno => ({
-            nombre: alumno.nombre,
-            apellido: alumno.apellido
-        }));
-
-        // Respondemos con los alumnos encontrados
-        res.json(alumnos);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 
 //guardar contenido del modulo
 router.post('/modulos', async (req, res) => {
-    const { titulo, contenido } = req.body;
+    const { titulo, contenido, tarea, cod_curso, fecha_entrega} = req.body;
   
     try {
       const [result] = await db.query(
-        'INSERT INTO modulos (titulo, contenido_html) VALUES (?, ?)',
-        [titulo, contenido]
+        'INSERT INTO modulos (titulo, contenido_html, tarea, cod_curso, fecha_entrega) VALUES (?, ?, ?, ?, ?)',
+        [titulo, contenido, tarea, cod_curso, fecha_entrega]
       );
   
       res.json({ moduloId: result.insertId });
@@ -417,7 +441,7 @@ router.post('/modulos', async (req, res) => {
       console.error(err);
       res.status(500).json({ error: 'Error al guardar el módulo' });
     }
-  });
+})
   
 
 // Ruta para guardar las preguntas asociadas al módulo
@@ -459,7 +483,7 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
   } finally {
     conn.release();
   }
-});
+})
 
 //get las preguntas del modulo
 router.get('/modulos/:id/preguntas', async (req, res) => {
@@ -495,7 +519,7 @@ router.get('/modulos/:id/preguntas', async (req, res) => {
     console.error("Error al obtener preguntas:", err);
     res.status(500).json({ error: 'Error al obtener preguntas del módulo' });
   }
-});
+})
 
 //get titulo del modulo
 router.get('/modulos/:id/titulo', async (req, res) => {
@@ -516,7 +540,7 @@ router.get('/modulos/:id/titulo', async (req, res) => {
     console.error("Error al obtener título del módulo:", err);
     res.status(500).json({ error: 'Error interno' });
   }
-});
+})
 
 
 // Obtener un módulo completo por ID
@@ -540,24 +564,36 @@ router.get('/modulos/:id', async (req, res) => {
   }
 });
 
-// Obtener todos los módulos
+// Filtrar modulos por curso 
 router.get('/modulos', async (req, res) => {
+  const { cod } = req.query; // Leer el parámetro cod de la URL
+
   try {
-    const [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos');
+    let rows;
+
+    if (cod) {
+      // ⚡ Si viene cod, filtrar por curso
+      [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos WHERE cod_curso = ?', [cod]);
+    } else {
+      // ⚡ Si no viene cod, traer todos
+      [rows] = await db.query('SELECT id, titulo, contenido_html FROM modulos');
+    }
+
     res.json(rows);
   } catch (err) {
     console.error("Error al obtener módulos:", err);
     res.status(500).json({ error: 'Error interno' });
   }
-});
+})
+
 router.put('/modulos/:id', async (req, res) => {
   const moduloId = parseInt(req.params.id);
-  const { titulo, contenido } = req.body;
+  const { titulo, contenido, fecha_entrega} = req.body;
 
   try {
     const [result] = await db.query(
-      'UPDATE modulos SET titulo = ?, contenido_html = ? WHERE id = ?',
-      [titulo, contenido, moduloId]
+      'UPDATE modulos SET titulo = ?, contenido_html = ?, fecha_entrega = ?, WHERE id = ?',
+      [titulo, contenido, fecha_entrega, moduloId]
     );
 
     if (result.affectedRows === 0) {
@@ -569,29 +605,287 @@ router.put('/modulos/:id', async (req, res) => {
     console.error("Error al actualizar módulo:", err);
     res.status(500).json({ error: 'Error interno al actualizar' });
   }
+})
+
+router.delete('/modulos/:id', async (req, res) => {
+  const moduloId = req.params.id;
+
+  try {
+      const [result] = await db.query('DELETE FROM modulos WHERE id = ?', [moduloId]);
+
+      if (result.affectedRows === 0) {
+          return res.status(404).json({ error: 'Módulo no encontrado' });
+      }
+
+      res.json({ message: 'Módulo eliminado correctamente' });
+  } catch (err) {
+      console.error("Error al eliminar módulo:", err);
+      res.status(500).json({ error: 'Error interno al eliminar' });
+  }
+})
+
+router.post('/guardar_resultado', async (req, res) => {
+  console.log("Endpoint /guardar_resultado recibido!");
+
+  const { user_id, id_tarea, resultado, completado } = req.body;
+
+  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
+
+  if (!user_id || id_tarea == null || resultado == null || completado == null) {
+    return res.status(400).json({ message: 'Datos incompletos' });
+  }
+
+  try {
+    const updateQuery = `
+      UPDATE alumnos_tareas 
+      SET resultado = ?, completado = ?
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
+      AND id_tarea = ?`;
+
+    console.log('Query que se ejecutará:', updateQuery);
+    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
+
+    const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
+
+    console.log('Resultado de db.query:', result);
+
+    res.status(200).json({ message: 'Resultado actualizado exitosamente' });
+  } catch (error) {
+    console.error('Error en guardar_resultado:', error);
+    res.status(500).json({ message: 'Error interno al guardar el resultado', error: error.message });
+  }
 });
 
-router.post('/guardar_xp', async (req, res) => {
-  const { user_id, xp, resultado } = req.body;
+
+
+
+// ROUTER PROFESOR 
+
+router.post('/agregar_curso', async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+      await connection.beginTransaction();
+      
+      const { cod, nombre, descripcion, alumnos } = req.body;
+      if (!cod || !nombre || !descripcion) {
+          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+      }
+      
+      const [existingCourse] = await connection.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+      if (existingCourse.length > 0) {
+          return res.status(409).json({ message: 'El curso ya existe con esa clave.' });
+      }
+      
+      await connection.query('INSERT INTO cursos (cod, nombre, descripcion) VALUES (?, ?, ?)', [cod, nombre, descripcion]);
+      
+      // Asociación al profesor (suponiendo que ya tienes el id del profesor)
+      const user_id = req.session.user.user_id;
+      const [profesorData] = await connection.query('SELECT id FROM profesores WHERE id_usuario = ?', [user_id]);
+      if (profesorData.length === 0) {
+          return res.status(404).json({ message: 'Profesor no encontrado' });
+      }
+      const id_profesor = profesorData[0].id;
+      await connection.query('INSERT INTO profesores_cursos (id_profesor, cod_curso) VALUES (?, ?)', [id_profesor, cod]);
+      
+      // Inserción de alumnos en alumnos_cursos
+      if (alumnos && Array.isArray(alumnos)) {
+          for (let id_alumno of alumnos) {
+              await connection.query(
+                  'INSERT INTO alumnos_cursos (id_alumno, cod_curso) VALUES (?, ?)',
+                  [id_alumno, cod]
+              );
+          }
+      }
+      
+      await connection.commit();
+      res.status(201).json({ message: 'Curso y asociaciones creados exitosamente.' });
+  } catch (err) {
+      await connection.rollback();
+      console.error('Error en inserción en transacción:', err);
+      res.status(500).json({ error: err.message });
+  } finally {
+      connection.release();
+  }
+});
+
+
+router.post('/agregar_alumno', async (req, res) => {
+  try {
+      const { id_usuario, nombre, apellido, username, password } = req.body;
+
+      
+      if (!id_usuario || !nombre || !apellido || !username || !password) {
+          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+      }
+
+      
+      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+      if (existingStudent.length > 0) {
+          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+      }
+
+      
+      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+      if (existingUser.length > 0) {
+          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
+      }
+
+      
+      const salt = await bcrypt.genSalt(10); 
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      
+      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+
+      
+      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+
+      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
+  } catch (err) {
+      console.error('Error al agregar alumno:', err); 
+      res.status(500).json({ error: err.message });
+  }
+});
+
+
+router.get('/obtener_alumnos', async (req, res) => {
+  try {
+      const [results] = await db.query('SELECT id, nombre FROM alumnos');
+
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'No se encontraron alumnos' });
+      }
+
+      const alumnos = results.map(alumno => ({
+          id: alumno.id,
+          nombre: alumno.nombre
+      }));
+
+      res.json(alumnos);
+  } catch (err) {
+      res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/delete_course', async (req, res) => {
+  let connection; // Declarar la conexión fuera del bloque try para que sea accesible en finally
+
+  try {
+      const { course_id } = req.body;
+
+      if (!course_id) {
+          return res.status(400).json({ message: 'El ID del curso es necesario' });
+      }
+
+      // Obtener conexión a la base de datos
+      connection = await db.getConnection();
+      await connection.beginTransaction();
+
+      // Paso 1: Eliminar registros dependientes en la tabla profesores_cursos
+      const deleteProfessorsCoursesQuery = `DELETE FROM profesores_cursos WHERE cod_curso = ?`;
+      await connection.query(deleteProfessorsCoursesQuery, [course_id]);
+
+      // Paso 2: Eliminar registros dependientes en la tabla alumnos_cursos
+      const deleteStudentsCoursesQuery = `DELETE FROM alumnos_cursos WHERE cod_curso = ?`;
+      await connection.query(deleteStudentsCoursesQuery, [course_id]);
+
+      // Paso 3: Eliminar el curso de la tabla cursos
+      const deleteCourseQuery = `DELETE FROM cursos WHERE cod = ?`;
+      const [result] = await connection.query(deleteCourseQuery, [course_id]);
+
+      if (result.affectedRows > 0) {
+          await connection.commit();
+          res.json({ message: 'Curso eliminado exitosamente' });
+      } else {
+          await connection.rollback();
+          res.status(404).json({ message: 'Curso no encontrado' });
+      }
+
+  } catch (err) {
+      if (connection) await connection.rollback(); // Solo hacer rollback si connection existe
+      console.error('Error al eliminar el curso:', err);
+      res.status(500).json({ message: 'Error al eliminar el curso', error: err.message });
+
+  } finally {
+      if (connection) connection.release(); // Evitar ReferenceError
+  }
+});
+
+
+router.post('/agregar_alumno_curso', async (req, res) => {
+  console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
+  try {
+      const { id_alumno, cod_curso } = req.body;
+      if (!id_alumno || !cod_curso) {
+          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+      }
+
+      const [existingAssociation] = await db.query(
+          'SELECT * FROM alumnos_cursos WHERE id_alumno = ? AND cod_curso = ?',
+          [id_alumno, cod_curso]
+      );
+
+      if (existingAssociation.length > 0) {
+          return res.status(409).json({ message: 'El alumno ya está asignado a este curso.' });
+      }
+
+      await db.query(
+          'INSERT INTO alumnos_cursos (id_alumno, cod_curso) VALUES (?, ?)',
+          [id_alumno, cod_curso]
+      );
+
+      console.log(`Inserción exitosa para id_alumno: ${id_alumno} en cod_curso: ${cod_curso}`);
+      res.status(201).json({ message: 'Alumno asignado al curso exitosamente.' });
+  } catch (err) {
+      console.error('Error al asignar el alumno al curso:', err);
+      res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/obtener_curso', async (req, res) => {
+  const connection = await db.getConnection();
+  try {
+      const { cod } = req.query;
+      if (!cod) {
+          return res.status(400).json({ message: 'Código de curso requerido.' });
+      }
+
+      const [curso] = await connection.query('SELECT * FROM cursos WHERE cod = ?', [cod]);
+      if (curso.length === 0) {
+          return res.status(404).json({ message: 'Curso no encontrado.' });
+      }
+
+      res.status(200).json(curso[0]);
+  } catch (err) {
+      console.error('Error al obtener curso:', err);
+      res.status(500).json({ error: err.message });
+  } finally {
+      connection.release();
+  }
+});
+
+router.post('/tarea_id', async (req, res) => {
+  const { user_id, user_role, moduloID } = req.body;
 
   try {
     const [alumno] = await db.query('SELECT id FROM alumnos WHERE id_usuario = ?', [user_id]);
+    if (alumno.length === 0) return res.status(404).json({ message: 'Alumno no encontrado' });
 
-    if (alumno.length === 0) {
-      return res.status(404).json({ error: 'Alumno no encontrado' });
-    }
+    const id_alumno = alumno[0].id;
 
-    await db.query(
-      'UPDATE alumnos SET xp = ?, resultado = ? WHERE id_usuario = ?',
-      [xp, resultado, user_id]
-    );
+    const [tarea] = await db.query('SELECT id_tarea FROM alumnos_tareas WHERE id_alumno = ? AND id_tarea = ?', [id_alumno, moduloID]);
 
-    res.json({ message: 'XP y resultado guardados correctamente' });
-  } catch (err) {
-    console.error('Error al guardar XP:', err);
-    res.status(500).json({ error: 'Error interno al guardar XP' });
+    if (tarea.length === 0) return res.status(404).json({ message: 'Tarea no encontrada' });
+
+    res.json({ id_tarea: tarea[0].id_tarea });
+  } catch (error) {
+    console.error('Error al obtener id_tarea:', error);
+    res.status(500).json({ message: 'Error interno' });
   }
 });
+
+
+
 
 
 module.exports = router;

@@ -576,18 +576,6 @@
 
     color: #eeb111;
 }
-#sidebar_courses_all {
-    display: none;
-
-    font-size: 15px;
-
-    color: rgba(180, 180, 180, 0.735);
-
-    cursor: pointer;
-}
-#sidebar_courses_all:hover {
-    text-decoration: underline;
-}
 #sidebar_courses.active {
     justify-content: start;
 }
@@ -616,9 +604,6 @@
 #sidebar_courses.active #sidebar_courses_list {
     display: block;
 }
-#sidebar_courses.active #sidebar_courses_all {
-    display: inline-block;
-}
 @media (max-width: 767px) {
     #sidebar_courses_list {
         max-height: 70%;
@@ -632,18 +617,12 @@
     #sidebar_courses.active #sidebar_courses_title svg {
         width: 29px;
     }
-    #sidebar_courses.active #sidebar_courses_all {
-        font-size: 13px;
-    }
 }
 @media (max-height: 700px) {
     #sidebar_courses.active {
         padding: 8px 0px;
     }
     #sidebar_courses.active #sidebar_courses_list {
-        display: none;
-    }
-    #sidebar_courses.active #sidebar_courses_all {
         display: none;
     }
     #sidebar_courses.active #sidebar_courses_title {

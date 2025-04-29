@@ -2,30 +2,35 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+
   <title>Editor de Módulo</title>
+  <link rel="icon" href="./images/wti_icon_logo.PNG">
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
-    <div id="nav_div">
-      <div id="navbar_nav">
-        <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()"/>
-        <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()"/>
+    <div class="container-fluid d-flex justify-content-between align-items-center">
   
-        <div id="nav_modules">
-          <ul class="navbar-nav">
-            <li>
-              <a class="nav-link active" href="#">Inicio</a>
-            </li>
-            <li>
-              <a class="nav-link" href="#"></a>
-            </li>
-          </ul>
-        </div>
+      <!-- IZQUIERDA: Logo + Breadcrumb juntos -->
+      <div class="d-flex align-items-center gap-3">
+        <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()" />
+        <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()" />
+  
+            <div id="breadcrumb-container" class="d-flex align-items-center text-white">
+                <a id="breadcrumb-inicio" class="nav-link p-0 me-2 text-white" href="#" onclick="home_screen()">Inicio</a>
+                <span id="breadcrumb-sep-1" class="text-muted mx-2 d-none">></span>
+                <a id="breadcrumb-curso" class="nav-link p-0 me-2 text-white d-none" href="#">Curso</a>
+                <span id="breadcrumb-sep-2" class="text-muted mx-2 d-none">></span>
+                <span id="breadcrumb-extra" class="text-white d-none"></span>
+            </div>              
       </div>
-      <div id="nav_role"></div>
+  
+      <!-- DERECHA: Rol (Profesor/Alumno) -->
+      <div id="nav_role" class="text-white fw-semibold"></div>
+  
     </div>
   </nav>
   
@@ -33,8 +38,47 @@
     <h2 id="page-title">Crear Contenido del Módulo</h2>
     <div id="module-title-wrapper" class="mb-3">
       <label for="module-title" class="form-label fw-bold">Título del módulo</label>
-      <input type="text" class="form-control" id="module-title" placeholder="Ej. Introducción al sistema solar">
+      <input type="text" class="form-control" id="module-title" placeholder="Ej. Introducción al sistema de lavadoras">
     </div>
+
+    <div class="mb-4">
+      <label id="tipo-label" class="form-label fw-bold mb-2">Seleccionar tipo de módulo</label>
+      <div id="tipo-selector" class="d-flex gap-3">
+        <button type="button" class="btn btn-outline-secondary" id="btn-leccion">Lección</button>
+        <button type="button" class="btn btn-outline-secondary" id="btn-tarea">Tarea</button>
+      </div>
+      <p id="tipo-texto" class="fw-bold mt-2" style="display: none;"></p>
+    </div>
+
+    <div id="fecha-entrega-wrapper" class="mb-3 d-none">
+      <label class="form-label fw-bold">Fecha de entrega de la tarea:</label>
+      <input type="datetime-local" id="fecha-entrega" class="form-control">
+    </div>
+  
+    
+    <!-- Ayuda visual para tarea -->
+    <div id="ayuda-tarea" class="alert alert-info d-none mt-3" role="alert">
+      Este módulo contendrá:
+      <ul class="mb-0">
+        <li>Un banco de preguntas</li>
+        <li>Un videojuego interactivo</li>
+      </ul>
+    </div>
+
+    <!-- Input de fecha de entrega -->
+    <div class="mb-3" id="fecha-entrega-wrapper" style="display: none;">
+      <label for="fecha-entrega" class="form-label fw-bold">Fecha de entrega (para tareas)</label>
+      <input 
+        type="datetime-local" 
+        class="form-control" 
+        id="fecha-entrega"
+        name="fecha-entrega"
+      />
+      <div class="form-text">Selecciona la fecha y hora límite para entregar esta tarea.</div>
+    </div>
+
+    
+    
 
     <div id="editor-wrapper">
       <div id="toolbar-container">
@@ -60,7 +104,7 @@
 
     <div class="mt-3">
       <button id="btn-save" class="btn btn-save me-2" onclick="guardarModulo()">Guardar módulo</button>
-      <button id="btn-publish" class="btn btn-publish me-2">Publicar módulo</button>
+      <!--<button id="btn-cancel" class="btn btn-cancel me-2" onclick="cancelarModulo()">Cancelar</button> -->
       <button id="btn-preview" class="btn btn-preview-edit me-2">Previsualizar</button>
       <button id="btn-edit" class="btn btn-preview-edit" style="display: none;">Editar</button>
     </div>
@@ -68,280 +112,69 @@
     
 
     <!-- Sección de banco de preguntas -->
-    <section x-data class="mt-5">
-      <h4 class="fw-bold mb-3">Banco de preguntas para el videojuego</h4>
+    <div id="preguntas-wrapper" x-data class="mt-5 d-none">
+      <section>
+        <h4 class="fw-bold mb-3">Banco de preguntas para el videojuego</h4>
 
-      <template x-for="(pregunta, index) in $store.bancoPreguntas.preguntas" :key="index">
-        <div class="mb-3 border rounded" :class="pregunta.abierta ? 'bg-light' : ''">
-          <div class="d-flex justify-content-between align-items-center p-2">
-            <span class="fw-semibold">Pregunta <span x-text="index + 1"></span></span>
-            <div>
-              <button class="btn btn-sm btn-secondary me-2" @click="pregunta.abierta = !pregunta.abierta" x-text="pregunta.abierta ? 'Ocultar' : 'Mostrar'"></button>
-              <button class="btn btn-sm btn-outline-danger" @click="$store.bancoPreguntas.eliminarPregunta(index)">Eliminar</button>
+        <template x-for="(pregunta, index) in $store.bancoPreguntas.preguntas" :key="index">
+          <div class="mb-3 border rounded" :class="pregunta.abierta ? 'bg-light' : ''">
+            <div class="d-flex justify-content-between align-items-center p-2">
+              <span class="fw-semibold">Pregunta <span x-text="index + 1"></span></span>
+              <div>
+                <button class="btn btn-sm btn-secondary me-2" @click="pregunta.abierta = !pregunta.abierta" x-text="pregunta.abierta ? 'Ocultar' : 'Mostrar'"></button>
+                <button class="btn btn-sm btn-outline-danger" @click="$store.bancoPreguntas.eliminarPregunta(index)">Eliminar</button>
+              </div>
+            </div>
+
+            <div x-show="pregunta.abierta" class="p-3 border-top">
+              <label class="form-label">Texto de la pregunta:</label>
+              <input type="text" class="form-control mb-2" x-model="pregunta.texto" placeholder="Escribe la pregunta aquí...">
+
+              <label class="form-label">Respuestas:</label>
+              <template x-for="(respuesta, rIndex) in pregunta.respuestas" :key="rIndex">
+                <div class="input-group mb-2">
+                  <div class="input-group-text">
+                    <input type="radio" :name="'correcta_' + index" :value="rIndex" x-model="pregunta.correcta">
+                  </div>
+                  <input type="text" class="form-control" x-model="pregunta.respuestas[rIndex]" placeholder="Respuesta">
+                </div>
+              </template>
             </div>
           </div>
+        </template>
 
-          <div x-show="pregunta.abierta" class="p-3 border-top">
-            <label class="form-label">Texto de la pregunta:</label>
-            <input type="text" class="form-control mb-2" x-model="pregunta.texto" placeholder="Escribe la pregunta aquí...">
+        <button class="btn btn-sm btn-outline-primary me-2" @click="$store.bancoPreguntas.añadirPregunta()">+ Añadir pregunta</button>
+        <button class="btn btn-sm btn-success me-2" onclick="guardarPreguntas()">Guardar preguntas</button>
+      </section>
+    </div>
 
-            <label class="form-label">Respuestas:</label>
-            <template x-for="(respuesta, rIndex) in pregunta.respuestas" :key="rIndex">
-              <div class="input-group mb-2">
-                <div class="input-group-text">
-                  <input type="radio" :name="'correcta_' + index" :value="rIndex" x-model="pregunta.correcta">
-                </div>
-                <input type="text" class="form-control" x-model="pregunta.respuestas[rIndex]" placeholder="Respuesta">
-              </div>
-            </template>
-          </div>
-        </div>
-      </template>
+      <!-- Sección del videojuego -->
+    <div id="juego-wrapper" class="mt-5 d-none">
+      <section>
+        <h4 class="fw-bold">Videojuego asociado</h4>
+        <label for="select-juego">Seleccionar videojuego:</label>
+        <select id="select-juego" class="form-select mb-3">
+          <option>Trivia básica</option>
+        </select>
 
-      <button class="btn btn-sm btn-outline-primary me-2" @click="$store.bancoPreguntas.añadirPregunta()">+ Añadir pregunta</button>
-      <button class="btn btn-sm btn-success me-2" onclick="guardarPreguntas()">Guardar preguntas</button>
-    </section>
-
-    <!-- Sección del videojuego -->
-    <section class="mt-5">
-      <h4 class="fw-bold">Videojuego asociado</h4>
-      <label for="select-juego">Seleccionar videojuego:</label>
-      <select id="select-juego" class="form-select mb-3">
-        <option>Trivia básica</option>
-      </select>
-      <button id="probar-juego" class="btn btn-primary me-2">Probar juego</button>
-      <button class="btn btn-warning">Publicar</button>
-      <div id="juego-container" style="display: none; margin-top: 1rem;">
-        <div id="juego-container" style="display: none;">
+        <div style="margin-top: 1rem;">
           <iframe id="juego-frame"
-            width="100%"
-            height="640"
-            style="max-width: 1100px; margin-inline: auto; display: block; border: none;">
+            width="960px"
+            height="600px"
+            style="max-width: 1100px; margin-inline: auto; display: none; border: none;">
           </iframe>
         </div>
-              </div>
-    </section>
+      </section>
+    </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
-  <script>
-    document.addEventListener('alpine:init', () => {
-      Alpine.store('bancoPreguntas', {
-        preguntas: [],
-        añadirPregunta() {
-          this.preguntas.push({ texto: '', respuestas: ['', '', '', ''], correcta: 0, abierta: true });
-        },
-        eliminarPregunta(index) {
-          this.preguntas.splice(index, 1);
-        }
-      });
-    });
-  </script>
-  
-
-  <script>
-    const quill = new Quill('#editor-container', {
-      theme: 'snow',
-      modules: { toolbar: '#toolbar-container' },
-      placeholder: 'Escribe aquí el contenido del módulo...'
-    });
-
-    const editorWrapper = document.getElementById('editor-wrapper');
-    const previewContainer = document.getElementById('preview-container');
-    const btnPreview = document.getElementById('btn-preview');
-    const btnEdit = document.getElementById('btn-edit');
-    const pageTitle = document.getElementById('page-title');
-
-    btnPreview.addEventListener('click', () => {
-      const titulo = document.getElementById('module-title').value;
-      const contenido = quill.root.innerHTML;
-
-      document.getElementById('preview-title').textContent = titulo;
-      document.getElementById('preview-title').style.display = 'block';
-      document.getElementById('module-title-wrapper').style.display = 'none';
-
-      previewContainer.innerHTML = contenido;
-      editorWrapper.style.display = 'none';
-      previewContainer.style.display = 'block';
-      pageTitle.style.display = 'none';
-      btnPreview.style.display = 'none';
-      btnEdit.style.display = 'inline-block';
-    });
-
-    btnEdit.addEventListener('click', () => {
-      editorWrapper.style.display = 'block';
-      previewContainer.style.display = 'none';
-      document.getElementById('preview-title').style.display = 'none';
-      document.getElementById('module-title-wrapper').style.display = 'block';
-      pageTitle.style.display = 'block';
-      btnPreview.style.display = 'inline-block';
-      btnEdit.style.display = 'none';
-    });
-
-    function bancoPreguntas() {
-      return {
-        preguntas: [],
-        añadirPregunta() {
-          this.preguntas.push({ texto: '', respuestas: ['', '', '', ''], correcta: 0, abierta: true });
-        },
-        eliminarPregunta(index) {
-          this.preguntas.splice(index, 1);
-        },
-        guardarBanco() {
-          console.log('Preguntas guardadas localmente:', this.preguntas);
-          alert('Preguntas guardadas (ver consola)');
-        },
-        publicarBanco() {
-          console.log('Enviando preguntas al videojuego:', this.preguntas);
-          alert('Preguntas publicadas (simulación)');
-        }
-      };
-    }
-
-      // VARIABLE GLOBAL para almacenar el ID del módulo guardado
-      let moduloGuardadoId = null;
-
-      // Función para guardar el módulo (título + contenido)
-      function guardarModulo() {
-        const titulo = document.getElementById('module-title').value;
-        const contenido = quill.root.innerHTML;
-      
-        const params = new URLSearchParams(window.location.search);
-        const modo = params.get('modo');
-        const id = params.get('id');
-      
-        let metodo, url;
-      
-        if (modo === 'editar' && id) {
-          metodo = 'PUT';
-          url = `/modulos/${id}`;
-        } else {
-          metodo = 'POST';
-          url = '/modulos';
-        }
-      
-        fetch(url, {
-          method: metodo,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titulo, contenido })
-        })
-          .then(res => res.json())
-          .then(data => {
-            // Guardamos ID si es nuevo o si estamos editando
-            moduloGuardadoId = modo === 'editar' ? parseInt(id) : data.moduloId;
-      
-            alert(`Módulo ${modo === 'editar' ? 'actualizado' : 'creado'} con ID: ${moduloGuardadoId}`);
-          })
-          .catch(() => alert("Error al guardar el módulo"));
-      }
-      
-      
-
-    // Función para guardar preguntas asociadas al módulo guardado
-    function guardarPreguntas() {
-      if (!moduloGuardadoId) {
-        alert(" Primero guarda el módulo antes de guardar las preguntas.");
-        return;
-      }
-
-      const preguntas = JSON.parse(JSON.stringify(Alpine.store('bancoPreguntas')?.preguntas || []));
-      console.log("Preguntas a enviar:", preguntas);  // <--- esto
+  <script src="./scripts/frontend_crearModulos.js"></script>
 
 
-      fetch(`/modulos/${moduloGuardadoId}/preguntas`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ preguntas })
-      })
-      .then(res => res.json())
-      .then(data => alert(data.message))
-      .catch(() => alert("Error al guardar las preguntas"));
-    }
-    document.addEventListener('DOMContentLoaded', async () => {
-      const params = new URLSearchParams(window.location.search);
-      const modo = params.get('modo');
-      const id = params.get('id');
-    
-      if (modo === 'editar' && id) {
-        try {
-          // Cargar contenido del módulo
-          const res = await fetch(`/modulos/${id}`);
-          const modulo = await res.json();
-    
-          document.getElementById('module-title').value = modulo.titulo;
-          quill.root.innerHTML = modulo.contenido_html;
-    
-          // Cargar preguntas del módulo
-          const pregRes = await fetch(`/modulos/${id}/preguntas`);
-          const preguntas = await pregRes.json();
-    
-          // Asignar al store global correctamente
-          Alpine.store('bancoPreguntas').preguntas = preguntas.map(p => ({
-          texto: p.pregunta,
-          respuestas: p.opciones,
-          correcta: p.correcta,
-          abierta: true
-      }));
-    } catch (err) {
-      console.error('Error cargando módulo o preguntas:', err);
-    }
-  }
-});    
-  </script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const modo = params.get('modo');
-      const id = params.get('id');
-    
-      const btnProbarJuego = document.getElementById('probar-juego');
-      const iframe = document.getElementById('juego-frame');
-    
-      if (modo === 'editar' && id) {
-        btnProbarJuego.addEventListener('click', () => {
-          iframe.src = `juegos/index.html?modulo=${id}`;
-          iframe.style.display = 'block';
-        });
-      } else {
-        // Ocultar sección si estás en modo crear
-        document.getElementById('juego-container').style.display = 'none';
-      }
-    });
-  </script>
-  
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      const params = new URLSearchParams(window.location.search);
-      const modo = params.get('modo');
-      const id = params.get('id');
-  
-      if (modo === 'editar' && id) {
-        try {
-          const res = await fetch(`/modulos/${id}`);
-          if (!res.ok) throw new Error('No encontrado');
-          const modulo = await res.json();
-  
-          // Cargar datos en el editor
-          document.getElementById('module-title').value = modulo.titulo;
-          quill.root.innerHTML = modulo.contenido_html;
-  
-          // TODO: Cargar preguntas con: /modulos/:id/preguntas
-        } catch (err) {
-          alert('Error al cargar módulo para edición');
-          console.error(err);
-        }
-      }
-    });
-  </script>
-
-  <script>
-    function home_screen() {
-      window.location.href = './home';
-    }
-  </script>
 </body>
 </html>

@@ -16,7 +16,7 @@ async function cargarModulo() {
   const id = params.get('id');
 
   try {
-    const res = await fetch(`/modulos/${id}`);
+    const res = await fetch(`${api_url}/modulos/${id}`);
     if (!res.ok) throw new Error('No encontrado');
     const modulo = await res.json();
 

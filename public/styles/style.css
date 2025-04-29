@@ -568,3 +568,30 @@ html, body {
 .headeralumno{
     margin-left: 50px;
 }
+
+.content_body {
+    width: calc(100% - 85px);
+
+    margin-top: 70px;
+
+    margin-left: 85px;
+
+    transition: margin-left 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.content_body.active {
+    width: calc(100% - 340px);
+
+    margin-left: 340px;
+}
+
+  .info-tarea {
+    background-color: #d1ecf1;      /* azul claro */
+    border: 1px solid #bee5eb;      /* borde azul más oscuro */
+    color: #0c5460;                 /* texto azul oscuro */
+    padding: 1rem;
+    border-radius: 0.25rem;         /* bordes redondeados */
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+  
+  

@@ -637,10 +637,17 @@ router.post('/guardar_resultado', async (req, res) => {
 
   try {
     const updateQuery = `
+<<<<<<< HEAD
       UPDATE alumnos_tareas 
       SET resultado = ?, completado = ?
-      WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
-      AND id_tarea = ?`;
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
+      AND id_tarea = ?;`;
+=======
+    UPDATE alumnos_tareas 
+    SET resultado = ?, completado = ?
+    WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
+    AND id_tarea = ?;`;
+>>>>>>> breadcrumb
 
     console.log('Query que se ejecutará:', updateQuery);
     console.log('Con valores:', [resultado, completado, user_id, id_tarea]);

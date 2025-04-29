@@ -1,5 +1,6 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
+
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -77,12 +78,17 @@ async function load_home() {
         document.getElementById('alumno_body').style.display = 'flex';
 
         await load_home_alumno(data)
-    } else {
+        actualizarHomeHeaderPorRol(data.user_role);
+
+    } else if(data.user_role == 'profesor') {
         // Si es profesor, se despliega la parte de profesor.
         document.getElementById('profesor_body').style.display = 'flex';
 
         await load_home_profesor(data)
+        actualizarHomeHeaderPorRol(data.user_role);
+
     }
+
 };
 
 /*
@@ -387,4 +393,17 @@ function actualizarBreadcrumb({ curso = null, extra = null }) {
       sep2.classList.add('d-none');
     }
   }
+
+  function actualizarHomeHeaderPorRol(userRole) {
+    const title = document.getElementById('home-title');
+  
+    if (!title) return; // Evita errores si no existen en el DOM
+  
+    if (userRole === 'profesor') {
+      title.textContent = 'Panel del Profesor';
+    } else if (userRole === 'alumno') {
+      title.textContent = 'Tus cursos';
+    }
+  }
+  
   

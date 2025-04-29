@@ -16,21 +16,15 @@ window.addEventListener('load', async () => {
 
         await load_sidebar_data();
 
-        
-        
-        configurarBotonCrearModulo();
-        
-        
-        
         // Terminando la carga de datos a través de la conexión, manejamos las últimas modificaciones de diseño a la barra lateral (incluyendo animaciones).
         const mediaQuery = window.matchMedia('(max-width: 767px)');
-        
+
         if (!mediaQuery.matches) {
-            toggleSidebar();
+             toggleSidebar();
         }
-        
+
         animationSetup();
-        
+
     })
     .catch(err => console.error('Error al cargar utilidades:', err));
 })
@@ -243,10 +237,10 @@ async function set_up_alumno(user_role, user_id, cod) {
             modulos.forEach(modulo => {
                 const item = document.createElement('a');
                 item.className = 'list-group-item list-group-item-action';
-                item.href = `verModulo.html?id=${modulo.id}`; // cargar pagina para visualizacion de modulos solo para alumno
+                item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
                 item.innerHTML = `
                     <div class="d-flex justify-content-between align-items-center">
-                        <span>${modulo.titulo}</span>
+                        <span class="fw-semibold">${modulo.titulo}</span>
                         ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
                     </div>
                 `;
@@ -587,17 +581,6 @@ function home_screen() {
 }
   
 
-function configurarBotonCrearModulo() {
-  const params = new URLSearchParams(window.location.search);
-  const codCurso = params.get('code');
-
-  if (codCurso) {
-    const crearModuloBtn = document.getElementById('btn-crear-modulo');
-    if (crearModuloBtn) {
-        crearModuloBtn.href = `crearModulos.html?modo=crear&cod=${codCurso}`;
-    }
-  }
-}
 
 
 

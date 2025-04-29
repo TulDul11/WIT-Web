@@ -48,6 +48,16 @@ async function cargarModulo() {
     const juegoSrc = `juegos/index.html?modulo=${modulo.id}${tareaParam}`;
     document.getElementById('juego-frame').src = juegoSrc;
 
+    // Rellenar Breadcrumb
+    document.getElementById('breadcrumb-sep-1').classList.remove('d-none');
+    document.getElementById('breadcrumb-curso').classList.remove('d-none');
+    document.getElementById('breadcrumb-curso').textContent = modulo.cod_curso;
+    document.getElementById('breadcrumb-curso').href = `course.html?code=${modulo.cod_curso}`;
+
+    document.getElementById('breadcrumb-sep-2').classList.remove('d-none');
+    document.getElementById('breadcrumb-extra').classList.remove('d-none');
+    document.getElementById('breadcrumb-extra').textContent = modulo.titulo;
+
     // Fecha de entrega
     if (modulo.fecha_entrega) {
       const fechaEntregaFormatted = new Date(modulo.fecha_entrega).toLocaleString('es-ES');

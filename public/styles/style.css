@@ -568,6 +568,7 @@ html, body {
 .headeralumno{
     margin-left: 50px;
 }
+<<<<<<< HEAD
 
 .content_body {
     width: calc(100% - 85px);
@@ -595,3 +596,5 @@ html, body {
   }
   
   
+=======
+>>>>>>> parent of b026dff (Resueltos conflictos del merge de breadcrumb a dev)

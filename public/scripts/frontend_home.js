@@ -90,6 +90,71 @@ async function load_home() {
 /*
 Función que cargará los datos del alumno en home.
 */
+async function load_home_alumno(loading_data) {
+    // Modificando carta de usuario para colocar nombre de usuario
+    const card_name = document.getElementById('card_name');
+    
+    if (loading_data.nombre && loading_data.apellido) {
+        card_name.innerHTML = loading_data.nombre + ' ' + loading_data.apellido;
+    } else if (loading_data.nombre) {
+        card_name.innerHTML = loading_data.nombre;
+    } else {
+        card_name.innerHTML = 'Alumno'
+    }
+
+    // Llamada al API para conseguir cursos del usuario.
+    try {
+        // Llamada
+        const response = await fetch(`${api_url}/user_courses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: 'alumnos',
+                user_id: loading_data.user_id
+            })
+        });
+
+        if (!response.ok) {
+            // Caso: El alumno no está inscrito a ningún curso.
+            if (response.status === 404) {
+                document.getElementById('sidebar_courses_all').textContent = 'No está inscrito en ningún curso.';
+            }
+            return;
+        }
+
+        // Conseguimos los datos de los cursos.
+        const data = await response.json();
+        
+        // Insertamos los cursos en la página principal.
+        const alumno_cursos = document.getElementById('alumno_cursos');
+
+        for (let course of data.course_data) {
+            let course_card =`<div class="card">
+                    <a href="course?code=${course[0].cod}" style="text-decoration: none; color: inherit;">
+                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
+                            style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
+                        <div class="card-body" style="height: 7rem; padding: 0.5rem;">
+                            <h9 class="card-title" style="font-size: 1rem; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 0.2rem;">${course[0].nombre}</h9>
+                            <h15 class="card-code" style="font-size: 0.625rem; margin-bottom: 0.2rem; display: block;">${course[0].cod}</h15>
+                            <small class="card-text" style="font-size: 0.75rem; margin: 0.3rem 0 0.8rem;">${course[0].descripcion}</small>
+                        </div>
+                    </a>
+                </div>`
+
+            alumno_cursos.innerHTML += course_card;
+        };
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+/*
+Función que cargará los datos del alumno en home.
+*/
 async function load_home_profesor(loading_data) {
     try {
         const response = await fetch(`${api_url}/user_courses`, {
@@ -172,68 +237,6 @@ async function load_home_profesor(loading_data) {
         console.error('Error:', error);
     }
 }
-
-/*
-Función que cargará los datos del alumno en home.
-*/
-    async function load_home_profesor(loading_data) {
-        // Llamada al API para conseguir cursos del usuario.
-        try {
-            // Llamada
-            const response = await fetch(`${api_url}/user_courses`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    user_role: 'profesores',
-                    user_id: loading_data.user_id
-                })
-            });
-    
-    
-            if (!response.ok) {
-                // Caso: El profesor no da ningún curso.
-                if (response.status === 404) {
-                    user_role_text.textContent = 'No da ningun curso';
-                }
-                return;
-            }
-    
-            // Conseguimos los datos de los cursos.
-            const data = await response.json();
-            
-            const profesor_cursos = document.getElementById('profesor_cursos');
-    
-            for (let curso of data.course_data) {
-                let carta_curso = `
-                <div class="profesor-card" id="card-${curso[0].cod}" style="position: relative;">
-                    <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
-                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
-                        
-                        <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon" style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;" onclick="toggleMenuOptions(event, '${curso[0].cod}')">
-            
-                        <div class="options-menu" id="menu-${curso[0].cod}" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                            <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); editarCurso('${curso[0].cod}');">Editar</button>
-                            <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); eliminarCurso('${curso[0].cod}');">Borrar</button>
-                        </div>
-                        
-                        <div class="card-body">
-                            <h3 class="profesor-card-title">${curso[0].nombre}</h3>
-                            <p class="profesor-card-code">${curso[0].cod}</p>
-                            <small class="profesor-card-text">${curso[0].descripcion}</small>
-                        </div>
-                    </a>
-                </div>`;
-                profesor_cursos.innerHTML += carta_curso;
-            };
-    
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
 document.getElementById("saveCourseButton").addEventListener("click", function() {
     const courseNameElement = document.getElementById("courseName");
     const courseKeyElement = document.getElementById("courseKey");

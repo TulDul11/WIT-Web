@@ -1,4 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
 
 window.addEventListener('load', async () => {
@@ -168,7 +169,7 @@ async function set_up_alumno(user_role, user_id, cod) {
                                 ${curso[0].descripcion}
                             </p>
                         </div>
-                        <div class="col-md-6 " style="min-height: 400px; display: flex; align-items: center;">
+                        <div class="col-md-6 " style="min-height: 400px; display: flex; justify-content: center; align-items: center;">
                             <img src="./images/${curso[0].img}" class="img-fluid rounded" id="course_img" style="max-width: 80%; max-height: 450px;" alt="Lavadora" onerror="fixImg()" />
                         </div>
                     </div>
@@ -361,7 +362,6 @@ async function set_up_profesor(user_role, user_id, cod) {
 }
 
 async function set_up_charts(stats) {
-    console.log('Setting up charts...');
     var labels = [];
     var yValues = [];
 
@@ -423,7 +423,6 @@ async function set_up_charts(stats) {
             scales: {
             x: {
                 beginAtZero: true,
-                grace: 10,
                 position: 'top', // <-- move the numeric scale to the top
                 max: 100
             },
@@ -453,7 +452,7 @@ async function set_up_charts(stats) {
             'Solución de problemas eléctricos'
         ],
         datasets: [{
-            label: 'Progreso',
+            label: 'Promedio',
             data: [65, 59, 90, 81, 56, 55, 40],
             fill: true,
             backgroundColor: 'rgba(117, 200, 255, 0.47)',
@@ -466,24 +465,34 @@ async function set_up_charts(stats) {
     };
 
     config = {
-        type: 'radar',
-        data: data,
+        type: 'bar',
+        data,
         options: {
             maintainAspectRatio: false,
-            elements: {
-            line: {
-                borderWidth: 3
-            }
-            },
             plugins: {
             legend: {
                 display: false
             }
             },
+            scales: {
+            x: {
+                beginAtZero: true,
+                max: 100
+            },
+            y: {
+                position: 'left' // (this keeps the names on the left, default)
+            }
+            }
         }
     };
 
-    const radar_chart = new Chart(document.getElementById('radar_chart'), config);
+    const histogram_chart = new Chart(document.getElementById('histogram_chart'), config);
+
+    const histogram_body = document.getElementById('histogram_body');
+    if(histogram_chart.data.labels.length > 5){
+        const newWidth = 500 + (histogram_chart.data.labels.length - 5) * 50;
+        histogram_body.style.width = `${newWidth}px`;
+    }
 }
 
 async function sort_chart(order) {

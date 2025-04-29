@@ -476,13 +476,9 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
   const conn = await db.getConnection();
 
   try {
-    console.log(">>> INICIO GUARDADO PREGUNTAS PARA MÓDULO ID:", moduloId);
-    console.log(">>> Preguntas recibidas:", preguntas);
-
     await conn.beginTransaction();
 
     const [deleteResult] = await conn.query('DELETE FROM preguntas WHERE modulo_id = ?', [moduloId]);
-    console.log(">>> Preguntas eliminadas:", deleteResult.affectedRows);
 
     for (const pregunta of preguntas) {
       await conn.query(
@@ -497,7 +493,6 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
     }
 
     await conn.commit();
-    console.log(">>> COMMIT: Preguntas nuevas insertadas.");
     res.json({ message: 'Preguntas actualizadas correctamente' });
 
   } catch (err) {
@@ -649,7 +644,6 @@ router.delete('/modulos/:id', async (req, res) => {
 })
 
 router.post('/guardar_resultado', async (req, res) => {
-  console.log("[SERVER] Entró a /guardar_resultado");
   const { user_id, id_tarea, resultado, completado } = req.body;
 
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
@@ -673,7 +667,6 @@ router.post('/guardar_resultado', async (req, res) => {
 });
 
 // ROUTER PROFESOR 
-
 router.post('/agregar_curso', async (req, res) => {
   const connection = await db.getConnection();
   try {
@@ -826,7 +819,6 @@ router.post('/delete_course', async (req, res) => {
 
 
 router.post('/agregar_alumno_curso', async (req, res) => {
-  console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
   try {
       const { id_alumno, cod_curso } = req.body;
       if (!id_alumno || !cod_curso) {
@@ -847,7 +839,6 @@ router.post('/agregar_alumno_curso', async (req, res) => {
           [id_alumno, cod_curso]
       );
 
-      console.log(`Inserción exitosa para id_alumno: ${id_alumno} en cod_curso: ${cod_curso}`);
       res.status(201).json({ message: 'Alumno asignado al curso exitosamente.' });
   } catch (err) {
       console.error('Error al asignar el alumno al curso:', err);

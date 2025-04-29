@@ -41,6 +41,12 @@ html, body {
     }
 }
 
+.kpi_text {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 0px;
+}
+
 .course_body div.course_code_container {
     display: flex;
     margin: 20px 0px 15px 0px;

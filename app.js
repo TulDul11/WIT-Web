@@ -52,8 +52,6 @@ app.use(session({
 //     next();
 // });
 
-
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
 
 const PORT = process.env.PORT || 3000;

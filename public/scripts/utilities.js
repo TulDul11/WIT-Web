@@ -121,12 +121,6 @@ function animationSetup() {
 Función para agregar los datos de la barra lateral con la conexión API.
 */
 async function load_sidebar_data() {
-    const breadcrumbContainer = document.getElementById('breadcrumb-container');
-
-    // Si estamos en home, ocultamos TODO el breadcrumb inmediatamente
-    if (window.location.pathname === "/home" && breadcrumbContainer) {
-      breadcrumbContainer.style.display = 'none';
-    }
     try {
         // Llamada
         const response = await fetch(`${api_url}/sidebar`, {
@@ -136,7 +130,7 @@ async function load_sidebar_data() {
             },
             credentials: 'include'
         });
-        
+
         // Checamos si hubo errores en la llamada
         if (!response.ok) {
             // Caso: No se ha iniciado sesión.
@@ -144,26 +138,19 @@ async function load_sidebar_data() {
                 sessionStorage.setItem('login_error', 'Se requiere iniciar sesión para utilizar la aplicación.');
                 window.location.href = '/';
             }
-            
+
             // Caso: Cualquier otro error.
             return;
         }
-        
+
         data = await response.json();
 
-        //ocultar breadcrumb de home
-        if (window.location.pathname === "/home") {
-            const breadcrumbContainer = document.getElementById('breadcrumb-container');
-            if (breadcrumbContainer) {
-              breadcrumbContainer.style.display = 'none';
-            }
-          }
-        
         // Modificando la barra lateral.
         const sidebar_role_text = document.querySelector('#sidebar_role span');
         const sidebar_role_image = document.querySelector('#sidebar_role img');
         sidebar_role_text.textContent = data.user_role == 'alumno' ? 'Alumno' : 'Profesor';
-        sidebar_role_image.src = data.user_role == 'alumno' ? './images/student_icon.png' : './images/teacher_icon.png';        
+        sidebar_role_image.src = data.user_role == 'alumno' ? './images/student_icon.png' : './images/teacher_icon.png';
+
         const sidebar_previous_text = document.getElementById('sidebar_previous_text');
         const sidebar_previous_course = document.getElementById('sidebar_previous_course');
         const sidebar_previous = document.getElementById('sidebar_previous');
@@ -212,7 +199,6 @@ async function load_sidebar_data() {
 
             sidebar_home_img.style.fill = '#00a0dd';
         }
-
     
     // Mostramos cualquier error que haya ocurrido.
     } catch (error) {
@@ -248,43 +234,3 @@ async function log_out() {
         console.error('Error:', error);
     }
 }
-
-function actualizarBreadcrumb({ curso = null, extra = null }) {
-    const inicio = document.getElementById('breadcrumb-inicio');
-    const cursoElem = document.getElementById('breadcrumb-curso');
-    const extraElem = document.getElementById('breadcrumb-extra');
-    const sep1 = document.getElementById('breadcrumb-sep-1');
-    const sep2 = document.getElementById('breadcrumb-sep-2');
-  
-    if (!inicio || !cursoElem || !extraElem) return;
-  
-    // Siempre visible el inicio
-    inicio.classList.remove('d-none');
-  
-    if (curso) {
-      cursoElem.textContent = curso;
-      cursoElem.classList.remove('d-none');
-      sep1.classList.remove('d-none');
-  
-      cursoElem.onclick = () => {
-        window.location.href = `/course.html?code=${curso}`;
-      };
-      cursoElem.style.cursor = 'pointer';
-    } else {
-      cursoElem.classList.add('d-none');
-      sep1.classList.add('d-none');
-    }
-  
-    if (extra) {
-      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
-      extraElem.textContent = recortado;
-      extraElem.classList.remove('d-none');
-      sep2.classList.remove('d-none');
-    } else {
-      extraElem.classList.add('d-none');
-      sep2.classList.add('d-none');
-    }
-  }
-  
-  
-

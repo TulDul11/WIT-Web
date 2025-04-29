@@ -18,7 +18,7 @@ const allowedOrigins = [
     'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io'
 ];
 
-app.use(cors({
+app.options('*', cors({
     origin: 'http://fs4k48ww88csc4skkcocg00g.172.200.210.83.sslip.io',
     credentials: true,
 }));

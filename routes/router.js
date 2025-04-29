@@ -853,54 +853,7 @@ router.get('/obtener_curso', async (req, res) => {
   }
 });
 
-router.get('/alumnos_curso/:codCurso', async (req, res) => {
-    try {
-      const { codCurso } = req.params;
-  
-      const [results] = await db.query(
-        `SELECT a.id_usuario AS id, a.nombre, a.apellido
-         FROM alumnos a
-         JOIN alumnos_cursos ac ON a.id_usuario = ac.id_alumno
-         WHERE ac.cod_curso = ?`,
-        [codCurso]
-      );
-  
-      if (results.length === 0) {
-        return res.status(404).json({ message: 'No hay alumnos inscritos en este curso.' });
-      }
-  
-      const alumnos = results.map(alumno => ({
-        id: alumno.id,
-        nombre: `${alumno.nombre} ${alumno.apellido}`
-      }));
-  
-      res.json(alumnos);
-    } catch (err) {
-      console.error('Error al obtener alumnos del curso:', err);
-      res.status(500).json({ error: err.message });
-    }
-  });
 
-router.get('/api/curso/:codigo', async (req, res) => {
-    const { codigo } = req.params;
-    try
-    {
-    const [results] = await db.query('SELECT * FROM cursos WHERE cod = ?', [codigo]);
-    if (results.length === 0) 
-        {
-        return res.status(404).json({ message: 'Curso no encontrado' });
-        }
-  
-    const curso = results[0];
-    res.json(curso);
-    } 
-    catch (err) 
-    {
-      console.error('Error al obtener curso:', err);
-      res.status(500).json({ error: err.message });
-    }
-});
-  
   
 
 

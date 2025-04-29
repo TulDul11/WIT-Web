@@ -247,23 +247,6 @@ async function load_home_profesor(loading_data) {
             });
         }
 
-        // <<< Agregar listener del filtro SOLO UNA VEZ >>>
-        const filterInput = document.getElementById('filterInputprofesor');
-        filterInput.addEventListener('input', function () {
-            const filterValue = this.value.toLowerCase();
-            const courseCards = profesor_cursos.querySelectorAll('.profesor-card');
-
-            courseCards.forEach(card => {
-                const courseTitle = card.querySelector('.profesor-card-title').textContent.toLowerCase();
-                const courseDescription = card.querySelector('.profesor-card-text').textContent.toLowerCase();
-
-                if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
 
     } catch (error) {
         console.error('Error:', error);

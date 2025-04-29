@@ -18,14 +18,8 @@ const allowedOrigins = [
     'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io'
 ];
 
-app.use(cors({
-    origin: function(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+app.options('*', cors({
+    origin: 'http://fs4k48ww88csc4skkcocg00g.172.200.210.83.sslip.io',
     credentials: true,
 }));
 
@@ -46,12 +40,17 @@ app.use(session({
     }
 }));
 
-// app.use((req, res, next) => {
-//     console.log(`[REQUEST] ${req.method} ${req.url}`);
-//     next();
-// });
-
 app.use('/', router);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/home', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
+
+app.get('/course', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {});

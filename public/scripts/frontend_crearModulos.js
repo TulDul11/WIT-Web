@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('ID recuperado del URL:', moduloGuardadoId);
         // Recuperar cod_curso del backend usando el id del módulo
         try {
-            const res = await fetch(`/modulos/${id}`);
+            const res = await fetch(`${api_url}/modulos/${id}`);
             if (!res.ok) throw new Error('Error recuperando módulo');
             const modulo = await res.json();
             console.log('DEBUG modulo cargado:', modulo);
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar módulo y preguntas si estamos editando
     if (modo === 'editar' && id) {
         try {
-            const res = await fetch(`/modulos/${id}`);
+            const res = await fetch(`${api_url}/modulos/${id}`);
             if (!res.ok) throw new Error('No encontrado');
             const modulo = await res.json();
             
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }            
 
-            const pregRes = await fetch(`/modulos/${id}/preguntas`);
+            const pregRes = await fetch(`${api_url}/modulos/${id}/preguntas`);
             const preguntas = await pregRes.json();
 
             Alpine.store('bancoPreguntas').preguntas = preguntas.map(p => ({
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Cargar datos del módulo y aplicar condiciones si es tarea
         try {
-            const res = await fetch(`/modulos/${id}`);
+            const res = await fetch(`${api_url}/modulos/${id}`);
             if (!res.ok) throw new Error('No encontrado');
             const modulo = await res.json();
 
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 // Cargar preguntas
-                const pregRes = await fetch(`/modulos/${id}/preguntas`);
+                const pregRes = await fetch(`${api_url}/modulos/${id}/preguntas`);
                 const preguntas = await pregRes.json();
 
                 Alpine.store('bancoPreguntas').preguntas = preguntas.map(p => ({
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         actualizarBreadcrumb({ curso: codCurso, extra: 'Creación de Módulo' });
     } else if (modo === 'editar' && id) {
         try {
-            const res = await fetch(`/modulos/${id}`);
+            const res = await fetch(`${api_url}/modulos/${id}`);
             const modulo = await res.json();
             actualizarBreadcrumb({ curso: codCurso, extra: modulo.titulo });
         } catch (error) {
@@ -365,10 +365,10 @@ function guardarModulo() {
 
     if (modo === 'editar' && id) {
         metodo = 'PUT';
-        url = `/modulos/${id}`;
+        url = `${api_url}/modulos/${id}`;
     } else {
         metodo = 'POST';
-        url = '/modulos';
+        url = `${api_url}/modulos`;
     }
     console.log('Tipo de módulo en guardar:', tipoModulo);
 
@@ -421,7 +421,7 @@ function guardarPreguntas() {
     const preguntas = JSON.parse(JSON.stringify(Alpine.store('bancoPreguntas')?.preguntas || []));
     console.log("Preguntas a enviar:", preguntas);
 
-    fetch(`/modulos/${moduloGuardadoId}/preguntas`, {
+    fetch(`${api_url}/modulos/${moduloGuardadoId}/preguntas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ preguntas })

@@ -19,12 +19,13 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: 'http://fs4k48ww88csc4skkcocg00g.172.200.210.83.sslip.io',
-    credentials: true,
-}));
-
-app.options('*', cors({
-    origin: 'http://fs4k48ww88csc4skkcocg00g.172.200.210.83.sslip.io',
+    origin: function(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
 }));
 
@@ -45,9 +46,9 @@ app.use(session({
     }
 }));
 
-app.use('/', router);
-
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', router);
 
 app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'home.html'));

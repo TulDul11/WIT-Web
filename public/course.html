@@ -24,6 +24,7 @@
                         <p id="course_code" class="fw-bold fs-4"></p>
                     </div>
                    <!-- Aqui va el splash card del curso -->
+                  
                 </div>
                 <div class="col">
                     <div class="d-flex flex-column align-items-center" id="tareas_container" style="height: 100%; justify-content: start;">
@@ -39,6 +40,14 @@
                  <!-- Aqui va la tarjeta de curso en mobile -->
                   
             </div>
+
+            <div class="container mt-5" id="modulos-alumno-container">
+                <h5 class="fw-bold mb-3">Contenido del Curso</h5>
+                <div id="modulos-alumno-lista" class="list-group">
+                  <!-- Aquí se insertarán dinámicamente los módulos -->
+                </div>
+              </div>
+
             <div class="mb-3" style="width: 100%;">
                 <!-- Aqui van las tareas -->
                 <div class="mb-3" id="tareas_mobile" style="margin-top: 15px;">
@@ -52,25 +61,23 @@
                     </div>
                 </div>
            </div>
-
-            <!-- Tareas mobile -->
-            
-
-            <!-- Modulos -->
-            <div class="mt-4" >
-                <div class="d-flex flex-column align-items-center" id="_container">
-                    <h5 class="fw-bold" style="width: 90%; margin-inline: auto;">Modulos</h5>
-                    <div class="mb-3" style="width: 90%; margin-inline: auto; text-align: right;">
-                        <a href="crearModulos.html?modo=crear" class="btn btn-success btn-sm">+ Crear nuevo módulo</a>
-                      </div>
-                      
-                    <div class="accordion" id="accordionModulos" style="width: 90%; margin-inline: auto;">
-                        <!-- Aquí se insertarán dinámicamente los módulos -->
-                      </div>
-                </div>
-            </div>
         </div>
+
     </div>
+
+    <!-- Curso profesor
+    <div id="profesor_body" class="container-fluid mt-4" style="display: none;">
+        <div class="mb-3" style="margin: 10px 20px;">
+            <p id="course_code_profesor" class="fw-bold fs-4"></p>
+        </div>
+    
+        <div class="card p-4" style="width: 90%;margin-inline: auto;">
+            <h5 class="fw-bold mb-4">Dashboard del curso</h5>
+            <canvas id="myChart" style="width:100%;max-width:700px;height: 500px;"></canvas>
+        </div>
+
+        
+    </div> -->
 
     <!-- Curso profesor -->
     <div class="Course_Profesor content_body" id="profesor_body" style="display: none;">
@@ -138,6 +145,22 @@
                                 <p class="kpi_text">89</p>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modulos -->
+            <div class="mt-4">
+                <div class="d-flex flex-column align-items-center" id="_container">
+                    <h5 class="fw-bold" style="width: 90%; margin-inline: auto;">Módulos</h5>
+
+                    <div class="mb-3" style="width: 90%; margin-inline: auto; text-align: right;">
+                        <a href="#" class="btn btn-success btn-sm" id="btn-crear-modulo">
+                            + Crear nuevo módulo
+                        </a>
+                    </div>
+
+                    <div id="modulos_profesor" class="list-group" style="width: 90%; margin-inline: auto;">
+                        <!-- Aquí se insertarán dinámicamente los módulos -->
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
 
+
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -229,6 +230,7 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     // Capturamos los alumnos seleccionados en una variable temporal
     const alumnosSeleccionados = [...selectedStudents];
 
+    // Hacemos el POST a la base de datos
     fetch(`${api_url}/agregar_curso`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

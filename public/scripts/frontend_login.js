@@ -1,6 +1,8 @@
 let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
 
+
+
 /*
 Función para vincular el botón de Enter con el botón de inicio de sesión.
 */
@@ -71,7 +73,7 @@ async function login_auth() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include',
+            credentials: 'include', // credenciales
             body: JSON.stringify({
                 user_id: user_container.value,
                 user_password: password_container.value
@@ -91,7 +93,6 @@ async function login_auth() {
         
         const data = await response.json();
 
-        // Guardar user_info en localStorage para que Unity pueda leerlo desde PlayerPrefs
         const user_info = {
             user_id: data.user_info.user_id,
             user_role: data.user_info.user_role
@@ -100,7 +101,6 @@ async function login_auth() {
         
         // Si no hubo ningún error, podemos pasar a la página de inicio.
         window.location.href = './home';
-        
 
     } catch (error) {
         console.error('Error:', error);

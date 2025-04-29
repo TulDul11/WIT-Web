@@ -4,6 +4,7 @@ let api_url = 'http://localhost:3000';
 
 
 
+
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -157,64 +158,88 @@ async function load_home_alumno(loading_data) {
 /*
 Función que cargará los datos del alumno en home.
 */
-    async function load_home_profesor(loading_data) {
-        // Llamada al API para conseguir cursos del usuario.
-        try {
-            // Llamada
-            const response = await fetch(`${api_url}/user_courses`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    user_role: 'profesores',
-                    user_id: loading_data.user_id
-                })
-            });
-    
-    
-            if (!response.ok) {
-                // Caso: El profesor no da ningún curso.
-                if (response.status === 404) {
-                    user_role_text.textContent = 'No da ningun curso';
-                }
-                return;
-            }
-    
-            // Conseguimos los datos de los cursos.
-            const data = await response.json();
-            
-            const profesor_cursos = document.getElementById('profesor_cursos');
-    
-            for (let curso of data.course_data) {
-                let carta_curso = `
-                <div class="profesor-card" id="card-${curso[0].cod}" style="position: relative;">
-                    <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
-                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
-                        
-                        <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon" style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;" onclick="toggleMenuOptions(event, '${curso[0].cod}')">
-            
-                        <div class="options-menu" id="menu-${curso[0].cod}" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                            <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); editarCurso('${curso[0].cod}');">Editar</button>
-                            <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); eliminarCurso('${curso[0].cod}');">Borrar</button>
-                        </div>
-                        
-                        <div class="card-body">
-                            <h3 class="profesor-card-title">${curso[0].nombre}</h3>
-                            <p class="profesor-card-code">${curso[0].cod}</p>
-                            <small class="profesor-card-text">${curso[0].descripcion}</small>
-                        </div>
-                    </a>
-                </div>`;
-                profesor_cursos.innerHTML += carta_curso;
-            };
-    
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+async function load_home_profesor(loading_data) {
+    try {
+        const response = await fetch(`${api_url}/user_courses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: 'profesores',
+                user_id: loading_data.user_id
+            })
+        });
 
+        if (!response.ok) {
+            if (response.status === 404) {
+                user_role_text.textContent = 'No da ningun curso';
+            }
+            return;
+        }
+
+        const data = await response.json();
+        const profesor_cursos = document.getElementById('profesor_cursos');
+
+        for (let curso of data.course_data) {
+            const card = document.createElement('div');
+            card.className = 'profesor-card';
+            card.id = `card-${curso[0].cod}`;
+            card.style.position = 'relative';
+
+            card.innerHTML = `
+                <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
+                    <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
+                </a>
+                <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
+                     style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
+                <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
+                    <button class="menu-option">Editar</button>
+                    <button class="menu-option">Borrar</button>
+                </div>
+                <div class="card-body">
+                    <h3 class="profesor-card-title">${curso[0].nombre}</h3>
+                    <p class="profesor-card-code">${curso[0].cod}</p>
+                    <small class="profesor-card-text">${curso[0].descripcion}</small>
+                </div>
+            `;
+
+            profesor_cursos.appendChild(card);
+
+            // Agregar eventos
+            const threeDotsIcon = card.querySelector('.three-dots-icon');
+            const menu = card.querySelector('.options-menu');
+            const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
+
+            threeDotsIcon.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!card.contains(event.target)) {
+                    menu.style.display = 'none';
+                }
+            });
+
+            editarBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                editarCurso(curso[0].cod);
+            });
+
+            eliminarBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                await eliminarCurso(curso[0].cod);
+                location.reload();
+            });
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 document.getElementById("saveCourseButton").addEventListener("click", function() {
     const courseNameElement = document.getElementById("courseName");
     const courseKeyElement = document.getElementById("courseKey");

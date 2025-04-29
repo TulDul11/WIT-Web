@@ -3,8 +3,6 @@ let api_url = 'http://localhost:3000';
 
 
 
-
-
 /*
 Función para vincular el botón de Enter con el botón de inicio de sesión.
 */

@@ -3,8 +3,6 @@ let api_url = 'http://localhost:3000';
 
 
 
-
-
 // --- Evento principal ---
 document.addEventListener('DOMContentLoaded', () => {
   cargarModulo();

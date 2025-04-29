@@ -154,8 +154,7 @@ async function load_home_alumno(loading_data) {
 }
 
 /*
-Función que cargará los datos del alumno en home.
-*/
+Función que cargará los datos del profesor en home. */
 async function load_home_profesor(loading_data) {
     try {
         const response = await fetch(`${api_url}/user_courses`, {
@@ -170,7 +169,7 @@ async function load_home_profesor(loading_data) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                user_role_text.textContent = 'No da ningun curso';
+                user_role_text.textContent = 'No da ningún curso';
             }
             return;
         }
@@ -191,8 +190,8 @@ async function load_home_profesor(loading_data) {
                 <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
                      style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
                 <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                    <button class="menu-option">Editar</button>
-                    <button class="menu-option">Borrar</button>
+                    <button class="menu-option editar-btn" data-codigo="${curso[0].cod}">Editar</button>
+                    <button class="menu-option borrar-btn" data-codigo="${curso[0].cod}">Borrar</button>
                 </div>
                 <div class="card-body">
                     <h3 class="profesor-card-title">${curso[0].nombre}</h3>
@@ -202,8 +201,8 @@ async function load_home_profesor(loading_data) {
             `;
 
             profesor_cursos.appendChild(card);
+            
 
-            // Agregar eventos
             const threeDotsIcon = card.querySelector('.three-dots-icon');
             const menu = card.querySelector('.options-menu');
             const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
@@ -223,6 +222,20 @@ async function load_home_profesor(loading_data) {
             editarBtn.addEventListener('click', async function (event) {
                 event.preventDefault();
                 event.stopPropagation();
+
+                document.getElementById('studentDropdown').innerHTML = '';
+                document.getElementById('studentListBox').innerHTML = '';
+
+                document.getElementById('editStudentForm').dataset.courseId = curso[0].cod;
+
+                const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
+                modal.show();
+            });
+
+            
+            editarBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+                event.stopPropagation();
                 editarCurso(curso[0].cod);
             });
 
@@ -234,10 +247,30 @@ async function load_home_profesor(loading_data) {
             });
         }
 
+        // <<< Agregar listener del filtro SOLO UNA VEZ >>>
+        const filterInput = document.getElementById('filterInputprofesor');
+        filterInput.addEventListener('input', function () {
+            const filterValue = this.value.toLowerCase();
+            const courseCards = profesor_cursos.querySelectorAll('.profesor-card');
+
+            courseCards.forEach(card => {
+                const courseTitle = card.querySelector('.profesor-card-title').textContent.toLowerCase();
+                const courseDescription = card.querySelector('.profesor-card-text').textContent.toLowerCase();
+
+                if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
     } catch (error) {
         console.error('Error:', error);
     }
 }
+
+
 document.getElementById("saveCourseButton").addEventListener("click", function() {
     const courseNameElement = document.getElementById("courseName");
     const courseKeyElement = document.getElementById("courseKey");
@@ -274,70 +307,33 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
 
         console.log("Curso agregado:", data);
 
-        
-        const card = document.createElement("div");
-        card.classList.add("profesor-card");
-        card.setAttribute("data-course-id", courseKey); 
-        
-        card.innerHTML = `
-            <a href="/course?code=${courseKey}" style="text-decoration: none; color: inherit;">
-                <div class="profesor-card-img-container" style="position: relative;">
-                    <img class="card-img-top" src="../images/educacion.png" alt="Imagen del curso">
-                    <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon" style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
-                    <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                        <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); editarCurso('${courseKey}');">Editar</button>
-                        <button class="menu-option" onclick="event.preventDefault(); event.stopPropagation(); eliminarCurso('${courseKey}');">Borrar</button>
-                    </div>
-                </div>
-                <div class="profesor-card-body">
-                    <h3 class="profesor-card-title">${courseName}</h3>
-                    <p class="profesor-card-code">${courseKey}</p>
-                    <small class="profesor-card-text">${description}</small>
-                </div>
-            </a>
-        `;
-        
-        document.getElementById("profesor_cursos").appendChild(card);
 
-        const threeDotsIcon = card.querySelector('.three-dots-icon');
-        threeDotsIcon.addEventListener('click', function(event) {
-            event.preventDefault();
-            const menu = card.querySelector('.options-menu');
-            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-            event.stopPropagation();
-        });
-
-        document.addEventListener('click', function(event) {
-            const menu = card.querySelector('.options-menu');
-            if (menu && menu.style.display === 'block' && !menu.contains(event.target) && !card.contains(event.target)) {
-                menu.style.display = 'none';
-            }
-        });
-
-// Después de crear la tarjeta del curso…
-if (alumnosSeleccionados.length > 0) {
-    // Espera 500ms antes de asignar los alumnos (prueba ajustar ese valor)
-    setTimeout(() => {
-        alumnosSeleccionados.forEach(alumno => {
-            console.log(`Enviando alumno: ${alumno.id} para el curso: ${courseKey}`);
-            fetch(`${api_url}/agregar_alumno_curso`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id_alumno: alumno.id,
-                    cod_curso: courseKey
+    
+    // Después de crear la tarjeta del curso…
+    if (alumnosSeleccionados.length > 0) {
+        // Espera 500ms antes de asignar los alumnos (prueba ajustar ese valor)
+        setTimeout(() => {
+            alumnosSeleccionados.forEach(alumno => {
+                console.log(`Enviando alumno: ${alumno.id} para el curso: ${courseKey}`);
+                fetch(`${api_url}/agregar_alumno_curso`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id_alumno: alumno.id,
+                        cod_curso: courseKey
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(dataAlumno => {
-                console.log(`Alumno ${alumno.id} asignado al curso:`, dataAlumno);
-            })
-            .catch(error => {
-                console.error(`Error al asignar el alumno ${alumno.id}:`, error);
+                .then(response => response.json())
+                .then(dataAlumno => {
+                    console.log(`Alumno ${alumno.id} asignado al curso:`, dataAlumno);
+                })
+                .catch(error => {
+                    console.error(`Error al asignar el alumno ${alumno.id}:`, error);
+                });
             });
-        });
-    }, 500);
-}
+            location.reload(true);
+        }, 500);
+    }
 
     })
     .catch(error => {
@@ -362,88 +358,8 @@ if (alumnosSeleccionados.length > 0) {
 });
 
 
-function editarCurso(courseKey) {
-    fetch(`${api_url}/obtener_curso?cod=${courseKey}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data || data.message) {
-                alert("No se encontró el curso.");
-                return;
-            }
 
-            // Rellenar los campos del modal con la información obtenida
-            document.getElementById("courseName").value = data.nombre || "";
-            document.getElementById("courseKey").value = data.cod || "";
-            document.getElementById("description").value = data.descripcion || "";
-
-            // Mostrar el modal
-            const modalElement = document.getElementById("exampleModal");
-            if (modalElement) {
-                const modalInstance = new bootstrap.Modal(modalElement);
-                modalInstance.show();
-            }
-        })
-        .catch(error => {
-            console.error("Error al obtener los datos del curso:", error);
-        });
-}
-
-async function eliminarCurso(codCurso) {
-    if (!confirm("¿Estás seguro de que deseas eliminar este curso?")) {
-        return false; // cancelado por el usuario
-    }
-
-    try {
-        const response = await fetch('/delete_course', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ course_id: codCurso })
-        });
-
-        const data = await response.json();
-
-        if (data.message === 'Curso eliminado exitosamente') {
-            const cursoElement = document.querySelector(`[data-course-id="${codCurso}"]`);
-            if (cursoElement) {
-                console.log("Elemento encontrado en el DOM:", cursoElement);
-                cursoElement.remove();
-            }
-            return true; // éxito
-        } else {
-            console.error('Error al eliminar el curso:', data.message);
-            return false;
-        }
-    } catch (err) {
-        console.error('Error al eliminar el curso:', err);
-        return false;
-    }
-}
-
-
-
-
-const filterInput = document.getElementById('filterInput');
 const coursesContainer = document.getElementById('profesor_cursos');
-
-
-filterInput.addEventListener('input', function () {
-    const filterValue = this.value.toLowerCase(); 
-    const courseCards = coursesContainer.querySelectorAll('.profesor-card'); 
-
-    courseCards.forEach(card => {
-        const courseTitle = card.querySelector('.profesor-card-title').textContent.toLowerCase(); 
-        const courseDescription = card.querySelector('.profesor-card-text').textContent.toLowerCase(); 
-
-        
-        if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
-            card.style.display = 'block'; 
-        } else {
-            card.style.display = 'none'; 
-        }
-    });
-});
 
 let selectedStudents = [];
 

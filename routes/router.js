@@ -697,53 +697,44 @@ router.post('/agregar_curso', async (req, res) => {
   }
 });
 
+
 router.post('/agregar_alumno', async (req, res) => {
-    try {
-        const alumnos = req.body.alumnos;
+  try {
+      const { id_usuario, nombre, apellido, username, password } = req.body;
 
-        if (!Array.isArray(alumnos) || alumnos.length === 0) {
-            return res.status(400).json({ message: 'No se proporcionaron alumnos.' });
-        }
+      
+      if (!id_usuario || !nombre || !apellido || !username || !password) {
+          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+      }
 
-        const agregados = [];
-        const duplicados = [];
+      
+      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+      if (existingStudent.length > 0) {
+          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+      }
 
-        for (const alumno of alumnos) {
-            const { id_usuario, nombre, apellido, username, password } = alumno;
+      
+      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+      if (existingUser.length > 0) {
+          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
+      }
 
-            if (!id_usuario || !nombre || !apellido || !username || !password) {
-                continue; // omitir alumnos incompletos
-            }
+      
+      const salt = await bcrypt.genSalt(10); 
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-            const [existingAlumno] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
-            if (existingAlumno.length > 0) {
-                duplicados.push({ id_usuario, nombre, apellido });
-                continue;
-            }
+      
+      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
 
-            const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
-            if (existingUser.length > 0) {
-                duplicados.push({ id_usuario, nombre, apellido });
-                continue;
-            }
+      
+      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
 
-            const salt = await bcrypt.genSalt(10); 
-            const hashedPassword = await bcrypt.hash(password, salt);
-
-            await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
-            await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
-
-            agregados.push({ id_usuario, nombre, apellido });
-        }
-
-        res.status(201).json({ message: 'Proceso finalizado.', agregados, duplicados });
-
-    } catch (err) {
-        console.error('Error al agregar alumnos:', err); 
-        res.status(500).json({ error: err.message });
-    }
+      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
+  } catch (err) {
+      console.error('Error al agregar alumno:', err); 
+      res.status(500).json({ error: err.message });
+  }
 });
-
 
 
 router.get('/obtener_alumnos', async (req, res) => {
@@ -862,7 +853,55 @@ router.get('/obtener_curso', async (req, res) => {
   }
 });
 
+router.get('/alumnos_curso/:codCurso', async (req, res) => {
+    try {
+      const { codCurso } = req.params;
+  
+      const [results] = await db.query(
+        `SELECT a.id_usuario AS id, a.nombre, a.apellido
+         FROM alumnos a
+         JOIN alumnos_cursos ac ON a.id_usuario = ac.id_alumno
+         WHERE ac.cod_curso = ?`,
+        [codCurso]
+      );
+  
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'No hay alumnos inscritos en este curso.' });
+      }
+  
+      const alumnos = results.map(alumno => ({
+        id: alumno.id,
+        nombre: `${alumno.nombre} ${alumno.apellido}`
+      }));
+  
+      res.json(alumnos);
+    } catch (err) {
+      console.error('Error al obtener alumnos del curso:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
 
+router.get('/api/curso/:codigo', async (req, res) => {
+    const { codigo } = req.params;
+    try
+    {
+    const [results] = await db.query('SELECT * FROM cursos WHERE cod = ?', [codigo]);
+    if (results.length === 0) 
+        {
+        return res.status(404).json({ message: 'Curso no encontrado' });
+        }
+  
+    const curso = results[0];
+    res.json(curso);
+    } 
+    catch (err) 
+    {
+      console.error('Error al obtener curso:', err);
+      res.status(500).json({ error: err.message });
+    }
+});
+  
+  
 
 
 module.exports = router;

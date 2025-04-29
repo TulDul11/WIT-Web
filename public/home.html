@@ -28,7 +28,7 @@
             <hr class="linea-header" style="width: 95.5%;">
             <!--Search Batr-->
             <div class = "searchbar" >
-                <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
+                <input type="text" id="filterInputprofesor" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
             </div>
             <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;" id="alumno_cursos">
                 <!-- Añade más tarjetas de cursos si es necesario -->
@@ -125,8 +125,9 @@
                             <div class="modal-body">
                                 <form id="studentForm">
                                     <div class="mb-3" style="margin-top: 20px;">
-                                        <label for="csvUpload" class="form-label">Sube un archivo .csv que contenga las credenciales de los alumnos</label>
+                                        <label for="csvUpload" class="form-label"></label>
                                         <input type="file" class="form-control" id="csvUpload" accept=".csv">
+                                        <small class="form-text text-muted">Sube un archivo .csv que contenga las credenciales de los alumnos.</small>
                                     </div>
                         
                                     <!-- Campos ocultos para almacenar el alumno seleccionado -->
@@ -162,6 +163,7 @@
                         </div>
                     </div>
                 </div>
+
         
             <!-- Sección de cursos -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -196,11 +198,15 @@
                                     <label for="studentSelect" class="form-label">Alumnos a Agregar</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno..." aria-label="Buscar alumno">
-                                    </div>
+                                    </div> 
                                 
                                     <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
-                                        <!-- Opciones se llenarán dinámicamente -->
-                                    </div>
+                                         Opciones se llenarán dinámicamente 
+                                    </div> 
+                                    <!--    <label for="csvUpload" class="form-label"></label>
+                                        <input type="file" class="form-control" id="csvUpload" accept=".csv">
+                                        <small class="form-text text-muted">Sube un archivo .csv que contenga las credenciales de los alumnos.</small>
+                                    </div> -->
                                 
                                     <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
                                         <!-- Los alumnos seleccionados se mostrarán aquí -->
@@ -219,10 +225,43 @@
              <!-- Contenedor de tarjetas de cursos -->
              <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 50px; margin: 0;" id="profesor_cursos">
                 <!-- Añade más tarjetas de cursos si es necesario -->
-            </div>    
+            </div>
+            
+                        <!-- Modal para Editar Alumnos -->
+            <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Alumnos del Curso</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editStudentForm">
+                            <div class="mb-3">
+                                <label for="searchStudent" class="form-label">Alumnos a Agregar</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchStudent" placeholder="Buscar alumno...">
+                                </div>
+                                <div id="studentDropdown" class="dropdown-menu" style="width: 100%; max-height: 200px; overflow-y: auto; display: none;">
+                                    <!-- Opciones se llenarán dinámicamente -->
+                                </div>
+                                <div id="studentListBox" class="form-control" style="height: 150px; overflow-y: auto; padding: 10px;">
+                                    <!-- Alumnos seleccionados se mostrarán aquí -->
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="saveStudentChanges">Guardar Cambios</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
         
         <!-- Contenedor de tarjetas de cursos -->
-        <div id="profesor_cursos" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;">
+        <div id="profesor_cursos_dos" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 0; margin: 0;">
             <!-- Aquí van los cursos -->
         </div>
 

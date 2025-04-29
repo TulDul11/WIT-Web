@@ -84,10 +84,10 @@
     /*text-decoration: underline; */
 }
 #breadcrumb-inicio:hover {
-    color: #F1B300;
+    color: #eeb111;
 }
 #breadcrumb-curso {
-    color: #F1B300; /* El código del curso */
+    color: #eeb111; /* El código del curso */
     font-weight: bold;
 }
 #breadcrumb-extra {
@@ -131,13 +131,13 @@
     font-weight: 550;
 }
 #menu_button.active {
-    color: #F1B300;
+    color: #eeb111;
     background-color: #0933542d;
-    border: 2px #F1B300 solid;
+    border: 2px #eeb111 solid;
 }
 #menu_button.active:hover {
     background-color: rgb(5, 37, 63);
-    border: 3px #F1B300 solid;
+    border: 3px #eeb111 solid;
 
     font-size: 21px;
     font-weight: 550;
@@ -251,13 +251,13 @@
     font-weight: 550;
 }
 #menu_button_2.active {
-    color: #F1B300;
+    color: #eeb111;
     background-color: #0933542d;
-    border: 2px #F1B300 solid;
+    border: 2px #eeb111 solid;
 }
 #menu_button_2.active:hover {
     background-color: rgb(5, 37, 63);
-    border: 3px #F1B300 solid;
+    border: 3px #eeb111 solid;
 
     font-size: 21px;
     font-weight: 550;
@@ -334,11 +334,11 @@
     font-size: 20px;
 }
 #sidebar_home:hover {
-    color: #F1B300;
-    border: 2px #F1B300 solid;
+    color: #eeb111;
+    border: 2px #eeb111 solid;
 }
 #sidebar_home:hover svg path {
-    fill: #F1B300;
+    fill: #eeb111;
 }
 #sidebar_home.active {
     justify-self: start;
@@ -366,7 +366,7 @@
     align-items: center;
     justify-content: center;
 
-    width: 75%;
+    width: 80%;
 
     gap: 10px;
     margin-top: 10px;
@@ -414,18 +414,18 @@
     transform: translateY(-3px);
 }
 #sidebar_previous:hover {
-    border: 2px #F1B300 solid;
+    border: 2px #eeb111 solid;
 }
 #sidebar_previous:hover svg path {
-    fill: #F1B300;
+    fill: #eeb111;
 }
 #sidebar_previous:hover #sidebar_previous_text {
-    color: #f1b500a7
+    color: #eeb111a7
 }
 #sidebar_previous:hover #sidebar_previous_course {
     overflow: visible;
 
-    color: #F1B300;
+    color: #eeb111;
 }
 #sidebar_previous.active {
     justify-content: start;
@@ -468,10 +468,10 @@
     transition: all 0.1s ease;
 }
 #sidebar_courses #sidebar_courses_title:hover {
-    border: 2px #F1B300 solid;
+    border: 2px #eeb111 solid;
 }
 #sidebar_courses #sidebar_courses_title:hover svg path {
-    fill: #F1B300;
+    fill: #eeb111;
 }
 #sidebar_courses_title {
     display: flex;
@@ -569,12 +569,12 @@
 .sidebar_courses_item:hover {
     overflow: hidden;
 
-    border: 2px solid #F1B300;
+    border: 2px solid #eeb111;
 }
 .sidebar_courses_item:hover span {
     overflow: visible;
 
-    color: #F1B300;
+    color: #eeb111;
 }
 #sidebar_courses_all {
     display: none;
@@ -650,13 +650,13 @@
         padding: 8px;
     }
     #sidebar_courses.active #sidebar_courses_title:hover {
-        border: 2px #F1B300 solid;
+        border: 2px #eeb111 solid;
         border-radius: 15px;
 
-        color: #F1B300;
+        color: #eeb111;
     }
     #sidebar_courses.active #sidebar_courses_title:hover svg path {
-        fill: #F1B300;
+        fill: #eeb111;
     }
 }
 

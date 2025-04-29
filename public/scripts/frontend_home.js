@@ -1,4 +1,5 @@
-let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000'
 
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
@@ -116,10 +117,7 @@ async function load_home_alumno(loading_data) {
         });
 
         if (!response.ok) {
-            // Caso: El alumno no está inscrito a ningún curso.
-            if (response.status === 404) {
-                document.getElementById('sidebar_courses_all').textContent = 'No está inscrito en ningún curso.';
-            }
+            // Caso: Errores
             return;
         }
 

@@ -186,6 +186,19 @@ async function load_sidebar_data() {
                 sidebar_courses_list.innerHTML += course_tag;
             });
         }
+
+        // Checamos si estamos en home para marcar en la sidebar que estamos dentro de home.
+        if (window.location.pathname === "/home") {
+            const sidebar_home = document.getElementById('sidebar_home');
+            const sidebar_home_img = document.querySelector('#sidebar_home svg path');
+
+            sidebar_home.style.pointerEvents = 'none';
+            sidebar_home.style.border = '2px solid #00a0dd';
+            sidebar_home.style.color = '#00a0dd';
+            sidebar_home.style.fontWeight = '600';
+
+            sidebar_home_img.style.fill = '#00a0dd';
+        }
     
     // Mostramos cualquier error que haya ocurrido.
     } catch (error) {

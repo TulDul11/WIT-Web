@@ -1,5 +1,4 @@
-// let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
-let api_url = 'http://localhost:3000';
+let api_url = 'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io';
 
 
 

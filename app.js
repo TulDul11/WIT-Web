@@ -14,6 +14,9 @@ const allowedOrigins = [
     'http://localhost:3000',
     'http://0.0.0.0:3000',
     'http://pk8ksokco8soo8ws0ks040s8.172.200.210.83.sslip.io',
+    'http://fs4k48ww88csc4skkcocg00g.172.200.210.83.sslip.io',
+    'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io',
+    'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io'
 ];
 
 app.use(cors({

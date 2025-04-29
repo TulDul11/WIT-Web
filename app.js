@@ -56,16 +56,5 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router);
 
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'home.html'));
-});
-app.get('/course', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'course.html'));
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {});

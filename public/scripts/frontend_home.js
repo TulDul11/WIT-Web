@@ -1,4 +1,4 @@
-let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
+let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
 
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.

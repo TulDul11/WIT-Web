@@ -806,7 +806,7 @@ router.post('/agregar_alumno', async (req, res) => {
       console.error('Error al agregar alumnos:', err);
       res.status(500).json({ error: err.message });
     }
-  });
+});
   
 
 
@@ -963,6 +963,33 @@ router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
     }
 });
 
+router.get('/descripcion_del_curso/:cod_curso', async (req, res) => {
+    const { cod_curso } = req.params;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT descripcion
+            FROM cursos
+            WHERE cod = ?
+        `, [cod_curso]);
+
+        console.log('Resultado de la consulta:', rows); // Agrega este log
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Curso no encontrado' });
+        }
+
+        res.status(200).json({ descripcion: rows[0].descripcion });
+    } catch (err) {
+        console.error('Error al obtener la descripción del curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
 router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
     let connection;
 
@@ -1000,6 +1027,33 @@ router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
         if (connection) connection.release();
     }
 });
+
+router.put('/actualizar_descripcion_curso/:codCurso', async (req, res) => {
+    const codCurso = req.params.codCurso;
+    const { descripcion } = req.body;
+
+    if (typeof descripcion !== 'string') {
+        return res.status(400).json({ message: 'La descripción debe ser una cadena de texto' });
+    }
+
+    try {
+        const [result] = await db.query(`
+            UPDATE cursos
+            SET descripcion = ?
+            WHERE cod = ?
+        `, [descripcion, codCurso]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Curso no encontrado' });
+        }
+
+        res.json({ message: 'Descripción del curso actualizada exitosamente' });
+    } catch (err) {
+        console.error('Error al actualizar la descripción del curso:', err);
+        res.status(500).json({ message: 'Error al actualizar la descripción del curso', error: err.message });
+    }
+});
+
 
 
 

@@ -288,16 +288,33 @@ async function load_home_profesor(loading_data) {
 
 async function editarCurso(codCurso) {
     try {
-        const response = await fetch(`${api_url}/alumnos_del_curso/${codCurso}`);
-        const alumnos = await response.json();
-
+        // Obtener alumnos del curso
+        const responseAlumnos = await fetch(`${api_url}/alumnos_del_curso/${codCurso}`);
+        const alumnos = await responseAlumnos.json();
         assignedSelectedStudents = [...alumnos]; // guardar la lista original
         mostrarAlumnosSeleccionadosAssigned();   // reutilizar función que ya muestra y permite borrar
 
+        // Obtener descripción del curso
+        const responseDescripcion = await fetch(`${api_url}/descripcion_del_curso/${codCurso}`);
+        const dataDescripcion = await responseDescripcion.json();
+
+        console.log('Descripción del curso:', dataDescripcion); // Agrega este log
+
+        // Establecer el valor en el textarea
+        const descripcionTextarea = document.getElementById('assigneddescription');
+        if (descripcionTextarea && dataDescripcion.descripcion) {
+            descripcionTextarea.value = dataDescripcion.descripcion;
+            document.getElementById('assigneddescriptionCount').textContent = `${dataDescripcion.descripcion.length}/3000 caracteres`;
+        } else {
+            console.log('No se encontró la descripción o no se pudo cargar');
+        }
+
     } catch (error) {
-        console.error('Error al cargar alumnos del curso:', error);
+        console.error('Error al cargar datos del curso:', error);
     }
 }
+
+
 
 let assignedSelectedStudents = [];
 
@@ -398,9 +415,11 @@ document.addEventListener('click', (event) => {
 
 document.getElementById('saveStudentChanges').addEventListener('click', async function () {
     const courseId = document.getElementById('editStudentForm').dataset.courseId;
+    const descripcion = document.getElementById('assigneddescription').value.trim();
 
     try {
-        const response = await fetch(`${api_url}/actualizar_alumnos_curso/${courseId}`, {
+        // Actualizar alumnos
+        const responseAlumnos = await fetch(`${api_url}/actualizar_alumnos_curso/${courseId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -410,12 +429,26 @@ document.getElementById('saveStudentChanges').addEventListener('click', async fu
             })
         });
 
-        if (!response.ok) throw new Error('Error al guardar cambios');
+        if (!responseAlumnos.ok) throw new Error('Error al guardar cambios de alumnos');
+
+        // Actualizar descripción
+        const responseDescripcion = await fetch(`${api_url}/actualizar_descripcion_curso/${courseId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                descripcion: descripcion
+            })
+        });
+
+        if (!responseDescripcion.ok) throw new Error('Error al guardar la descripción');
 
         alert('Cambios guardados correctamente');
         location.reload();
+
     } catch (error) {
-        console.error('Error al actualizar alumnos:', error);
+        console.error('Error al actualizar curso:', error);
         alert('No se pudieron guardar los cambios');
     }
 });
@@ -633,6 +666,7 @@ function updateCharacterCount(inputId, countId, maxLength) {
 updateCharacterCount('courseName', 'courseNameCount', 50);
 updateCharacterCount('courseKey', 'courseKeyCount', 16);
 updateCharacterCount('description', 'descriptionCount', 3000);
+updateCharacterCount('assigneddescription', 'assigneddescriptionCount', 3000);
 
 document.getElementById('csvUpload').addEventListener('change', function (e) {
     const file = e.target.files[0];
@@ -723,7 +757,7 @@ document.getElementById('saveStudentButton').addEventListener('click', async () 
         const data = await response.json();
 
         if (response.ok) {
-            alert(`✅ Agregados: ${data.agregados.length}\n⚠️ Duplicados: ${data.duplicados.length}`);
+            alert(` Agregados: ${data.agregados.length}\n Duplicados: ${data.duplicados.length}`);
         } else {
             alert(data.message || 'Error al agregar alumnos.');
         }

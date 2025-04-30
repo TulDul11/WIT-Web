@@ -167,7 +167,12 @@
                         <div class="modal-body">
                             <form id="editStudentForm">
                                 <div class="mb-3">
-                                    <label for="assignedsearchStudent" class="form-label">Alumnos a Agregar</label>
+                                    <label for="assigneddescription" class="form-label">Descripción del curso</label>
+                                    <textarea class="form-control" id="assigneddescription" rows="4" placeholder="Escribe una breve descripción del curso" maxlength="3000"></textarea>
+                                    <small id="assigneddescriptionCount" class="form-text text-muted">0/3000 caracteres</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="assignedsearchStudent" class="form-label">Alumnos a editar</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="assignedsearchStudent" placeholder="Buscar alumno...">
                                     </div>

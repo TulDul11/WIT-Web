@@ -398,12 +398,17 @@ async function set_up_profesor(user_role, user_id, cod) {
 async function set_up_charts(stats, calis) {
     var labels = [];
     var yValues = [];
+    let cur_prog;
     var sum = 0;
 
 
     for(let tecnico of stats){
         labels.push(tecnico.nombre);
-        let cur_prog = Math.round((tecnico.tareas_completadas / tecnico.tareas) * 100)
+        if(tecnico.tareas){
+            cur_prog = Math.round((tecnico.tareas_completadas / tecnico.tareas) * 100);
+        }else{
+            cur_prog = 0;
+        }
         yValues.push(Math.round(cur_prog));
         sum += cur_prog;
     }
@@ -490,7 +495,6 @@ async function set_up_charts(stats, calis) {
     labels = [];
     yValues = [];
     sum = 0;
-
 
     for(let promedio of calis){
         labels.push(promedio.nombre);

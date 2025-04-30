@@ -579,8 +579,15 @@ async function log_out() {
 function home_screen() {
     window.location.href = './home';
 }
-  
 
+function configurarBotonCrearModulo() {
+  const params = new URLSearchParams(window.location.search);
+  const codCurso = params.get('code');
 
-
-
+  if (codCurso) {
+    const crearModuloBtn = document.getElementById('btn-crear-modulo');
+    if (crearModuloBtn) {
+        crearModuloBtn.href = `crearModulos.html?modo=crear&cod=${codCurso}`;
+    }
+  }
+}

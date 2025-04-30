@@ -1,7 +1,4 @@
-// let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
-let api_url = 'http://localhost:3000';
-
-
+let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -221,7 +218,28 @@ async function load_home_profesor(loading_data) {
             `;
 
             profesor_cursos.appendChild(card);
-            
+
+            const filter_input = document.getElementById('filter_input_profesor');
+            const coursesContainer = document.getElementById('profesor_cursos');
+    
+            // Escuchamos el evento "input" para capturar lo que el usuario escribe
+            filter_input.addEventListener('input', function () {
+                const filter_value = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+                const course_cards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+    
+                course_cards.forEach(card => {
+                    const course_title = card.querySelector('.card_title').textContent.toLowerCase(); // Título del curso
+                    const course_code = card.querySelector('.card_code').textContent.toLowerCase(); // Código del curso
+    
+                    // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+                    if (course_title.includes(filter_value) || course_code.includes(filter_value)) {
+                        card.style.display = 'block'; // Mostramos la tarjeta
+                    } else {
+                        card.style.display = 'none'; // Ocultamos la tarjeta
+                    }
+                });
+            });
+                
 
             const threeDotsIcon = card.querySelector('.card_menu_icon');
             const menu = card.querySelector('.options-menu');

@@ -1,6 +1,4 @@
-// let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
-let api_url = 'http://localhost:3000';
-
+let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
 window.addEventListener('load', async () => {
     // Cargamos la página, incluyendo las barras lateral y de navegación, junto con el contenido de home.

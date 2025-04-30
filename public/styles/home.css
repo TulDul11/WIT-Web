@@ -261,87 +261,8 @@ html, body {
     }
 }
 
-.profesor-content {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    margin: 2rem;
-}
-
- /* General Styling for Profesor Screen */
- #profesor_body {
-    flex-direction: column;
-    gap: 2rem;
-}
-
-/* Card Container */
-#profesor_cursos {
-    flex: 3;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding-left: 0;
-    margin: 0;
-}
 
 
-.profesor-card {
-    width: 250px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-    margin-top: 20px;
-}
-  
-.profesor-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.profesor-card-title {
-    font-size: 1rem;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    margin-bottom: 0.2rem;
-}
-
-.profesor-card-code {
-    font-size: 0.625rem;
-    margin-bottom: 0.2rem;
-    display: block;
-}
-
-.profesor-card-body {
-    height: 7rem; /* Tamaño fijo */
-    padding: 0.5rem;
-    overflow: hidden; /* Evita que el contenedor crezca */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-
-
-/* Oculta la barra de desplazamiento pero permite el scroll */
-.profesor-card-text::-webkit-scrollbar {
-    width: 4px;
-    background: transparent;
-}
-
-.profesor-card-text::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-}
-
-  
-.profesor-linea-header {
-    width: 95.5%;
-    margin-top: -20px; /* Ajusta según necesites */
-}
 
 #studentDropdown .dropdown-item {
     cursor: pointer;

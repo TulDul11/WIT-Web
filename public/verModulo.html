@@ -17,9 +17,12 @@
 <script>
   fetch('/utilities.html')
     .then(response => response.text())
-    .then(html => {
+    .then(async html => {
       document.getElementById('sidebar_container').innerHTML = html;
-      load_sidebar_data(); // Cuando ya esté cargado el HTML, cargamos los datos dinámicos
+      await load_sidebar_data(); // Cuando ya esté cargado el HTML, cargamos los datos dinámicos
+
+      // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+      document.getElementById('sidebar_docs').style.display = 'none';
     });
 </script>
 

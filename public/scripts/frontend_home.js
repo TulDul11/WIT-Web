@@ -1,6 +1,4 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
-
-
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -174,6 +172,8 @@ async function load_home_alumno(loading_data) {
 }
 
 async function load_home_profesor(loading_data) {
+
+    
     try {
         const response = await fetch(`${api_url}/user_courses`, {
             method: 'POST',
@@ -197,30 +197,51 @@ async function load_home_profesor(loading_data) {
 
         for (let curso of data.course_data) {
             const card = document.createElement('div');
-            card.className = 'profesor-card';
+            card.className = 'card';
             card.id = `card-${curso[0].cod}`;
             card.style.position = 'relative';
 
             card.innerHTML = `
                 <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
-                    <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
+                    <img class="card_image" src="../images/educacion.png" alt="Card image cap">
                 </a>
-                <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
-                     style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
+                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon" >
+                     
                     <div class="options-menu">
                         <button class="menu-option editar-btn" data-codigo="${curso[0].cod}">Editar</button>
                     <button class="menu-option borrar-btn" data-codigo="${curso[0].cod}">Borrar</button>
                 </div>
-                <div class="card-body">
-                    <h3 class="profesor-card-title">${curso[0].nombre}</h3>
-                    <p class="profesor-card-code">${curso[0].cod}</p>
+                <div class="card_body">
+                    <h3 class="card_title">${curso[0].nombre}</h3>
+                    <p class="card_code">${curso[0].cod}</p>
                 </div>
             `;
 
             profesor_cursos.appendChild(card);
-            
 
-            const threeDotsIcon = card.querySelector('.three-dots-icon');
+            const filter_input = document.getElementById('filter_input_profesor');
+            const coursesContainer = document.getElementById('profesor_cursos');
+    
+            // Escuchamos el evento "input" para capturar lo que el usuario escribe
+            filter_input.addEventListener('input', function () {
+                const filter_value = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+                const course_cards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+    
+                course_cards.forEach(card => {
+                    const course_title = card.querySelector('.card_title').textContent.toLowerCase(); // Título del curso
+                    const course_code = card.querySelector('.card_code').textContent.toLowerCase(); // Código del curso
+    
+                    // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+                    if (course_title.includes(filter_value) || course_code.includes(filter_value)) {
+                        card.style.display = 'block'; // Mostramos la tarjeta
+                    } else {
+                        card.style.display = 'none'; // Ocultamos la tarjeta
+                    }
+                });
+            });
+                
+
+            const threeDotsIcon = card.querySelector('.card_menu_icon');
             const menu = card.querySelector('.options-menu');
             const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
 

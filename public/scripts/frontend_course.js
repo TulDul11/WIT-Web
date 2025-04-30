@@ -1,6 +1,5 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
-
 window.addEventListener('load', async () => {
     // Cargamos la página, incluyendo las barras lateral y de navegación, junto con el contenido de home.
     fetch('/utilities.html')
@@ -12,10 +11,10 @@ window.addEventListener('load', async () => {
             document.body.insertBefore(temp.firstChild, document.body.firstChild);
         }
 
+        await load_sidebar_data();
+        
         // Al terminar de cargar contenido estático, cargamos cualquier datos conseguidos a través de la conexión API.
         await loadCourse();
-
-        await load_sidebar_data();
 
         configurarBotonCrearModulo()
 
@@ -146,11 +145,31 @@ async function set_up_alumno(user_role, user_id, cod) {
             }
             throw new Error(`Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
+        
+        const presponse = await fetch(`${api_url}/progreso`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+
+        const progreso = await presponse.json();
+
+        let prog_percent = Math.round((progreso.tareas_completadas/progreso.tareas)*100);
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
+
+        // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+        document.getElementById('sidebar_docs').style.display = 'none';
 
         curso = data.course_data[0];
 
@@ -177,7 +196,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         
                     <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 50%;background-color: #F1B300 !important" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: ${prog_percent}%;background-color: #F1B300 !important" aria-valuenow="${prog_percent}" aria-valuemin="0" aria-valuemax="100">${prog_percent + '%'}</div>
                     </div>
                 </div>`
 
@@ -200,7 +219,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         const tareas_lista_m = document.getElementById('tareas_lista_m');
         
         if (!hresponse.ok) {
-            if (response.status === 404) {
+            if (hresponse.status === 404) {
                 tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas pendientes</a>`;
             }
             throw new Error(`Error: ${response.status}`);
@@ -460,7 +479,7 @@ async function set_up_charts(stats, calis) {
 
     for(let promedio of calis){
         labels.push(promedio.nombre);
-        let cur_prom = parseFloat(promedio.promedio);
+        let cur_prom = parseFloat(promedio.promedio * 100);
         yValues.push(cur_prom);
         sum += cur_prom;
     }

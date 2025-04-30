@@ -423,13 +423,17 @@ router.post('/dashboard', async (req, res) => {
 
     let calificaciones = [];
 
+    query = `SELECT id_alumno FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+    const [alumnos_id] = await db.query(query);
+    let i = 0;
     for(let name of nombres){
         query = `SELECT AVG(resultado) AS promedio FROM alumnos_tareas
         INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
         INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
-        WHERE alumnos.id = 1 AND cod_curso = 'LAV0001';`;
+        WHERE alumnos.id = ${alumnos_id[i].id_alumno} AND cod_curso = '${cod}';`;
         let [promedio] = await db.query(query);
         calificaciones.push({nombre: name.nombre, promedio: promedio[0].promedio});
+        i++;
     }
     dashboard_data.push(calificaciones);
 
@@ -443,6 +447,42 @@ router.post('/dashboard', async (req, res) => {
   }
 });
 
+router.post('/progreso', async (req, res) => {
+  try{
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
+    const {user_id, user_role, cod} = req.body;
+
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+    const [current_user] = await db.query(query);
+
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT * FROM (SELECT COUNT(*) AS tareas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id} AND cod_curso = '${cod}') AS A
+            JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id} AND completado AND cod_curso = '${cod}') AS B;`
+
+    let [tareas] = await db.query(query);
+
+    return res.json({tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+
+  }catch{
+    res.status(500).json({
+        error: err.message
+    });
+  }
+})
 
 
 //guardar contenido del modulo
@@ -643,8 +683,6 @@ router.delete('/modulos/:id', async (req, res) => {
 router.post('/guardar_resultado', async (req, res) => {
   const { user_id, id_tarea, resultado, completado } = req.body;
 
-  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
-
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
     return res.status(400).json({ message: 'Datos incompletos' });
   }
@@ -656,12 +694,7 @@ router.post('/guardar_resultado', async (req, res) => {
       WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
       AND id_tarea = ?;`;
 
-    console.log('Query que se ejecutará:', updateQuery);
-    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
-
     const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
-
-    console.log('Resultado de db.query:', result);
 
     res.status(200).json({ message: 'Resultado actualizado exitosamente' });
   } catch (error) {
@@ -723,42 +756,49 @@ router.post('/agregar_curso', async (req, res) => {
 
 
 router.post('/agregar_alumno', async (req, res) => {
-  try {
-      const { id_usuario, nombre, apellido, username, password } = req.body;
-
-      
-      if (!id_usuario || !nombre || !apellido || !username || !password) {
-          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+    try {
+      const { alumnos } = req.body;
+  
+      if (!Array.isArray(alumnos) || alumnos.length === 0) {
+        return res.status(400).json({ message: 'No hay alumnos válidos.' });
       }
-
-      
-      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
-      if (existingStudent.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+  
+      const agregados = [];
+      const duplicados = [];
+  
+      for (const alumno of alumnos) {
+        const { id_usuario, nombre, apellido, username, password } = alumno;
+  
+        // Validar campos individuales
+        if (!id_usuario || !nombre || !apellido || !username || !password) {
+          continue;
+        }
+  
+        const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+        const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+  
+        if (existingStudent.length > 0 || existingUser.length > 0) {
+          duplicados.push(id_usuario);
+          continue;
+        }
+  
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+  
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+        await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+  
+        agregados.push(id_usuario);
       }
-
-      
-      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
-      if (existingUser.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
-      }
-
-      
-      const salt = await bcrypt.genSalt(10); 
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      
-      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
-
-      
-      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
-
-      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
-  } catch (err) {
-      console.error('Error al agregar alumno:', err); 
+  
+      res.status(201).json({ message: 'Proceso completado.', agregados, duplicados });
+  
+    } catch (err) {
+      console.error('Error al agregar alumnos:', err);
       res.status(500).json({ error: err.message });
-  }
-});
+    }
+  });
+  
 
 
 router.get('/obtener_alumnos', async (req, res) => {

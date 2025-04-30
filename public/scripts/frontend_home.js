@@ -358,6 +358,30 @@ document.addEventListener('click', (event) => {
     }
 });
 
+document.getElementById('saveStudentChanges').addEventListener('click', async function () {
+    const courseId = document.getElementById('editStudentForm').dataset.courseId;
+
+    try {
+        const response = await fetch(`${api_url}/actualizar_alumnos_curso/${courseId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                alumnos: assignedSelectedStudents.map(alumno => alumno.id)
+            })
+        });
+
+        if (!response.ok) throw new Error('Error al guardar cambios');
+
+        alert('Cambios guardados correctamente');
+        location.reload();
+    } catch (error) {
+        console.error('Error al actualizar alumnos:', error);
+        alert('No se pudieron guardar los cambios');
+    }
+});
+
 
 
 document.getElementById("saveCourseButton").addEventListener("click", function() {

@@ -3,9 +3,6 @@ let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 // --- Evento principal ---
 document.addEventListener('DOMContentLoaded', () => {
   cargarModulo();
-
-  // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
-  document.getElementById('sidebar_docs').style.display = 'none';
 });
 
 // --- Funciones de navegación ---

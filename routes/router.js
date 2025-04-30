@@ -727,42 +727,49 @@ router.post('/agregar_curso', async (req, res) => {
 
 
 router.post('/agregar_alumno', async (req, res) => {
-  try {
-      const { id_usuario, nombre, apellido, username, password } = req.body;
-
-      
-      if (!id_usuario || !nombre || !apellido || !username || !password) {
-          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+    try {
+      const { alumnos } = req.body;
+  
+      if (!Array.isArray(alumnos) || alumnos.length === 0) {
+        return res.status(400).json({ message: 'No hay alumnos válidos.' });
       }
-
-      
-      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
-      if (existingStudent.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+  
+      const agregados = [];
+      const duplicados = [];
+  
+      for (const alumno of alumnos) {
+        const { id_usuario, nombre, apellido, username, password } = alumno;
+  
+        // Validar campos individuales
+        if (!id_usuario || !nombre || !apellido || !username || !password) {
+          continue;
+        }
+  
+        const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+        const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+  
+        if (existingStudent.length > 0 || existingUser.length > 0) {
+          duplicados.push(id_usuario);
+          continue;
+        }
+  
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+  
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+        await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+  
+        agregados.push(id_usuario);
       }
-
-      
-      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
-      if (existingUser.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
-      }
-
-      
-      const salt = await bcrypt.genSalt(10); 
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      
-      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
-
-      
-      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
-
-      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
-  } catch (err) {
-      console.error('Error al agregar alumno:', err); 
+  
+      res.status(201).json({ message: 'Proceso completado.', agregados, duplicados });
+  
+    } catch (err) {
+      console.error('Error al agregar alumnos:', err);
       res.status(500).json({ error: err.message });
-  }
-});
+    }
+  });
+  
 
 
 router.get('/obtener_alumnos', async (req, res) => {

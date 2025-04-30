@@ -233,7 +233,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
 
         try {
-            const res = await fetch(`/modulos?cod=${cod}`);
+            const res = await fetch(`${api_url}/modulos?cod=${cod}`);
             const modulos = await res.json();
         
             if (modulos.length === 0) {
@@ -599,6 +599,3 @@ function configurarBotonCrearModulo() {
     }
   }
 }
-
-
-

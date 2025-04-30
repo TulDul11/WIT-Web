@@ -162,8 +162,19 @@ async function set_up_alumno(user_role, user_id, cod) {
         });
 
         const progreso = await presponse.json();
+        let is_prog = 'flex';
+        if (!presponse.ok) {
+            if (presponse.status === 404) {
+                is_prog = 'none';
+            }
+        }
 
-        let prog_percent = Math.round((progreso.tareas_completadas/progreso.tareas)*100);
+        let prog_percent 
+        if(progreso.tareas == 0){
+            prog_percent = 0;
+        }else{
+            prog_percent = Math.round((progreso.tareas_completadas/progreso.tareas)*100);
+        }
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
@@ -196,7 +207,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         
                     <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: ${prog_percent}%;background-color: #F1B300 !important" aria-valuenow="${prog_percent}" aria-valuemin="0" aria-valuemax="100">${prog_percent + '%'}</div>
+                        <div class="progress-bar progress-bar-animated" role="progressbar" style="display: ${is_prog};width: ${prog_percent}%;background-color: #F1B300 !important" aria-valuenow="${prog_percent}" aria-valuemin="0" aria-valuemax="100">${prog_percent + '%'}</div>
                     </div>
                 </div>`
 

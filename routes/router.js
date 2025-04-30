@@ -952,6 +952,32 @@ router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
     }
 });
 
+router.get('/estado_tarea', async (req, res) => {
+  const { user_id, id_tarea } = req.query;
+
+  if (!user_id || !id_tarea) {
+    return res.status(400).json({ message: 'Faltan parámetros' });
+  }
+
+  try {
+    const [rows] = await db.query(`
+      SELECT completado FROM alumnos_tareas 
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
+      AND id_tarea = ?
+    `, [user_id, id_tarea]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No encontrado' });
+    }
+
+    res.json({ completado: rows[0].completado });
+  } catch (error) {
+    console.error("Error en /estado_tarea:", error);
+    res.status(500).json({ message: 'Error interno', error: error.message });
+  }
+});
+
+
 
 
 module.exports = router;

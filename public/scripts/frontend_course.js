@@ -12,10 +12,10 @@ window.addEventListener('load', async () => {
             document.body.insertBefore(temp.firstChild, document.body.firstChild);
         }
 
+        await load_sidebar_data();
+        
         // Al terminar de cargar contenido estático, cargamos cualquier datos conseguidos a través de la conexión API.
         await loadCourse();
-
-        await load_sidebar_data();
 
         configurarBotonCrearModulo()
 
@@ -168,6 +168,9 @@ async function set_up_alumno(user_role, user_id, cod) {
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
+
+        // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+        document.getElementById('sidebar_docs').style.display = 'none';
 
         curso = data.course_data[0];
 

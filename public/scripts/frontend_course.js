@@ -487,8 +487,8 @@ async function set_up_charts(stats, calis) {
     const bar_chart = new Chart(document.getElementById('bar_chart'),config);
 
     const bar_body = document.getElementById('bar_body');
-    if(bar_chart.data.labels.length > 5){
-        const newHeight = 400 + (bar_chart.data.labels.length - 5) * 50;
+    if(bar_chart.data.labels.length > 3){
+        const newHeight = 400 + (bar_chart.data.labels.length - 3) * 50;
         bar_body.style.height = `${newHeight}px`;
     }
 
@@ -574,8 +574,8 @@ async function set_up_charts(stats, calis) {
     const histogram_chart = new Chart(document.getElementById('histogram_chart'), config);
 
     const histogram_body = document.getElementById('histogram_body');
-    if(histogram_chart.data.labels.length > 5){
-        const newHeight2 = 400 + (histogram_chart.data.labels.length - 5) * 50;
+    if(histogram_chart.data.labels.length > 3){
+        const newHeight2 = 400 + (histogram_chart.data.labels.length - 3) * 50;
         histogram_body.style.height = `${newHeight2}px`;
     }
 

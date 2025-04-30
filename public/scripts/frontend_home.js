@@ -173,8 +173,7 @@ async function load_home_alumno(loading_data) {
 }
 
 /*
-Función que cargará los datos del alumno en home.
-*/
+Función que cargará los datos del profesor en home. */
 async function load_home_profesor(loading_data) {
     try {
         const response = await fetch(`${api_url}/user_courses`, {
@@ -268,6 +267,147 @@ async function load_home_profesor(loading_data) {
     }
 }
 
+async function editarCurso(codCurso) {
+    try {
+        const response = await fetch(`${api_url}/alumnos_del_curso/${codCurso}`);
+        const alumnos = await response.json();
+
+        assignedSelectedStudents = [...alumnos]; // guardar la lista original
+        mostrarAlumnosSeleccionadosAssigned();   // reutilizar función que ya muestra y permite borrar
+
+    } catch (error) {
+        console.error('Error al cargar alumnos del curso:', error);
+    }
+}
+
+let assignedSelectedStudents = [];
+
+async function cargarAlumnosEnDropdownAssigned() {
+    try {
+        const response = await fetch(`${api_url}/obtener_alumnos`);
+        const alumnos = await response.json();
+
+        const searchInput = document.getElementById('assignedsearchStudent');
+        const dropdown = document.getElementById('assignedStudentDropdown');
+
+        dropdown.innerHTML = '';
+
+        const filteredAlumnos = searchInput.value
+            ? alumnos.filter(alumno =>
+                alumno.nombre.toLowerCase().includes(searchInput.value.toLowerCase())
+            )
+            : alumnos;
+
+        filteredAlumnos.forEach(alumno => {
+            const option = document.createElement('button');
+            option.classList.add('dropdown-item');
+            option.textContent = `${alumno.id} - ${alumno.nombre}`;
+            option.addEventListener('click', (event) => seleccionarAlumnoAssigned(event, alumno));
+            dropdown.appendChild(option);
+        });
+
+        if (filteredAlumnos.length === 0) {
+            const noResultsOption = document.createElement('button');
+            noResultsOption.classList.add('dropdown-item');
+            noResultsOption.disabled = true;
+            noResultsOption.textContent = 'No se encontraron alumnos';
+            dropdown.appendChild(noResultsOption);
+        }
+
+        dropdown.style.display = 'block';
+    } catch (err) {
+        console.error('Error al cargar alumnos (assigned):', err);
+    }
+}
+
+function seleccionarAlumnoAssigned(event, alumno) {
+    event.preventDefault();
+
+    if (!assignedSelectedStudents.some(student => student.id === alumno.id)) {
+        assignedSelectedStudents.push(alumno);
+        console.log('Alumno agregado (assigned):', alumno);
+        mostrarAlumnosSeleccionadosAssigned();
+    }
+
+    document.getElementById('assignedsearchStudent').value = '';
+    document.getElementById('assignedStudentDropdown').style.display = 'none';
+}
+
+function mostrarAlumnosSeleccionadosAssigned() {
+    const studentListBox = document.getElementById('assignedStudentListBox');
+    studentListBox.innerHTML = '';
+
+    assignedSelectedStudents.forEach((alumno, index) => {
+        const studentItem = document.createElement('div');
+        studentItem.classList.add('student-item');
+        studentItem.innerHTML = `
+            <span>${alumno.nombre}</span>
+            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumnoAssigned(${index})">X</button>
+        `;
+        studentListBox.appendChild(studentItem);
+    });
+}
+
+function eliminarAlumnoAssigned(index) {
+    assignedSelectedStudents.splice(index, 1);
+    mostrarAlumnosSeleccionadosAssigned();
+}
+
+// Eventos para el assigned
+document.getElementById('assignedsearchStudent').addEventListener('focus', async () => {
+    const dropdown = document.getElementById('assignedStudentDropdown');
+    await cargarAlumnosEnDropdownAssigned();
+    dropdown.style.display = 'block';
+});
+
+document.getElementById('assignedsearchStudent').addEventListener('input', cargarAlumnosEnDropdownAssigned);
+
+document.getElementById('assignedsearchStudent').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+});
+
+document.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('assignedStudentDropdown');
+    const searchInput = document.getElementById('assignedsearchStudent');
+
+    if (!event.target.closest('#assignedsearchStudent') && !event.target.closest('#assignedStudentDropdown')) {
+        dropdown.style.display = 'none';
+    }
+});
+
+document.getElementById('saveStudentChanges').addEventListener('click', async function () {
+    const courseId = document.getElementById('editStudentForm').dataset.courseId;
+
+    try {
+        const response = await fetch(`${api_url}/actualizar_alumnos_curso/${courseId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                alumnos: assignedSelectedStudents.map(alumno => alumno.id)
+            })
+        });
+
+        if (!response.ok) throw new Error('Error al guardar cambios');
+
+        alert('Cambios guardados correctamente');
+        location.reload();
+    } catch (error) {
+        console.error('Error al actualizar alumnos:', error);
+        alert('No se pudieron guardar los cambios');
+    }
+});
+
+
+
+document.getElementById("saveCourseButton").addEventListener("click", function() {
+    const courseNameElement = document.getElementById("courseName");
+    const courseKeyElement = document.getElementById("courseKey");
+    const descriptionElement = document.getElementById("description");
+
 function home_screen() {
     location.reload();
 }
@@ -329,6 +469,35 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     .then(response => response.json())
     .then(data => {
         console.log("Curso agregado:", data);
+
+
+    
+    // Después de crear la tarjeta del curso…
+    if (alumnosSeleccionados.length > 0) {
+        // Espera 500ms antes de asignar los alumnos (prueba ajustar ese valor)
+        setTimeout(() => {
+            alumnosSeleccionados.forEach(alumno => {
+                console.log(`Enviando alumno: ${alumno.id} para el curso: ${courseKey}`);
+                fetch(`${api_url}/agregar_alumno_curso`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id_alumno: alumno.id,
+                        cod_curso: courseKey
+                    })
+                })
+                .then(response => response.json())
+                .then(dataAlumno => {
+                    console.log(`Alumno ${alumno.id} asignado al curso:`, dataAlumno);
+                })
+                .catch(error => {
+                    console.error(`Error al asignar el alumno ${alumno.id}:`, error);
+                });
+            });
+            location.reload(true);
+        }, 500);
+    }
+
     })
     .catch(error => {
         console.error('Error al agregar curso:', error);
@@ -346,17 +515,100 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
 });
 
 
-document.getElementById("csvUpload").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const csvContent = e.target.result;
-            const rows = csvContent.split("\n");
-            const studentNames = rows.join("\n").trim(); // Convierte las líneas del CSV en texto
-            document.getElementById("studentList").value = studentNames; // Pone el contenido en el textarea
-        };
-        reader.readAsText(file); // Lee el contenido del archivo CSV
+
+const coursesContainer = document.getElementById('profesor_cursos');
+
+let selectedStudents = [];
+
+// Función para cargar alumnos en el dropdown
+async function cargarAlumnosEnDropdown() {
+    try {
+        const response = await fetch(`${api_url}/obtener_alumnos`);
+        const alumnos = await response.json();
+
+        const searchInput = document.getElementById('searchStudent');
+        const dropdown = document.getElementById('studentDropdown');
+
+        dropdown.innerHTML = '';
+
+        const filteredAlumnos = searchInput.value
+            ? alumnos.filter(alumno => alumno.nombre.toLowerCase().includes(searchInput.value.toLowerCase()))
+            : alumnos;
+
+            filteredAlumnos.forEach(alumno => {
+                const option = document.createElement('button');
+                option.classList.add('dropdown-item');
+                option.textContent = `${alumno.id} - ${alumno.nombre}`;
+                option.addEventListener('click', (event) => seleccionarAlumno(event, alumno));
+                dropdown.appendChild(option);
+            });
+            
+
+        if (filteredAlumnos.length === 0) {
+            const noResultsOption = document.createElement('button');
+            noResultsOption.classList.add('dropdown-item');
+            noResultsOption.disabled = true;
+            noResultsOption.textContent = 'No se encontraron alumnos';
+            dropdown.appendChild(noResultsOption);
+        }
+
+        dropdown.style.display = 'block';
+    } catch (err) {
+        console.error('Error al cargar alumnos:', err);
+    }
+}
+
+function seleccionarAlumno(event, alumno) {
+    event.preventDefault();
+
+    if (!selectedStudents.some(student => student.id === alumno.id)) {
+        selectedStudents.push(alumno);
+        console.log('Alumno agregado:', alumno); // Verifica si se agrega correctamente
+        mostrarAlumnosSeleccionados();
+    }
+
+    document.getElementById('searchStudent').value = '';
+    document.getElementById('studentDropdown').style.display = 'none';
+}
+
+
+// Mostrar alumnos seleccionados en el box
+function mostrarAlumnosSeleccionados() {
+    const studentListBox = document.getElementById('studentListBox');
+    studentListBox.innerHTML = '';
+
+    selectedStudents.forEach((alumno, index) => {
+        const studentItem = document.createElement('div');
+        studentItem.classList.add('student-item');
+        studentItem.innerHTML = `
+            <span>${alumno.nombre}</span>
+            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumno(${index})">X</button>
+        `;
+        studentListBox.appendChild(studentItem);
+    });
+}
+
+// Eliminar alumno de la lista
+function eliminarAlumno(index) {
+    selectedStudents.splice(index, 1);
+    mostrarAlumnosSeleccionados();
+}
+
+
+
+document.getElementById('searchStudent').addEventListener('focus', async () => {
+    const dropdown = document.getElementById('studentDropdown');
+    await cargarAlumnosEnDropdown();
+    dropdown.style.display = 'block';
+});
+
+
+document.getElementById('searchStudent').addEventListener('input', cargarAlumnosEnDropdown);
+
+
+document.getElementById('searchStudent').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
     }
 });
 
@@ -392,3 +644,174 @@ function actualizarBreadcrumb({ curso = null, extra = null }) {
     }
   }
   
+});
+
+
+
+
+    // Función para actualizar los contadores de caracteres
+function updateCharacterCount(inputId, countId, maxLength) {
+    const input = document.getElementById(inputId);
+    const count = document.getElementById(countId);
+    input.addEventListener('input', function() {
+        const currentLength = input.value.length;
+        count.textContent = `${currentLength}/${maxLength} caracteres`;
+    });
+}
+
+    // Inicializar los contadores de caracteres
+updateCharacterCount('courseName', 'courseNameCount', 50);
+updateCharacterCount('courseKey', 'courseKeyCount', 16);
+updateCharacterCount('description', 'descriptionCount', 3000);
+
+document.getElementById('csvUpload').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        const content = e.target.result.trim();
+        const rows = content.split("\n");
+
+        const tableBody = document.getElementById("userTable").querySelector("tbody");
+        tableBody.innerHTML = ""; // Limpiar tabla
+
+        rows.forEach((row, index) => {
+            const cols = row.split(",");
+            if (cols.length < 5) return; // Evitar filas incompletas
+
+            const tr = document.createElement("tr");
+
+            cols.forEach(col => {
+                const td = document.createElement("td");
+                td.textContent = col.trim();
+                tr.appendChild(td);
+            });
+
+            
+            tr.addEventListener("click", () => {
+                document.getElementById('userID').value = cols[0].trim();
+                document.getElementById('firstName').value = cols[1].trim();
+                document.getElementById('lastName').value = cols[2].trim();
+                document.getElementById('username').value = cols[3].trim();
+                document.getElementById('password').value = cols[4].trim();
+            });
+
+            tableBody.appendChild(tr);
+        });
+    };
+
+    reader.readAsText(file);
+});
+
+
+
+document.getElementById('saveStudentButton').addEventListener('click', async () => {
+    // 🔵 Cerrar el modal al instante
+    let modal = bootstrap.Modal.getInstance(document.getElementById('agregarAlumnoModal'));
+    if (!modal) {
+        modal = new bootstrap.Modal(document.getElementById('agregarAlumnoModal'));
+    }
+    modal.hide();
+
+    // Luego sigues con la lógica para enviar los datos
+    const rows = document.querySelectorAll('#userTable tbody tr');
+    const alumnos = [];
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length < 5) return;
+
+        const alumno = {
+            id_usuario: cells[0].textContent.trim(),
+            nombre: cells[1].textContent.trim(),
+            apellido: cells[2].textContent.trim(),
+            username: cells[3].textContent.trim(),
+            password: cells[4].textContent.trim()
+        };
+
+        if (Object.values(alumno).every(val => val !== '')) {
+            alumnos.push(alumno);
+        }
+    });
+
+    if (alumnos.length === 0) {
+        alert('No hay alumnos válidos para enviar.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${api_url}/agregar_alumno`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ alumnos })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(`✅ Agregados: ${data.agregados.length}\n⚠️ Duplicados: ${data.duplicados.length}`);
+        } else {
+            alert(data.message || 'Error al agregar alumnos.');
+        }
+    } catch (error) {
+        console.error('Error al enviar los datos:', error);
+        alert('Ocurrió un error al enviar los datos.');
+    }
+});
+
+
+const agregarAlumnoModal = document.getElementById('agregarAlumnoModal');
+
+agregarAlumnoModal.addEventListener('hidden.bs.modal', () => {
+    // Limpiar campos ocultos
+    document.getElementById('userID').value = '';
+    document.getElementById('firstName').value = '';
+    document.getElementById('lastName').value = '';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+
+    // Limpiar archivo subido
+    document.getElementById('csvUpload').value = '';
+
+    // Opcional: limpiar la tabla de usuarios si quieres
+    const tbody = document.getElementById('userTable').querySelector('tbody');
+    tbody.innerHTML = '';
+
+    // Opcional: resetear todo el formulario
+    document.getElementById('studentForm').reset();
+});
+
+function eliminarCurso(codCurso) {
+    console.log("Eliminando curso con código:", codCurso);  // Depuración
+    fetch('/delete_course', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ course_id: codCurso })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message === 'Curso eliminado exitosamente') {
+            // Verificar si el elemento está presente antes de eliminarlo
+            const cursoElement = document.getElementById(codCurso);
+            if (cursoElement) {
+                console.log("Elemento encontrado en el DOM: ", cursoElement);
+                cursoElement.remove();
+            } else {
+                console.error('Elemento de curso no encontrado en el DOM');
+            }
+        } else {
+            console.error('Error al eliminar el curso:', data.message);
+        }
+    })
+    .catch(err => {
+        console.error('Error al eliminar el curso:', err);
+    });
+}
+
+

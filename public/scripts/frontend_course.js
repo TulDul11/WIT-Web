@@ -140,8 +140,14 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         if (!response.ok) {
             if (response.status === 404) {
+
+                    document.getElementById('tareas_lista').innerHTML = `
+                      <li class="list-group-item">No hay tareas pendientes</li>`;
+                    document.getElementById('tareas_lista_m').innerHTML = `
+                      <li class="list-group-item">No hay tareas pendientes</li>`;
+
                 
-                //alumno_body.style.display = 'none';
+                
             }
             throw new Error(`Error: ${response.status}`);
         }

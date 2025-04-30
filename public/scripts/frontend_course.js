@@ -261,37 +261,35 @@ async function set_up_alumno(user_role, user_id, cod) {
             tareas_lista_m.innerHTML += item_tarea;
         }
         
-
-        const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
-
-        try {
-            const res = await fetch(`${api_url}/modulos?cod=${cod}`);
-            const modulos = await res.json();
-        
-            if (modulos.length === 0) {
-                leccionesContainer.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
-                return;
-            }
-        
-            modulos.forEach(modulo => {
-                const item = document.createElement('a');
-                item.className = 'list-group-item list-group-item-action';
-                item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">${modulo.titulo}</span>
-                        ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
-                    </div>
-                `;
-                modulosListaAlumno.appendChild(item);
-            });
-        } catch (err) {
-            modulosListaAlumno.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
-            console.error(err);
-        }
-        
     } catch (error) {
         console.error('Error:', error);
+    }
+    try {
+        const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
+        const res = await fetch(`${api_url}/modulos?cod=${cod}`);
+        const modulos = await res.json();
+
+    
+        if (modulos.length === 0) {
+            leccionesContainer.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
+            return;
+        }
+    
+        modulos.forEach(modulo => {
+            const item = document.createElement('a');
+            item.className = 'list-group-item list-group-item-action';
+            item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
+            item.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">${modulo.titulo}</span>
+                    ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
+                </div>
+            `;
+            modulosListaAlumno.appendChild(item);
+        });
+    } catch (err) {
+        modulosListaAlumno.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
+        console.error(err);
     }
 }
 

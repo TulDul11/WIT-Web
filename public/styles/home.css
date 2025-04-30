@@ -159,6 +159,10 @@ html, body {
     font-weight: bold;
     font-family: Arial, sans-serif;
 
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
     margin-bottom: 0.2rem;
 }
 .card_menu_icon {

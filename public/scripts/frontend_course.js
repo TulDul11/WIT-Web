@@ -12,10 +12,10 @@ window.addEventListener('load', async () => {
             document.body.insertBefore(temp.firstChild, document.body.firstChild);
         }
 
+        await load_sidebar_data();
+        
         // Al terminar de cargar contenido estático, cargamos cualquier datos conseguidos a través de la conexión API.
         await loadCourse();
-
-        await load_sidebar_data();
 
         configurarBotonCrearModulo()
 
@@ -146,11 +146,14 @@ async function set_up_alumno(user_role, user_id, cod) {
             }
             throw new Error(`Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
+
+        // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+        document.getElementById('sidebar_docs').style.display = 'none';
 
         curso = data.course_data[0];
 
@@ -200,7 +203,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         const tareas_lista_m = document.getElementById('tareas_lista_m');
         
         if (!hresponse.ok) {
-            if (response.status === 404) {
+            if (hresponse.status === 404) {
                 tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas pendientes</a>`;
             }
             throw new Error(`Error: ${response.status}`);
@@ -349,6 +352,8 @@ async function set_up_profesor(user_role, user_id, cod) {
         
         const dashboard_data = await dashboard_response.json();
 
+        console.log(dashboard_data);
+
         document.getElementById('course_name').textContent = dashboard_data[0];
         document.getElementById('num_tec').textContent = dashboard_data[1];
         document.getElementById('num_mod').textContent = dashboard_data[3];
@@ -460,7 +465,7 @@ async function set_up_charts(stats, calis) {
 
     for(let promedio of calis){
         labels.push(promedio.nombre);
-        let cur_prom = parseFloat(promedio.promedio);
+        let cur_prom = parseFloat(promedio.promedio * 100);
         yValues.push(cur_prom);
         sum += cur_prom;
     }

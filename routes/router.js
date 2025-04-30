@@ -853,6 +853,23 @@ router.get('/obtener_curso', async (req, res) => {
   }
 });
 
+router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
+    const { cod_curso } = req.params;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT alumnos.id AS id, alumnos.nombre AS nombre
+            FROM alumnos
+            INNER JOIN alumnos_cursos ON alumnos.id = alumnos_cursos.id_alumno
+            WHERE alumnos_cursos.cod_curso = ?
+        `, [cod_curso]);
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error al obtener los alumnos del curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
   
 

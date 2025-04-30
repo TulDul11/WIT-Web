@@ -228,15 +228,10 @@ async function load_home_profesor(loading_data) {
 
                 document.getElementById('editStudentForm').dataset.courseId = curso[0].cod;
 
+                await editarCurso(curso[0].cod);
+
                 const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
                 modal.show();
-            });
-
-            
-            editarBtn.addEventListener('click', async function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                editarCurso(curso[0].cod);
             });
 
             eliminarBtn.addEventListener('click', async function (event) {
@@ -252,6 +247,117 @@ async function load_home_profesor(loading_data) {
         console.error('Error:', error);
     }
 }
+
+async function editarCurso(codCurso) {
+    try {
+        const response = await fetch(`${api_url}/alumnos_del_curso/${codCurso}`);
+        const alumnos = await response.json();
+
+        assignedSelectedStudents = [...alumnos]; // guardar la lista original
+        mostrarAlumnosSeleccionadosAssigned();   // reutilizar función que ya muestra y permite borrar
+
+    } catch (error) {
+        console.error('Error al cargar alumnos del curso:', error);
+    }
+}
+
+let assignedSelectedStudents = [];
+
+async function cargarAlumnosEnDropdownAssigned() {
+    try {
+        const response = await fetch(`${api_url}/obtener_alumnos`);
+        const alumnos = await response.json();
+
+        const searchInput = document.getElementById('assignedsearchStudent');
+        const dropdown = document.getElementById('assignedStudentDropdown');
+
+        dropdown.innerHTML = '';
+
+        const filteredAlumnos = searchInput.value
+            ? alumnos.filter(alumno =>
+                alumno.nombre.toLowerCase().includes(searchInput.value.toLowerCase())
+            )
+            : alumnos;
+
+        filteredAlumnos.forEach(alumno => {
+            const option = document.createElement('button');
+            option.classList.add('dropdown-item');
+            option.textContent = `${alumno.id} - ${alumno.nombre}`;
+            option.addEventListener('click', (event) => seleccionarAlumnoAssigned(event, alumno));
+            dropdown.appendChild(option);
+        });
+
+        if (filteredAlumnos.length === 0) {
+            const noResultsOption = document.createElement('button');
+            noResultsOption.classList.add('dropdown-item');
+            noResultsOption.disabled = true;
+            noResultsOption.textContent = 'No se encontraron alumnos';
+            dropdown.appendChild(noResultsOption);
+        }
+
+        dropdown.style.display = 'block';
+    } catch (err) {
+        console.error('Error al cargar alumnos (assigned):', err);
+    }
+}
+
+function seleccionarAlumnoAssigned(event, alumno) {
+    event.preventDefault();
+
+    if (!assignedSelectedStudents.some(student => student.id === alumno.id)) {
+        assignedSelectedStudents.push(alumno);
+        console.log('Alumno agregado (assigned):', alumno);
+        mostrarAlumnosSeleccionadosAssigned();
+    }
+
+    document.getElementById('assignedsearchStudent').value = '';
+    document.getElementById('assignedStudentDropdown').style.display = 'none';
+}
+
+function mostrarAlumnosSeleccionadosAssigned() {
+    const studentListBox = document.getElementById('assignedStudentListBox');
+    studentListBox.innerHTML = '';
+
+    assignedSelectedStudents.forEach((alumno, index) => {
+        const studentItem = document.createElement('div');
+        studentItem.classList.add('student-item');
+        studentItem.innerHTML = `
+            <span>${alumno.nombre}</span>
+            <button class="btn btn-danger btn-sm ms-2" onclick="eliminarAlumnoAssigned(${index})">X</button>
+        `;
+        studentListBox.appendChild(studentItem);
+    });
+}
+
+function eliminarAlumnoAssigned(index) {
+    assignedSelectedStudents.splice(index, 1);
+    mostrarAlumnosSeleccionadosAssigned();
+}
+
+// Eventos para el assigned
+document.getElementById('assignedsearchStudent').addEventListener('focus', async () => {
+    const dropdown = document.getElementById('assignedStudentDropdown');
+    await cargarAlumnosEnDropdownAssigned();
+    dropdown.style.display = 'block';
+});
+
+document.getElementById('assignedsearchStudent').addEventListener('input', cargarAlumnosEnDropdownAssigned);
+
+document.getElementById('assignedsearchStudent').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+    }
+});
+
+document.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('assignedStudentDropdown');
+    const searchInput = document.getElementById('assignedsearchStudent');
+
+    if (!event.target.closest('#assignedsearchStudent') && !event.target.closest('#assignedStudentDropdown')) {
+        dropdown.style.display = 'none';
+    }
+});
+
 
 
 document.getElementById("saveCourseButton").addEventListener("click", function() {
@@ -364,7 +470,7 @@ async function cargarAlumnosEnDropdown() {
             filteredAlumnos.forEach(alumno => {
                 const option = document.createElement('button');
                 option.classList.add('dropdown-item');
-                option.textContent = `${alumno.id} (${alumno.nombre})`;
+                option.textContent = `${alumno.id} - ${alumno.nombre}`;
                 option.addEventListener('click', (event) => seleccionarAlumno(event, alumno));
                 dropdown.appendChild(option);
             });
@@ -447,6 +553,8 @@ document.addEventListener('click', (event) => {
         dropdown.style.display = 'none';
     }
 });
+
+
 
 
     // Función para actualizar los contadores de caracteres
@@ -585,9 +693,6 @@ agregarAlumnoModal.addEventListener('hidden.bs.modal', () => {
     document.getElementById('studentForm').reset();
 });
 
-
-
-
 function eliminarCurso(codCurso) {
     console.log("Eliminando curso con código:", codCurso);  // Depuración
     fetch('/delete_course', {
@@ -616,3 +721,5 @@ function eliminarCurso(codCurso) {
         console.error('Error al eliminar el curso:', err);
     });
 }
+
+

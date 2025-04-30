@@ -50,16 +50,16 @@ html, body {
 }
 
 #bar_container {
-    height: 300px;
+    height: 400px;
     width: 100%;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: scroll;
 }
 
 #histogram_container {
-    height: 300px;
+    height: 400px;
     width: 100%;
-    max-height: 300px;
+    max-height: 400px;
     overflow-y: scroll;
 }
 

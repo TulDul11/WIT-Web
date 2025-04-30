@@ -423,13 +423,17 @@ router.post('/dashboard', async (req, res) => {
 
     let calificaciones = [];
 
+    query = `SELECT id_alumno FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+    const [alumnos_id] = await db.query(query);
+    let i = 0;
     for(let name of nombres){
         query = `SELECT AVG(resultado) AS promedio FROM alumnos_tareas
         INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
         INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
-        WHERE alumnos.id = 1 AND cod_curso = 'LAV0001';`;
+        WHERE alumnos.id = ${alumnos_id[i].id_alumno} AND cod_curso = '${cod}';`;
         let [promedio] = await db.query(query);
         calificaciones.push({nombre: name.nombre, promedio: promedio[0].promedio});
+        i++;
     }
     dashboard_data.push(calificaciones);
 

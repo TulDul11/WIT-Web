@@ -349,6 +349,8 @@ async function set_up_profesor(user_role, user_id, cod) {
         
         const dashboard_data = await dashboard_response.json();
 
+        console.log(dashboard_data);
+
         document.getElementById('course_name').textContent = dashboard_data[0];
         document.getElementById('num_tec').textContent = dashboard_data[1];
         document.getElementById('num_mod').textContent = dashboard_data[3];
@@ -460,7 +462,7 @@ async function set_up_charts(stats, calis) {
 
     for(let promedio of calis){
         labels.push(promedio.nombre);
-        let cur_prom = parseFloat(promedio.promedio);
+        let cur_prom = parseFloat(promedio.promedio * 100);
         yValues.push(cur_prom);
         sum += cur_prom;
     }

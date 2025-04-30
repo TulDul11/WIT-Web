@@ -47,6 +47,19 @@ html, body {
     margin-bottom: 0px;
 }
 
+#bar_container {
+    height: 300px;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+#histogram_container {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
 .course_body div.course_code_container {
     display: flex;
     margin: 20px 0px 15px 0px;

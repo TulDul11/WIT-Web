@@ -393,7 +393,9 @@ router.post('/dashboard', async (req, res) => {
 
     dashboard_data.push(alumnos[0].num_alumnos);
 
-    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+    query = `SELECT nombre FROM alumnos_cursos
+            INNER JOIN alumnos ON alumnos.id = alumnos_cursos.id_alumno 
+            WHERE cod_curso = '${cod}';`;
 
     const [nombres] = await db.query(query);
 
@@ -413,6 +415,23 @@ router.post('/dashboard', async (req, res) => {
         progress.push({nombre: nombre, tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
     }
     dashboard_data.push(progress);
+
+    query = `SELECT COUNT(*) AS num_modulos FROM modulos WHERE cod_curso = '${cod}';`;
+    const [modulos] = await db.query(query);
+
+    dashboard_data.push(modulos[0].num_modulos);
+
+    let calificaciones = [];
+
+    for(let name of nombres){
+        query = `SELECT AVG(resultado) AS promedio FROM alumnos_tareas
+        INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+        INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+        WHERE alumnos.id = 1 AND cod_curso = 'LAV0001';`;
+        let [promedio] = await db.query(query);
+        calificaciones.push({nombre: name.nombre, promedio: promedio[0].promedio});
+    }
+    dashboard_data.push(calificaciones);
 
     return res.json(dashboard_data);
 

@@ -20,7 +20,7 @@
     <div class="Course content_body" id="alumno_body" style="display: none;">
         <div class="mb-3" style="width: 100%;">
             <!-- Grid web -->
-            <div class="row align-items-start" id="course_grid">
+            <div class="row align-items-start" id="course_grid" >
                 <div class="col-md-9" id="alumno_curso">
                     <div class="mb-3" style="margin: 10px 20px;">
                         <p id="course_code" class="fw-bold fs-4"></p>
@@ -71,67 +71,67 @@
     <!-- Curso profesor -->
     <div class="Course_Profesor content_body" id="profesor_body" style="display: none;">
         <div class="mb-3" style="width: 100%; margin-top: 20px;">
-            <div class="card p-4" style="width: 95%;margin-inline: auto;">
+            <div class="card p-4" id="main_card" style="width: 90%; margin-inline: auto;">
                 <p id="course_name" class="fw-bold fs-4"></p>
-                <div class="row align-items-center" style="margin-bottom: 20px;">
-                    <div class="col-md" style="margin-bottom: 20px;">
-                        <p>Progreso de alumnos (%)</p>
-                        <div class ="mb-3" id = "bar_container">
-                            <div class = "mb-3" id="bar_body" style="max-width: 700px;">
-                                <canvas id="bar_chart"></canvas>
-                            </div>
+                <div class="row" style="margin-bottom: 20px;">
+                    <p>Progreso de alumnos (%)</p>
+                    <div class ="mb-3" id = "bar_container">
+                        <div class = "mb-3" id="bar_body" style="width: 100%;">
+                            <canvas id="bar_chart"></canvas>
                         </div>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                              Orden
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li onclick="sort_chart(3)"><a class="dropdown-item">A-z</a></li>
-                                <li onclick="sort_chart(4)"><a class="dropdown-item">Z-a</a></li>
-                                <li onclick="sort_chart(2)"><a class="dropdown-item">Mayor a menor</a></li>
-                                <li onclick="sort_chart(1)"><a class="dropdown-item">Menor a mayor</a></li>
-                            </ul>
-                          </div>
                     </div>
-                    <div class="col-md">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Orden
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li onclick="sort_chart(3)"><a class="dropdown-item">A-z</a></li>
+                            <li onclick="sort_chart(4)"><a class="dropdown-item">Z-a</a></li>
+                            <li onclick="sort_chart(2)"><a class="dropdown-item">Mayor a menor</a></li>
+                            <li onclick="sort_chart(1)"><a class="dropdown-item">Menor a mayor</a></li>
+                        </ul>
+                    </div>
+                </div>  
+                <div class="row" style="margin-bottom: 20px;">
+                    <div>
                         <p>Histograma calificaciones</p>
                         <div class ="mb-3" id = "histogram_container">
-                            <div class = "mb-3" id="histogram_body" style="height: 300px; max-height: 300px; max-width: 500px;">
+                            <div class = "mb-3" id="histogram_body" style="max-width: 1298; min-height: 300px; display: flexbox;">
                                 <canvas id="histogram_chart"></canvas>
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
                 <div class="row">
                     <div class="col-md" style="margin-inline: auto; width: 85%;">
                         <div class="card text-bg-light mb-3" style="border-left: 1.2rem solid #F1B300 !important;">
-                            <div class="card-body text-center" style="max-height: 140px;">
+                            <div class="card-body text-center" style="min-height: 136; max-height: 140px;">
                                 <h5 class="card-title" style="text-align: center;">Número de técnicos</h5>
-                                <p class="kpi_text" id="num_tec"></p>
+                                <p class="kpi_text" id="num_tec">0</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md" style="margin-inline: auto; width: 85%;">
                         <div class="card text-bg-light mb-3" style="border-left: 1.2rem solid #F1B300 !important;">
-                            <div class="card-body text-center" style="max-height: 140px;">
+                            <div class="card-body text-center" style="min-height: 136; max-height: 140px;">
                                 <h5 class="card-title" style="text-align: center;">Promedio del curso</h5>
-                                <p class="kpi_text">89.5</p>
+                                <p class="kpi_text" id="prom_prom"></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md" style="margin-inline: auto; width: 85%;">
                         <div class="card text-bg-light mb-3" style="border-left: 1.2rem solid #F1B300 !important;">
-                            <div class="card-body text-center" style="max-height: 140px;">
+                            <div class="card-body text-center" style="min-height: 136; max-height: 140px;">
                                 <h5 class="card-title" style="text-align: center;">% de avance promedio</h5>
-                                <p class="kpi_text">60%</p>
+                                <p class="kpi_text" id="prom_prog">0%</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md" style="margin-inline: auto; width: 85%;">
                         <div class="card text-bg-light mb-3" style="border-left: 1.2rem solid #F1B300 !important;">
-                            <div class="card-body text-center" style="max-height: 140px;">
-                                <h5 class="card-title" style="text-align: center;">Numero de modulos</h5>
-                                <p class="kpi_text">7</p>
+                            <div class="card-body text-center" style="min-height: 136; max-height: 140px;">
+                                <h5 class="card-title" style="text-align: center;">Número de modulos</h5>
+                                <p class="kpi_text" id="num_mod">0</p>
                             </div>
                         </div>
                     </div>
@@ -164,7 +164,7 @@
     <script
         src="https://cdn.jsdelivr.net/npm/chart.js">
     </script>
-
+        
     <script>
     </script>
 </body>

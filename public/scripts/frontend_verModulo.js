@@ -15,6 +15,9 @@ async function cargarModulo() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
 
+  // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+  document.getElementById('sidebar_docs').style.display = 'none';
+
   try {
     const res = await fetch(`${api_url}/modulos/${id}`);
     if (!res.ok) throw new Error('No encontrado');

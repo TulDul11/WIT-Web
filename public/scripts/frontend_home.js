@@ -212,8 +212,8 @@ async function load_home_profesor(loading_data) {
                     <button class="menu-option borrar-btn" data-codigo="${curso[0].cod}">Borrar</button>
                 </div>
                 <div class="card_body">
-                    <h3 class="card_title">${curso[0].nombre}</h3>
                     <p class="card_code">${curso[0].cod}</p>
+                    <h3 class="card_title">${curso[0].nombre}</h3>
                 </div>
             `;
 

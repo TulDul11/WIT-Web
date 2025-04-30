@@ -1,4 +1,6 @@
-let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
+// let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
+
 
 // --- Evento principal ---
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,4 +1,5 @@
-let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
+// let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
 window.addEventListener('load', async () => {
     // Cargamos la página, incluyendo las barras lateral y de navegación, junto con el contenido de home.
@@ -295,6 +296,7 @@ async function set_up_alumno(user_role, user_id, cod) {
 
 async function set_up_profesor(user_role, user_id, cod) {
     try {
+
         const modulos_profesor = document.getElementById('modulos_profesor');
 
         // Llamamos al backend para traer los módulos
@@ -316,7 +318,6 @@ async function set_up_profesor(user_role, user_id, cod) {
         // Verificamos si hay módulos
         if (modulos.length === 0) {
             modulos_profesor.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
-            return;
         }
 
         // Creamos una tarjeta para cada módulo
@@ -393,6 +394,7 @@ async function set_up_profesor(user_role, user_id, cod) {
     }catch(error) {
         console.error('Error:', error);
     }
+
 }
 
 async function set_up_charts(stats, calis) {

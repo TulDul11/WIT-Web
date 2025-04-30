@@ -94,7 +94,19 @@ html, body {
 .search_bar {
     width: 100%;
 }
-
+@media (max-width: 400px) {
+    #header_profesor {
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+    }
+    .btn-profesor-agregar-curso {
+        width: 100%;
+    }
+    .btn-profesor-agregar-alumno {
+        width: 100%;
+    }
+}
 #profesor_cursos {
     display: flex;
     flex-wrap: wrap;

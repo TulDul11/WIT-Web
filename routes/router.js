@@ -742,6 +742,7 @@ router.post('/agregar_alumno', async (req, res) => {
     }
 });
 
+
 router.get('/obtener_alumnos', async (req, res) => {
   try {
       const [results] = await db.query('SELECT id, nombre FROM alumnos');

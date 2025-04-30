@@ -625,39 +625,28 @@ router.delete('/modulos/:id', async (req, res) => {
 })
 
 router.post('/guardar_resultado', async (req, res) => {
-  console.log("Endpoint /guardar_resultado recibido!");
-
+  console.log("[SERVER] Entró a /guardar_resultado");
   const { user_id, id_tarea, resultado, completado } = req.body;
-
-  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
 
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
     return res.status(400).json({ message: 'Datos incompletos' });
   }
 
   try {
-    const updateQuery = `
-      UPDATE alumnos_tareas 
-      SET resultado = ?, completado = ?
-      WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
-      AND id_tarea = ?;`;
-
-    console.log('Query que se ejecutará:', updateQuery);
-    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
-
-    const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
-
-    console.log('Resultado de db.query:', result);
+    await db.query(
+      `UPDATE alumnos_tareas 
+       SET resultado = ?, completado = ?
+       WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
+       AND id_tarea = ?`,
+      [resultado, completado, user_id, id_tarea]
+    );
 
     res.status(200).json({ message: 'Resultado actualizado exitosamente' });
   } catch (error) {
     console.error('Error en guardar_resultado:', error);
-    res.status(500).json({ message: 'Error interno al guardar el resultado', error: error.message });
+    res.status(500).json({ message: 'Error interno al guardar el resultado' });
   }
 });
-
-
-
 
 // ROUTER PROFESOR 
 
@@ -710,43 +699,48 @@ router.post('/agregar_curso', async (req, res) => {
 
 
 router.post('/agregar_alumno', async (req, res) => {
-  try {
-      const { id_usuario, nombre, apellido, username, password } = req.body;
-
-      
-      if (!id_usuario || !nombre || !apellido || !username || !password) {
-          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+    try {
+      const { alumnos } = req.body;
+  
+      if (!Array.isArray(alumnos) || alumnos.length === 0) {
+        return res.status(400).json({ message: 'No hay alumnos válidos.' });
       }
-
-      
-      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
-      if (existingStudent.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+  
+      const agregados = [];
+      const duplicados = [];
+  
+      for (const alumno of alumnos) {
+        const { id_usuario, nombre, apellido, username, password } = alumno;
+  
+        // Validar campos individuales
+        if (!id_usuario || !nombre || !apellido || !username || !password) {
+          continue;
+        }
+  
+        const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+        const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+  
+        if (existingStudent.length > 0 || existingUser.length > 0) {
+          duplicados.push(id_usuario);
+          continue;
+        }
+  
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+  
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+        await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+  
+        agregados.push(id_usuario);
       }
-
-      
-      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
-      if (existingUser.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
-      }
-
-      
-      const salt = await bcrypt.genSalt(10); 
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      
-      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
-
-      
-      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
-
-      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
-  } catch (err) {
-      console.error('Error al agregar alumno:', err); 
+  
+      res.status(201).json({ message: 'Proceso completado.', agregados, duplicados });
+  
+    } catch (err) {
+      console.error('Error al agregar alumnos:', err);
       res.status(500).json({ error: err.message });
-  }
+    }
 });
-
 
 router.get('/obtener_alumnos', async (req, res) => {
   try {
@@ -863,27 +857,6 @@ router.get('/obtener_curso', async (req, res) => {
       connection.release();
   }
 });
-
-router.post('/tarea_id', async (req, res) => {
-  const { user_id, user_role, moduloID } = req.body;
-
-  try {
-    const [alumno] = await db.query('SELECT id FROM alumnos WHERE id_usuario = ?', [user_id]);
-    if (alumno.length === 0) return res.status(404).json({ message: 'Alumno no encontrado' });
-
-    const id_alumno = alumno[0].id;
-
-    const [tarea] = await db.query('SELECT id_tarea FROM alumnos_tareas WHERE id_alumno = ? AND id_tarea = ?', [id_alumno, moduloID]);
-
-    if (tarea.length === 0) return res.status(404).json({ message: 'Tarea no encontrada' });
-
-    res.json({ id_tarea: tarea[0].id_tarea });
-  } catch (error) {
-    console.error('Error al obtener id_tarea:', error);
-    res.status(500).json({ message: 'Error interno' });
-  }
-});
-
 
 router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
     const { cod_curso } = req.params;

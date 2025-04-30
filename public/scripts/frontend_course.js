@@ -16,6 +16,8 @@ window.addEventListener('load', async () => {
 
         await load_sidebar_data();
 
+        configurarBotonCrearModulo()
+
         // Terminando la carga de datos a través de la conexión, manejamos las últimas modificaciones de diseño a la barra lateral (incluyendo animaciones).
         const mediaQuery = window.matchMedia('(max-width: 767px)');
 
@@ -587,7 +589,7 @@ function configurarBotonCrearModulo() {
   if (codCurso) {
     const crearModuloBtn = document.getElementById('btn-crear-modulo');
     if (crearModuloBtn) {
-        crearModuloBtn.href = `crearModulos.html?modo=crear&cod=${codCurso}`;
+        crearModuloBtn.href = `${api_url}crearModulos.html?modo=crear&cod=${codCurso}`;
     }
   }
 }

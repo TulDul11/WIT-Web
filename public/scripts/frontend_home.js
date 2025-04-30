@@ -90,15 +90,18 @@ Función que cargará los datos del alumno en home.
 */
 async function load_home_alumno(loading_data) {
     // Modificando carta de usuario para colocar nombre de usuario
-    const card_name = document.getElementById('card_name');
+    const header_alumno = document.getElementById('header_alumno');
     
     if (loading_data.nombre && loading_data.apellido) {
-        card_name.innerHTML = loading_data.nombre + ' ' + loading_data.apellido;
+        header_alumno.innerHTML = 'Bienvenid@, ' + loading_data.nombre + ' ' + loading_data.apellido + '!';
     } else if (loading_data.nombre) {
-        card_name.innerHTML = loading_data.nombre;
+        header_alumno.innerHTML = 'Bienvenid@, ' + loading_data.nombre + '!';
     } else {
-        card_name.innerHTML = 'Alumno'
+        header_alumno.innerHTML = 'Bienvenid@!'
     }
+
+    // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+    document.getElementById('sidebar_docs').style.display = 'none';
 
     // Llamada al API para conseguir cursos del usuario.
     try {
@@ -131,19 +134,38 @@ async function load_home_alumno(loading_data) {
 
         for (let course of data.course_data) {
             let course_card =`<div class="card">
-                    <a href="course?code=${course[0].cod}" style="text-decoration: none; color: inherit;">
-                        <img class="card-img-top" src="../images/educacion.png" alt="Card image cap"
-                            style="height: 8rem; object-fit: cover; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem;">
-                        <div class="card-body" style="height: 7rem; padding: 0.5rem;">
-                            <h9 class="card-title" style="font-size: 1rem; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 0.2rem;">${course[0].nombre}</h9>
-                            <h15 class="card-code" style="font-size: 0.625rem; margin-bottom: 0.2rem; display: block;">${course[0].cod}</h15>
-                            <small class="card-text" style="font-size: 0.75rem; margin: 0.3rem 0 0.8rem;">${course[0].descripcion}</small>
-                        </div>
-                    </a>
-                </div>`
+                                <a href="course?code=${course[0].cod}">
+                                    <img class="card_image" src="../images/educacion.png">
+                                    <div class="card_body">
+                                        <h15 class="card_code">${course[0].cod}</h15>
+                                        <h9 class="card_title">${course[0].nombre}</h9>
+                                    </div>
+                                </a>
+                            </div>`
 
             alumno_cursos.innerHTML += course_card;
         };
+
+        const filter_input = document.getElementById('filter_input_alumno');
+        const coursesContainer = document.getElementById('alumno_cursos');
+
+        // Escuchamos el evento "input" para capturar lo que el usuario escribe
+        filter_input.addEventListener('input', function () {
+            const filter_value = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+            const course_cards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+
+            course_cards.forEach(card => {
+                const course_title = card.querySelector('.card_title').textContent.toLowerCase(); // Título del curso
+                const course_code = card.querySelector('.card_code').textContent.toLowerCase(); // Código del curso
+
+                // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+                if (course_title.includes(filter_value) || course_code.includes(filter_value)) {
+                    card.style.display = 'block'; // Mostramos la tarjeta
+                } else {
+                    card.style.display = 'none'; // Ocultamos la tarjeta
+                }
+            });
+        });
 
     } catch (error) {
         console.error('Error:', error);
@@ -185,38 +207,33 @@ async function load_home_profesor(loading_data) {
  
          for (let curso of data.course_data) {
              const card = document.createElement('div');
-             card.className = 'profesor-card';
+             card.className = 'card';
              card.id = `card-${curso[0].cod}`;
-             card.style.position = 'relative';
  
-             card.innerHTML = `
-                 <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
-                     <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
-                 </a>
-                 <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
-                      style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
-                 <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                     <button class="menu-option">Editar</button>
-                     <button class="menu-option">Borrar</button>
-                 </div>
-                 <div class="card-body">
-                     <h3 class="profesor-card-title">${curso[0].nombre}</h3>
-                     <p class="profesor-card-code">${curso[0].cod}</p>
-                     <small class="profesor-card-text">${curso[0].descripcion}</small>
-                 </div>
-             `;
+             card.innerHTML = `<a href="course?code=${curso[0].cod}">
+                                    <img class="card_image" src="../images/educacion.png">
+                                    <div class="card_body">
+                                        <h15 class="card_code">${curso[0].cod}</h15>
+                                        <h9 class="card_title">${curso[0].nombre}</h9>
+                                    </div>
+                                </a>
+                                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon">
+                                <div class="card_options_menu">
+                                    <button class="menu-option" id="edit_course_button">Editar</button>
+                                    <button class="menu-option" id="erase_course_button">Borrar</button>
+                                </div>`;
             
              profesor_cursos.appendChild(card);
  
              // Agregar eventos
-             const threeDotsIcon = card.querySelector('.three-dots-icon');
-             const menu = card.querySelector('.options-menu');
+             const threeDotsIcon = card.querySelector('.card_menu_icon');
+             const menu = card.querySelector('.card_options_menu');
              const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
  
              threeDotsIcon.addEventListener('click', function (event) {
                  event.preventDefault();
                  event.stopPropagation();
-                 menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+                 menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
              });
  
              document.addEventListener('click', function (event) {
@@ -238,6 +255,28 @@ async function load_home_profesor(loading_data) {
                  location.reload();
              });
          }
+
+         // Seleccionamos el input del filtro y el contenedor de los cursos
+        const filter_input = document.getElementById('filter_input_profesor');
+        const courses_container = document.getElementById('profesor_cursos');
+
+        // Escuchamos el evento "input" para capturar lo que el usuario escribe
+        filter_input.addEventListener('input', function () {
+            const filter_value = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
+            const course_cards = courses_container.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+
+            course_cards.forEach(card => {
+                const course_title = card.querySelector('.card_title').textContent.toLowerCase(); // Título del curso
+                const course_code = card.querySelector('.card_code').textContent.toLowerCase(); // Código del curso
+
+                // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
+                if (course_title.includes(filter_value) || course_code.includes(filter_value)) {
+                    card.style.display = 'block'; // Mostramos la tarjeta
+                } else {
+                    card.style.display = 'none'; // Ocultamos la tarjeta
+                }
+            });
+        });
 
     } catch (error) {
         console.error('Error:', error);
@@ -275,16 +314,18 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     const card = document.createElement("div");
     card.classList.add("card");
 
-    card.innerHTML = `
-        <a href="#" style="text-decoration: none; color: inherit;">
-            <img class="card-img-top" src="../images/educacion.png" alt="Imagen del curso">
-            <div class="card-body">
-                <h9 class="card-title">${courseName}</h9>
-                <h15 class="card-code">${courseKey}</h15>
-                <small class="card-text">${description}</small> <br>
-            </div>
-        </a>
-    `;
+    card.innerHTML = `<a href="course?code=${courseKey}">
+                                    <img class="card_image" src="../images/educacion.png">
+                                    <div class="card_body">
+                                        <h15 class="card_code">${courseKey}</h15>
+                                        <h9 class="card_title">${courseName}</h9>
+                                    </div>
+                                </a>
+                                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon">
+                                <div class="card_options_menu">
+                                    <button class="menu-option" id="edit_course_button">Editar</button>
+                                    <button class="menu-option" id="erase_course_button">Borrar</button>
+                                </div>`;;
 
     document.getElementById("coursesContainer").appendChild(card);
 
@@ -332,28 +373,6 @@ document.getElementById("csvUpload").addEventListener("change", function(event) 
         };
         reader.readAsText(file); // Lee el contenido del archivo CSV
     }
-});
-
-// Seleccionamos el input del filtro y el contenedor de los cursos
-const filterInput = document.getElementById('filterInput');
-const coursesContainer = document.getElementById('coursesContainer');
-
-// Escuchamos el evento "input" para capturar lo que el usuario escribe
-filterInput.addEventListener('input', function () {
-    const filterValue = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
-    const courseCards = coursesContainer.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
-
-    courseCards.forEach(card => {
-        const courseTitle = card.querySelector('.card-title').textContent.toLowerCase(); // Título del curso
-        const courseDescription = card.querySelector('.card-text').textContent.toLowerCase(); // Descripción del curso
-
-        // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
-        if (courseTitle.includes(filterValue) || courseDescription.includes(filterValue)) {
-            card.style.display = 'block'; // Mostramos la tarjeta
-        } else {
-            card.style.display = 'none'; // Ocultamos la tarjeta
-        }
-    });
 });
 
 function actualizarBreadcrumb({ curso = null, extra = null }) {

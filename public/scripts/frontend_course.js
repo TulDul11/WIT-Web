@@ -146,8 +146,25 @@ async function set_up_alumno(user_role, user_id, cod) {
             }
             throw new Error(`Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
+        
+        const presponse = await fetch(`${api_url}/progreso`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+
+        const progreso = await presponse.json();
+
+        let prog_percent = Math.round((progreso.tareas_completadas/progreso.tareas)*100);
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
@@ -177,7 +194,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         
                     <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 50%;background-color: #F1B300 !important" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: ${prog_percent}%;background-color: #F1B300 !important" aria-valuenow="${prog_percent}" aria-valuemin="0" aria-valuemax="100">${prog_percent + '%'}</div>
                     </div>
                 </div>`
 

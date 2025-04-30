@@ -447,6 +447,44 @@ router.post('/dashboard', async (req, res) => {
   }
 });
 
+router.post('/progreso', async (req, res) => {
+  try{
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
+    const {user_id, user_role, cod} = req.body;
+
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+    const [current_user] = await db.query(query);
+
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT * FROM (SELECT COUNT(*) AS tareas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id}) AS A
+            JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id} AND completado) AS B;`
+
+    let [tareas] = await db.query(query);
+
+    console.log(tareas);
+
+    return res.json({tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+
+  }catch{
+    res.status(500).json({
+        error: err.message
+    });
+  }
+})
 
 
 //guardar contenido del modulo

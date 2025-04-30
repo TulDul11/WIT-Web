@@ -201,7 +201,7 @@ async function set_up_alumno(user_role, user_id, cod) {
                     <p id="course_title" class="fw-bold mb-4" style="font-size: 2rem;">${curso[0].nombre}</p>
                     <div class="row align-items-center">
                         <div class="col-md-6 mb-4 mb-md-0">
-                            <p>
+                            <p align="justify">
                                 ${curso[0].descripcion}
                             </p>
                         </div>

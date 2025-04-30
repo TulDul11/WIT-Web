@@ -200,7 +200,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         const tareas_lista_m = document.getElementById('tareas_lista_m');
         
         if (!hresponse.ok) {
-            if (response.status === 404) {
+            if (hresponse.status === 404) {
                 tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas pendientes</a>`;
             }
             throw new Error(`Error: ${response.status}`);

@@ -393,7 +393,9 @@ router.post('/dashboard', async (req, res) => {
 
     dashboard_data.push(alumnos[0].num_alumnos);
 
-    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+    query = `SELECT nombre FROM alumnos_cursos
+            INNER JOIN alumnos ON alumnos.id = alumnos_cursos.id_alumno 
+            WHERE cod_curso = '${cod}';`;
 
     const [nombres] = await db.query(query);
 
@@ -413,6 +415,23 @@ router.post('/dashboard', async (req, res) => {
         progress.push({nombre: nombre, tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
     }
     dashboard_data.push(progress);
+
+    query = `SELECT COUNT(*) AS num_modulos FROM modulos WHERE cod_curso = '${cod}';`;
+    const [modulos] = await db.query(query);
+
+    dashboard_data.push(modulos[0].num_modulos);
+
+    let calificaciones = [];
+
+    for(let name of nombres){
+        query = `SELECT AVG(resultado) AS promedio FROM alumnos_tareas
+        INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+        INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+        WHERE alumnos.id = 1 AND cod_curso = 'LAV0001';`;
+        let [promedio] = await db.query(query);
+        calificaciones.push({nombre: name.nombre, promedio: promedio[0].promedio});
+    }
+    dashboard_data.push(calificaciones);
 
     return res.json(dashboard_data);
 
@@ -452,13 +471,9 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
   const conn = await db.getConnection();
 
   try {
-    console.log(">>> INICIO GUARDADO PREGUNTAS PARA MÓDULO ID:", moduloId);
-    console.log(">>> Preguntas recibidas:", preguntas);
-
     await conn.beginTransaction();
 
     const [deleteResult] = await conn.query('DELETE FROM preguntas WHERE modulo_id = ?', [moduloId]);
-    console.log(">>> Preguntas eliminadas:", deleteResult.affectedRows);
 
     for (const pregunta of preguntas) {
       await conn.query(
@@ -473,7 +488,6 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
     }
 
     await conn.commit();
-    console.log(">>> COMMIT: Preguntas nuevas insertadas.");
     res.json({ message: 'Preguntas actualizadas correctamente' });
 
   } catch (err) {
@@ -627,8 +641,6 @@ router.delete('/modulos/:id', async (req, res) => {
 })
 
 router.post('/guardar_resultado', async (req, res) => {
-  console.log("Endpoint /guardar_resultado recibido!");
-
   const { user_id, id_tarea, resultado, completado } = req.body;
 
   console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
@@ -662,7 +674,6 @@ router.post('/guardar_resultado', async (req, res) => {
 
 
 // ROUTER PROFESOR 
-
 router.post('/agregar_curso', async (req, res) => {
   const connection = await db.getConnection();
   try {
@@ -815,7 +826,6 @@ router.post('/delete_course', async (req, res) => {
 
 
 router.post('/agregar_alumno_curso', async (req, res) => {
-  console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
   try {
       const { id_alumno, cod_curso } = req.body;
       if (!id_alumno || !cod_curso) {
@@ -836,7 +846,6 @@ router.post('/agregar_alumno_curso', async (req, res) => {
           [id_alumno, cod_curso]
       );
 
-      console.log(`Inserción exitosa para id_alumno: ${id_alumno} en cod_curso: ${cod_curso}`);
       res.status(201).json({ message: 'Alumno asignado al curso exitosamente.' });
   } catch (err) {
       console.error('Error al asignar el alumno al curso:', err);

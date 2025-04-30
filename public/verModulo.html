@@ -9,38 +9,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="styles/style.css" />
+  <link href="./styles/utilities.css" rel="stylesheet">
 </head>
 <body class="course_body">
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-light" id="nav_bar">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-  
-      <!-- IZQUIERDA: Logo + Breadcrumb juntos -->
-      <div class="d-flex align-items-center gap-3">
-        <img src="./images/menu_icon_white.png" id="nav_bar_menu" onclick="log_out()" />
-        <img src="./images/wti_logo_white_cropped.png" id="nav_bar_logo" onclick="home_screen()" />
-  
-            <div id="breadcrumb-container" class="d-flex align-items-center text-white">
-                <a id="breadcrumb-inicio" class="nav-link p-0 me-2 text-white" href="#" onclick="home_screen()">Inicio</a>
-                <span id="breadcrumb-sep-1" class="text-muted mx-2 d-none">></span>
-                <a id="breadcrumb-curso" class="nav-link p-0 me-2 text-white d-none" href="#">Curso</a>
-                <span id="breadcrumb-sep-2" class="text-muted mx-2 d-none">></span>
-                <span id="breadcrumb-extra" class="text-white d-none"></span>
-            </div>              
-      </div>
-  
-      <!-- DERECHA: Rol (Profesor/Alumno) -->
-      <div id="nav_role" class="text-white fw-semibold"></div>
-  
-    </div>
-  </nav>
+  <!-- Incluimos la barra lateral -->
+<div id="sidebar_container"></div>
+<script>
+  fetch('/utilities.html')
+    .then(response => response.text())
+    .then(async html => {
+      document.getElementById('sidebar_container').innerHTML = html;
+      await load_sidebar_data(); // Cuando ya esté cargado el HTML, cargamos los datos dinámicos
+
+      // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+      document.getElementById('sidebar_docs').style.display = 'none';
+    });
+</script>
+
 
   <!-- CONTENIDO DEL MÓDULO -->
-  <div class="container mt-5" id="modulo_content">
+  <div class="container content_body" id="modulo_content">
     <h1 id="modulo_titulo" class="fw-bold mb-4"></h1>
     <div id="modulo_html" class="mb-5"></div>
 
-    <h4 class="fw-bold">Videojuego asociado</h4>
+    <h4 id="juego-titulo" class="fw-bold">Videojuego asociado</h4>
     <div id="juego-container" style="margin-top: 1rem;">
       <iframe 
       id="juego-frame"
@@ -52,6 +44,7 @@
 
     </div>
   </div>
+  <script src="./scripts/utilities.js"></script>
   <script src="./scripts/frontend_verModulo.js"></script>
 </body> 
 </html>

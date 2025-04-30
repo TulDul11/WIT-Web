@@ -393,7 +393,9 @@ router.post('/dashboard', async (req, res) => {
 
     dashboard_data.push(alumnos[0].num_alumnos);
 
-    query = `SELECT DISTINCT nombre FROM alumnos_tareas INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id;`;
+    query = `SELECT nombre FROM alumnos_cursos
+            INNER JOIN alumnos ON alumnos.id = alumnos_cursos.id_alumno 
+            WHERE cod_curso = '${cod}';`;
 
     const [nombres] = await db.query(query);
 
@@ -414,6 +416,27 @@ router.post('/dashboard', async (req, res) => {
     }
     dashboard_data.push(progress);
 
+    query = `SELECT COUNT(*) AS num_modulos FROM modulos WHERE cod_curso = '${cod}';`;
+    const [modulos] = await db.query(query);
+
+    dashboard_data.push(modulos[0].num_modulos);
+
+    let calificaciones = [];
+
+    query = `SELECT id_alumno FROM alumnos_cursos WHERE cod_curso = '${cod}';`;
+    const [alumnos_id] = await db.query(query);
+    let i = 0;
+    for(let name of nombres){
+        query = `SELECT AVG(resultado) AS promedio FROM alumnos_tareas
+        INNER JOIN alumnos ON alumnos_tareas.id_alumno = alumnos.id
+        INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+        WHERE alumnos.id = ${alumnos_id[i].id_alumno} AND cod_curso = '${cod}';`;
+        let [promedio] = await db.query(query);
+        calificaciones.push({nombre: name.nombre, promedio: promedio[0].promedio});
+        i++;
+    }
+    dashboard_data.push(calificaciones);
+
     return res.json(dashboard_data);
 
 
@@ -424,6 +447,42 @@ router.post('/dashboard', async (req, res) => {
   }
 });
 
+router.post('/progreso', async (req, res) => {
+  try{
+    if (!req.session.user) {
+      return res.status(401).json({ message: 'Sesión expirada o no iniciada.' });
+    }
+    const {user_id, user_role, cod} = req.body;
+
+    let query = `SELECT id FROM ${user_role} WHERE id_usuario = '${user_id}'`;
+
+    const [current_user] = await db.query(query);
+
+    if (current_user.length == 0) {
+      return res.status(404).json({
+          message: 'Error: Usuario no encontrado'
+      })
+    }
+
+    let num_id = current_user[0].id;
+
+    query = `SELECT * FROM (SELECT COUNT(*) AS tareas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id} AND cod_curso = '${cod}') AS A
+            JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
+            INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
+            WHERE id_alumno = ${num_id} AND completado AND cod_curso = '${cod}') AS B;`
+
+    let [tareas] = await db.query(query);
+
+    return res.json({tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
+
+  }catch{
+    res.status(500).json({
+        error: err.message
+    });
+  }
+})
 
 
 //guardar contenido del modulo
@@ -452,13 +511,9 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
   const conn = await db.getConnection();
 
   try {
-    console.log(">>> INICIO GUARDADO PREGUNTAS PARA MÓDULO ID:", moduloId);
-    console.log(">>> Preguntas recibidas:", preguntas);
-
     await conn.beginTransaction();
 
     const [deleteResult] = await conn.query('DELETE FROM preguntas WHERE modulo_id = ?', [moduloId]);
-    console.log(">>> Preguntas eliminadas:", deleteResult.affectedRows);
 
     for (const pregunta of preguntas) {
       await conn.query(
@@ -473,7 +528,6 @@ router.post('/modulos/:id/preguntas', async (req, res) => {
     }
 
     await conn.commit();
-    console.log(">>> COMMIT: Preguntas nuevas insertadas.");
     res.json({ message: 'Preguntas actualizadas correctamente' });
 
   } catch (err) {
@@ -588,12 +642,14 @@ router.get('/modulos', async (req, res) => {
 
 router.put('/modulos/:id', async (req, res) => {
   const moduloId = parseInt(req.params.id);
-  const { titulo, contenido, fecha_entrega} = req.body;
+  const {  titulo, contenido, tarea, cod_curso, fecha_entrega } = req.body;
 
   try {
-    const [result] = await db.query(
-      'UPDATE modulos SET titulo = ?, contenido_html = ?, fecha_entrega = ?, WHERE id = ?',
-      [titulo, contenido, fecha_entrega, moduloId]
+    const [result] = await db.query(`
+      UPDATE modulos 
+      SET titulo = ?, contenido_html = ?, tarea = ?, cod_curso = ?, fecha_entrega = ?
+      WHERE id = ?`, 
+      [titulo, contenido, tarea, cod_curso, fecha_entrega, moduloId]
     );
 
     if (result.affectedRows === 0) {
@@ -625,11 +681,7 @@ router.delete('/modulos/:id', async (req, res) => {
 })
 
 router.post('/guardar_resultado', async (req, res) => {
-  console.log("Endpoint /guardar_resultado recibido!");
-
   const { user_id, id_tarea, resultado, completado } = req.body;
-
-  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
 
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
     return res.status(400).json({ message: 'Datos incompletos' });
@@ -639,15 +691,10 @@ router.post('/guardar_resultado', async (req, res) => {
     const updateQuery = `
       UPDATE alumnos_tareas 
       SET resultado = ?, completado = ?
-      WHERE id_alumno = (SELECT id FROM alumnos WHERE user_id = ?) 
-      AND id_tarea = ?`;
-
-    console.log('Query que se ejecutará:', updateQuery);
-    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
+      AND id_tarea = ?;`;
 
     const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
-
-    console.log('Resultado de db.query:', result);
 
     res.status(200).json({ message: 'Resultado actualizado exitosamente' });
   } catch (error) {
@@ -660,7 +707,6 @@ router.post('/guardar_resultado', async (req, res) => {
 
 
 // ROUTER PROFESOR 
-
 router.post('/agregar_curso', async (req, res) => {
   const connection = await db.getConnection();
   try {
@@ -710,42 +756,49 @@ router.post('/agregar_curso', async (req, res) => {
 
 
 router.post('/agregar_alumno', async (req, res) => {
-  try {
-      const { id_usuario, nombre, apellido, username, password } = req.body;
-
-      
-      if (!id_usuario || !nombre || !apellido || !username || !password) {
-          return res.status(400).json({ message: 'Faltan campos obligatorios' });
+    try {
+      const { alumnos } = req.body;
+  
+      if (!Array.isArray(alumnos) || alumnos.length === 0) {
+        return res.status(400).json({ message: 'No hay alumnos válidos.' });
       }
-
-      
-      const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
-      if (existingStudent.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un alumno con ese ID.' });
+  
+      const agregados = [];
+      const duplicados = [];
+  
+      for (const alumno of alumnos) {
+        const { id_usuario, nombre, apellido, username, password } = alumno;
+  
+        // Validar campos individuales
+        if (!id_usuario || !nombre || !apellido || !username || !password) {
+          continue;
+        }
+  
+        const [existingStudent] = await db.query('SELECT * FROM alumnos WHERE id_usuario = ?', [id_usuario]);
+        const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
+  
+        if (existingStudent.length > 0 || existingUser.length > 0) {
+          duplicados.push(id_usuario);
+          continue;
+        }
+  
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+  
+        await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
+        await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
+  
+        agregados.push(id_usuario);
       }
-
-      
-      const [existingUser] = await db.query('SELECT * FROM usuarios WHERE id = ?', [id_usuario]);
-      if (existingUser.length > 0) {
-          return res.status(409).json({ message: 'Ya existe un usuario con ese ID.' });
-      }
-
-      
-      const salt = await bcrypt.genSalt(10); 
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      
-      await db.query('INSERT INTO usuarios (id, hashing, salt, rol) VALUES (?, ?, ?, ?)', [id_usuario, hashedPassword, salt, 'alumno']);
-
-      
-      await db.query('INSERT INTO alumnos (id_usuario, nombre, apellido) VALUES (?, ?, ?)', [id_usuario, nombre, apellido]);
-
-      res.status(201).json({ message: 'Alumno y usuario agregados exitosamente.' });
-  } catch (err) {
-      console.error('Error al agregar alumno:', err); 
+  
+      res.status(201).json({ message: 'Proceso completado.', agregados, duplicados });
+  
+    } catch (err) {
+      console.error('Error al agregar alumnos:', err);
       res.status(500).json({ error: err.message });
-  }
+    }
 });
+  
 
 
 router.get('/obtener_alumnos', async (req, res) => {
@@ -813,7 +866,6 @@ router.post('/delete_course', async (req, res) => {
 
 
 router.post('/agregar_alumno_curso', async (req, res) => {
-  console.log('Endpoint /agregar_alumno_curso accedido con:', req.body);
   try {
       const { id_alumno, cod_curso } = req.body;
       if (!id_alumno || !cod_curso) {
@@ -834,7 +886,6 @@ router.post('/agregar_alumno_curso', async (req, res) => {
           [id_alumno, cod_curso]
       );
 
-      console.log(`Inserción exitosa para id_alumno: ${id_alumno} en cod_curso: ${cod_curso}`);
       res.status(201).json({ message: 'Alumno asignado al curso exitosamente.' });
   } catch (err) {
       console.error('Error al asignar el alumno al curso:', err);
@@ -884,6 +935,140 @@ router.post('/tarea_id', async (req, res) => {
   }
 });
 
+
+router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
+    const { cod_curso } = req.params;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT alumnos.id AS id, alumnos.nombre AS nombre
+            FROM alumnos
+            INNER JOIN alumnos_cursos ON alumnos.id = alumnos_cursos.id_alumno
+            WHERE alumnos_cursos.cod_curso = ?
+        `, [cod_curso]);
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error al obtener los alumnos del curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get('/descripcion_del_curso/:cod_curso', async (req, res) => {
+    const { cod_curso } = req.params;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT descripcion
+            FROM cursos
+            WHERE cod = ?
+        `, [cod_curso]);
+
+        console.log('Resultado de la consulta:', rows); // Agrega este log
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Curso no encontrado' });
+        }
+
+        res.status(200).json({ descripcion: rows[0].descripcion });
+    } catch (err) {
+        console.error('Error al obtener la descripción del curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
+router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
+    let connection;
+
+    try {
+        const codCurso = req.params.codCurso;
+        const { alumnos } = req.body;
+
+        if (!Array.isArray(alumnos)) {
+            return res.status(400).json({ message: 'Se requiere un arreglo de IDs de alumnos' });
+        }
+
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        // Paso 1: Eliminar registros actuales en alumnos_cursos para este curso
+        const deleteQuery = `DELETE FROM alumnos_cursos WHERE cod_curso = ?`;
+        await connection.query(deleteQuery, [codCurso]);
+
+        // Paso 2: Insertar nuevos registros con id_alumno
+        const insertQuery = `INSERT INTO alumnos_cursos (cod_curso, id_alumno) VALUES (?, ?)`;
+
+        for (const alumnoId of alumnos) {
+            await connection.query(insertQuery, [codCurso, alumnoId]);
+        }
+
+        await connection.commit();
+        res.json({ message: 'Alumnos actualizados exitosamente' });
+
+    } catch (err) {
+        if (connection) await connection.rollback();
+        console.error('Error al actualizar alumnos del curso:', err);
+        res.status(500).json({ message: 'Error al actualizar alumnos del curso', error: err.message });
+
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
+router.put('/actualizar_descripcion_curso/:codCurso', async (req, res) => {
+    const codCurso = req.params.codCurso;
+    const { descripcion } = req.body;
+
+    if (typeof descripcion !== 'string') {
+        return res.status(400).json({ message: 'La descripción debe ser una cadena de texto' });
+    }
+
+    try {
+        const [result] = await db.query(`
+            UPDATE cursos
+            SET descripcion = ?
+            WHERE cod = ?
+        `, [descripcion, codCurso]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Curso no encontrado' });
+        }
+
+        res.json({ message: 'Descripción del curso actualizada exitosamente' });
+    } catch (err) {
+        console.error('Error al actualizar la descripción del curso:', err);
+        res.status(500).json({ message: 'Error al actualizar la descripción del curso', error: err.message });
+    }
+});
+
+router.get('/estado_tarea', async (req, res) => {
+  const { user_id, id_tarea } = req.query;
+
+  if (!user_id || !id_tarea) {
+    return res.status(400).json({ message: 'Faltan parámetros' });
+  }
+
+  try {
+    const [rows] = await db.query(`
+      SELECT completado FROM alumnos_tareas 
+      WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
+      AND id_tarea = ?
+    `, [user_id, id_tarea]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'No encontrado' });
+    }
+
+    res.json({ completado: rows[0].completado });
+  } catch (error) {
+    console.error("Error en /estado_tarea:", error);
+    res.status(500).json({ message: 'Error interno', error: error.message });
+  }
+});
 
 
 

@@ -1,4 +1,4 @@
-let api_url = 'http://l408cggw004w8gwgkcwos00c.172.200.210.83.sslip.io';
+let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
 window.addEventListener('load', async () => {
     // Cargamos la página, incluyendo las barras lateral y de navegación, junto con el contenido de home.
@@ -11,10 +11,12 @@ window.addEventListener('load', async () => {
             document.body.insertBefore(temp.firstChild, document.body.firstChild);
         }
 
+        await load_sidebar_data();
+        
         // Al terminar de cargar contenido estático, cargamos cualquier datos conseguidos a través de la conexión API.
         await loadCourse();
 
-        await load_sidebar_data();
+        configurarBotonCrearModulo()
 
         // Terminando la carga de datos a través de la conexión, manejamos las últimas modificaciones de diseño a la barra lateral (incluyendo animaciones).
         const mediaQuery = window.matchMedia('(max-width: 767px)');
@@ -138,16 +140,53 @@ async function set_up_alumno(user_role, user_id, cod) {
 
         if (!response.ok) {
             if (response.status === 404) {
+
+                    document.getElementById('tareas_lista').innerHTML = `
+                      <li class="list-group-item">No hay tareas pendientes</li>`;
+                    document.getElementById('tareas_lista_m').innerHTML = `
+                      <li class="list-group-item">No hay tareas pendientes</li>`;
+
                 
-                alumno_body.style.display = 'none';
+                
             }
             throw new Error(`Error: ${response.status}`);
         }
-        
+
         const data = await response.json();
+        
+        const presponse = await fetch(`${api_url}/progreso`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                user_role: user_role,
+                user_id: user_id,
+                cod: cod
+            })
+        });
+
+        const progreso = await presponse.json();
+        let is_prog = 'flex';
+        if (!presponse.ok) {
+            if (presponse.status === 404) {
+                is_prog = 'none';
+            }
+        }
+
+        let prog_percent 
+        if(progreso.tareas == 0){
+            prog_percent = 0;
+        }else{
+            prog_percent = Math.round((progreso.tareas_completadas/progreso.tareas)*100);
+        }
     
         const alumno_curso = document.getElementById('alumno_curso');
         const alumno_curso_m = document.getElementById('alumno_curso_m');
+
+        // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+        document.getElementById('sidebar_docs').style.display = 'none';
 
         curso = data.course_data[0];
 
@@ -167,14 +206,14 @@ async function set_up_alumno(user_role, user_id, cod) {
                                 ${curso[0].descripcion}
                             </p>
                         </div>
-                        <div class="col-md-6 " style="min-height: 400px; display: flex; align-items: center;">
+                        <div class="col-md-6 " style="min-height: 400px; display: flex; justify-content: center; align-items: center;">
                             <img src="./images/${curso[0].img}" class="img-fluid rounded" id="course_img" style="max-width: 80%; max-height: 450px;" alt="Lavadora" onerror="fixImg()" />
                         </div>
                     </div>
         
                     <p class="fw-bold fs-5 mb-2">Progreso del curso:</p>
                     <div class="progress">
-                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 50%;background-color: #F1B300 !important" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                        <div class="progress-bar progress-bar-animated" role="progressbar" style="display: ${is_prog};width: ${prog_percent}%;background-color: #F1B300 !important" aria-valuenow="${prog_percent}" aria-valuemin="0" aria-valuemax="100">${prog_percent + '%'}</div>
                     </div>
                 </div>`
 
@@ -197,7 +236,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         const tareas_lista_m = document.getElementById('tareas_lista_m');
         
         if (!hresponse.ok) {
-            if (response.status === 404) {
+            if (hresponse.status === 404) {
                 tareas_lista.innerHTML = `<a href="#" class="list-group-item list-group-item-action">No hay tareas pendientes</a>`;
             }
             throw new Error(`Error: ${response.status}`);
@@ -222,37 +261,35 @@ async function set_up_alumno(user_role, user_id, cod) {
             tareas_lista_m.innerHTML += item_tarea;
         }
         
-
-        const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
-
-        try {
-            const res = await fetch(`${api_url}/modulos?cod=${cod}`);
-            const modulos = await res.json();
-        
-            if (modulos.length === 0) {
-                leccionesContainer.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
-                return;
-            }
-        
-            modulos.forEach(modulo => {
-                const item = document.createElement('a');
-                item.className = 'list-group-item list-group-item-action';
-                item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold">${modulo.titulo}</span>
-                        ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
-                    </div>
-                `;
-                modulosListaAlumno.appendChild(item);
-            });
-        } catch (err) {
-            modulosListaAlumno.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
-            console.error(err);
-        }
-        
     } catch (error) {
         console.error('Error:', error);
+    }
+    try {
+        const modulosListaAlumno = document.getElementById('modulos-alumno-lista');
+        const res = await fetch(`${api_url}/modulos?cod=${cod}`);
+        const modulos = await res.json();
+
+    
+        if (modulos.length === 0) {
+            leccionesContainer.innerHTML = `<div class="text-center p-3 text-muted">No hay módulos creados todavía.</div>`;
+            return;
+        }
+    
+        modulos.forEach(modulo => {
+            const item = document.createElement('a');
+            item.className = 'list-group-item list-group-item-action';
+            item.href = `verModulo.html?id=${modulo.id}`; // Asumiendo que tienes esta página
+            item.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-semibold">${modulo.titulo}</span>
+                    ${modulo.tarea === 1 ? '<span class="badge bg-warning text-dark">Tarea</span>' : ''}
+                </div>
+            `;
+            modulosListaAlumno.appendChild(item);
+        });
+    } catch (err) {
+        modulosListaAlumno.innerHTML = `<div class="alert alert-danger">Error al cargar módulos</div>`;
+        console.error(err);
     }
 }
 
@@ -348,10 +385,9 @@ async function set_up_profesor(user_role, user_id, cod) {
 
         document.getElementById('course_name').textContent = dashboard_data[0];
         document.getElementById('num_tec').textContent = dashboard_data[1];
+        document.getElementById('num_mod').textContent = dashboard_data[3];
 
-        console.log(dashboard_data[2]);
-
-        set_up_charts(dashboard_data[2]);
+        set_up_charts(dashboard_data[2], dashboard_data[4]);
         
 
     }catch(error) {
@@ -359,22 +395,33 @@ async function set_up_profesor(user_role, user_id, cod) {
     }
 }
 
-async function set_up_charts(stats) {
-    console.log('Setting up charts...');
+async function set_up_charts(stats, calis) {
     var labels = [];
     var yValues = [];
+    var sum = 0;
+
 
     for(let tecnico of stats){
         labels.push(tecnico.nombre);
-        yValues.push(Math.round((tecnico.tareas_completadas / tecnico.tareas) * 100));
+        let cur_prog = Math.round((tecnico.tareas_completadas / tecnico.tareas) * 100)
+        yValues.push(Math.round(cur_prog));
+        sum += cur_prog;
     }
-    
+
+
+    if(sum){
+        document.getElementById('prom_prog').textContent = Math.round((sum / yValues.length)*10)/10 + '%';
+    }else{
+        document.getElementById('prom_prog').textContent = '0%';
+    }
+
     var result = {};
     for (var i = 0; i < labels.length; i++) {
         result[labels[i]] = yValues[i];
     }
 
-    const entries = Object.entries(result);
+
+    let entries = Object.entries(result);
     entries.sort();
     result = Object.fromEntries(entries);
 
@@ -386,22 +433,22 @@ async function set_up_charts(stats) {
             data: Object.values(result),
             fill: false,
             backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
             ],
             borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            'rgb(201, 203, 207)'
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
             ],
             borderWidth: 1,
             barThickness: 50,
@@ -422,7 +469,6 @@ async function set_up_charts(stats) {
             scales: {
             x: {
                 beginAtZero: true,
-                grace: 10,
                 position: 'top', // <-- move the numeric scale to the top
                 max: 100
             },
@@ -437,52 +483,98 @@ async function set_up_charts(stats) {
 
     const bar_body = document.getElementById('bar_body');
     if(bar_chart.data.labels.length > 5){
-        const newHeight = 700 + (bar_chart.data.labels.length - 5) * 50;
+        const newHeight = 400 + (bar_chart.data.labels.length - 5) * 50;
         bar_body.style.height = `${newHeight}px`;
     }
 
+    labels = [];
+    yValues = [];
+    sum = 0;
+
+
+    for(let promedio of calis){
+        labels.push(promedio.nombre);
+        let cur_prom = parseFloat(promedio.promedio * 100);
+        yValues.push(cur_prom);
+        sum += cur_prom;
+    }
+
+    if(sum){
+        document.getElementById('prom_prom').textContent = Math.round((sum / yValues.length)*10)/10;
+    }else{
+        document.getElementById('prom_prom').textContent = '0';
+    }
+
+    var result = {};
+    for (var i = 0; i < labels.length; i++) {
+        result[labels[i]] = yValues[i];
+    }
+
+    entries = Object.entries(result);
+    entries.sort((a, b) => a[1] - b[1]); 
+    result = Object.fromEntries(entries);
+
     data = {
-        labels: [
-            'Introducción a las lavadoras',
-            'Principios de funcionamiento',
-            'Diagnóstico de fallas comunes',
-            'Reemplazo de bombas de agua',
-            'Reparación de motores',
-            'Mantenimiento preventivo',
-            'Solución de problemas eléctricos'
-        ],
+        labels:  Object.keys(result),
         datasets: [{
-            label: 'Progreso',
-            data: [65, 59, 90, 81, 56, 55, 40],
+            label: 'Promedio',
+            data: Object.values(result),
             fill: true,
-            backgroundColor: 'rgba(117, 200, 255, 0.47)',
-            borderColor: 'rgb(67, 180, 255)',
-            pointBackgroundColor: 'rgb(67, 180, 255)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgb(255, 99, 132)'
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+            ],
+            borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+            ],
+            borderWidth: 1,
+            barThickness: 50
         }]
     };
 
     config = {
-        type: 'radar',
-        data: data,
+        type: 'bar',
+        data,
         options: {
+            indexAxis: 'y',
             maintainAspectRatio: false,
-            elements: {
-            line: {
-                borderWidth: 3
-            }
-            },
             plugins: {
             legend: {
                 display: false
             }
             },
+            scales: {
+            x: {
+                beginAtZero: true,
+                position: 'top', // <-- move the numeric scale to the top
+                max: 100
+            },
+            y: {
+                position: 'left' // (this keeps the names on the left, default)
+            }
+            }
         }
     };
 
-    const radar_chart = new Chart(document.getElementById('radar_chart'), config);
+    const histogram_chart = new Chart(document.getElementById('histogram_chart'), config);
+
+    const histogram_body = document.getElementById('histogram_body');
+    if(histogram_chart.data.labels.length > 5){
+        const newHeight2 = 400 + (histogram_chart.data.labels.length - 5) * 50;
+        histogram_body.style.height = `${newHeight2}px`;
+    }
+
 }
 
 async function sort_chart(order) {
@@ -500,24 +592,28 @@ async function sort_chart(order) {
     const entries = Object.entries(result);
 
     switch (order) {
+        // Menor a mayor
         case 1:
             entries.sort((a, b) => a[1] - b[1]); 
             const sortedAsc = Object.fromEntries(entries);
             chart.data.labels = Object.keys(sortedAsc);
             chart.data.datasets[0].data = Object.values(sortedAsc);
             break;
+        // Mayor a menor
         case 2:
             entries.sort((a, b) => b[1] - a[1]); 
             const sortedDesc = Object.fromEntries(entries);
             chart.data.labels = Object.keys(sortedDesc);
             chart.data.datasets[0].data = Object.values(sortedDesc);
             break;
+        // A-z
         case 3:
             entries.sort();
             const sortedAz = Object.fromEntries(entries);
             chart.data.labels = Object.keys(sortedAz);
             chart.data.datasets[0].data = Object.values(sortedAz);
             break;
+        // Z-a
         case 4:
             entries.sort().reverse();
             const sortedZa = Object.fromEntries(entries);
@@ -579,8 +675,15 @@ async function log_out() {
 function home_screen() {
     window.location.href = './home';
 }
-  
 
+function configurarBotonCrearModulo() {
+  const params = new URLSearchParams(window.location.search);
+  const codCurso = params.get('code');
 
-
-
+  if (codCurso) {
+    const crearModuloBtn = document.getElementById('btn-crear-modulo');
+    if (crearModuloBtn) {
+        crearModuloBtn.href = `${api_url}/crearModulos.html?modo=crear&cod=${codCurso}`;
+    }
+  }
+}

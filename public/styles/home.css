@@ -1,0 +1,274 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Home (home.html) Styles */
+html, body {
+    height: 100%;
+
+    background-color: #dee0e3;
+    color: #000;
+    font-family: sans-serif;
+    
+    overflow-y: hidden;
+}
+
+#alumno_body {
+    display: none;
+
+    height: 100%;
+    overflow-y: auto;
+
+    flex-direction: column;
+
+    padding: 20px;
+}
+#header_alumno {
+    margin-top: 20px;
+
+    font-size: 30px;
+    font-weight: 550;
+}
+.linea_header {
+    width: 100%;
+}
+.search_bar {
+    width: 100%;
+}
+
+#alumno_cursos {
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 100%;
+
+    flex: 0;
+
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#profesor_body {
+    display: none;
+
+    height: 100%;
+    overflow-y: auto;
+
+    flex-direction: column;
+
+    padding: 20px;
+}
+#header_profesor {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 20px;
+
+    font-size: 30px;
+    font-weight: 550;
+}
+.btn-profesor-agregar-curso {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn-profesor-agregar-alumno {
+    background-color: #093454; /* Color principal */
+    color: white; /* Color del texto */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+
+}
+.linea_header {
+    width: 100%;
+}
+.search_bar {
+    width: 100%;
+}
+@media (max-width: 400px) {
+    #header_profesor {
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+    }
+    .btn-profesor-agregar-curso {
+        width: 100%;
+    }
+    .btn-profesor-agregar-alumno {
+        width: 100%;
+    }
+}
+#profesor_cursos {
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 100%;
+
+    flex: 0;
+
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.card {
+    position: relative;
+
+    flex: 0 0 24.4%;
+    height: 13.5rem;
+
+    border-radius: 0.5rem;
+}
+.card a {
+    text-decoration: none;
+    color: inherit;
+}
+.card_image {
+    width: 100%;
+    height: 9rem;
+
+    object-fit: cover;
+
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+.card_body {
+    height: 7rem;
+
+    padding: 10px;
+
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+.card_code {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    display: block;
+}
+.card_title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+
+    margin-bottom: 0.2rem;
+}
+.card_menu_icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.card_menu_icon:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.options-menu {
+    display: none;
+    width: auto;
+    height: auto;
+    
+    flex-direction: column;
+
+    gap: 5px;
+    padding: 5px;
+
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+.borrar-btn {
+    width: 70px;
+    height: 30px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    padding: 2px;
+
+    border-radius: 2px;
+    border: none;
+
+    background-color: #eeb111;
+
+    transition: all 0.2s ease-in-out;
+}
+.borrar-btn:hover {
+    font-weight: 700;
+
+    background-color: red;
+}
+.editar-btn {
+    width: 70px;
+    height: 30px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    padding: 2px;
+
+    border-radius: 2px;
+    border: none;
+
+    background-color: #00a0dd;
+}
+.editar-btn:hover {
+    font-weight: 700;
+
+    background-color: #165686;
+}
+@media (max-width: 1920px) {
+    .card {
+        flex: 0 0 24.3%;
+    }
+}
+@media (max-width: 1520px) {
+    .card {
+        flex: 0 0 24.2%;
+    }
+}
+@media (max-width: 1320px) {
+    .card {
+        flex: 0 0 32.6%;
+    }
+}
+@media (max-width: 1290px) {
+    .card {
+        flex: 0 0 32.4%;
+    }
+}
+@media (max-width: 1100px) {
+    .card {
+        flex: 0 0 49.1%;
+    }
+}
+@media (max-width: 940px) {
+    .card {
+        flex: 0 0 100%;
+    }
+}
+
+
+
+
+#studentDropdown .dropdown-item {
+    cursor: pointer;
+    padding: 8px 16px;
+}
+
+#studentDropdown .dropdown-item:hover {
+    background-color: #f1f1f1;
+}

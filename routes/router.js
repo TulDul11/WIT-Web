@@ -864,7 +864,6 @@ router.get('/obtener_curso', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 router.post('/tarea_id', async (req, res) => {
   const { user_id, user_role, moduloID } = req.body;
 
@@ -886,7 +885,6 @@ router.post('/tarea_id', async (req, res) => {
 });
 
 
-=======
 router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
     const { cod_curso } = req.params;
 
@@ -942,7 +940,6 @@ router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
         if (connection) connection.release();
     }
 });
->>>>>>> profesor
 
 
 

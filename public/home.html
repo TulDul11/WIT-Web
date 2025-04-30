@@ -36,8 +36,8 @@
             </div>
         </div>
 
-        <div class="content_body" id="profesor_body">
-            <div class="inicio-header" id="header_profesor">
+        <div style="display: none;" id="profesor_body" class="profesor content_body">
+            <div class="inicio-header" style="margin-top: 20px; margin-left: 80px; display: flex; justify-content: space-between; align-items: center; margin-right: 80px;">
                 <h2>Inicio</h2>
                 
                 <!-- Contenedor para los botones juntos -->
@@ -46,33 +46,12 @@
                     <button class="btn-profesor-agregar-curso" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar Curso</button>
                 </div>
             </div>
-            <hr class="linea_header">
+        
+            <hr class="profesor-linea-header" style="width: 95.5%;">
+     
+        
 
             <!-- Filtro de cursos -->
-            <div class = "search_bar">
-                <input type="text" id="filter_input_profesor" class="form-control" placeholder="Buscar cursos...">
-            </div>
-            <div class="modal fade" id="agregarAlumnoModal" tabindex="-1" aria-labelledby="agregarAlumnoLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="agregarAlumnoLabel">Agregar Alumnos</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="studentForm">
-                                <div class="mb-3" style="margin-top: 20px;">
-                                    <label for="csvUpload" class="form-label">Sube archivo:</label>
-                                    <input type="file" class="form-control" id="csvUpload" accept=".csv">
-                                </div>
-                    
-                                <!-- Campos ocultos para almacenar el alumno seleccionado -->
-                                <input type="hidden" id="userID">
-                                <input type="hidden" id="firstName">
-                                <input type="hidden" id="lastName">
-                                <input type="hidden" id="username">
-                                <input type="hidden" id="password">
-                            </form>
                 <div style="margin: 0 auto; width: 91%; text-align: center;">
                     <input type="text" id="filterInput" class="form-control" placeholder="Buscar cursos..." style="width: 100%; margin: 0;">
                 </div>
@@ -91,31 +70,40 @@
                                         <small class="form-text text-muted">Sube un archivo .csv que contenga las credenciales de los alumnos.</small>
                                     </div>
                         
-                        
-                            <h5>Lista de Usuarios:</h5>
-                            <table class="table table-bordered mt-4" id="userTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>Usuario</th>
-                                        <th>Contraseña</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Aquí se agregan los usuarios -->
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno</button>
+                                    <!-- Campos ocultos para almacenar el alumno seleccionado -->
+                                    <input type="hidden" id="userID">
+                                    <input type="hidden" id="firstName">
+                                    <input type="hidden" id="lastName">
+                                    <input type="hidden" id="username">
+                                    <input type="hidden" id="password">
+                                </form>
+                            
+                            
+                                <h5>Lista de Usuarios:</h5>
+                                <table class="table table-bordered mt-4" id="userTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Apellido</th>
+                                            <th>Usuario</th>
+                                            <th>Contraseña</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Aquí se agregan los usuarios -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="saveStudentButton">Agregar Alumno</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
         
             <!-- Sección de cursos -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -175,7 +163,7 @@
                 <div id="nav_role"></div>
             </div>
              <!-- Contenedor de tarjetas de cursos -->
-             <div id="profesor_cursos">
+             <div class = "in-flex" style="flex: 3; display: flex; flex-wrap: wrap; gap: 1rem; padding-left: 50px; margin: 0;" id="profesor_cursos">
                 <!-- Añade más tarjetas de cursos si es necesario -->
             </div>
             

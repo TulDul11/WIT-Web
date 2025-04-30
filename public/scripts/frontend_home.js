@@ -1,5 +1,6 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
+
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -172,8 +173,6 @@ async function load_home_alumno(loading_data) {
     }
 }
 
-/*
-Función que cargará los datos del profesor en home. */
 async function load_home_profesor(loading_data) {
     try {
         const response = await fetch(`${api_url}/user_courses`, {
@@ -208,14 +207,13 @@ async function load_home_profesor(loading_data) {
                 </a>
                 <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
                      style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
-                <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
-                    <button class="menu-option editar-btn" data-codigo="${curso[0].cod}">Editar</button>
+                    <div class="options-menu">
+                        <button class="menu-option editar-btn" data-codigo="${curso[0].cod}">Editar</button>
                     <button class="menu-option borrar-btn" data-codigo="${curso[0].cod}">Borrar</button>
                 </div>
                 <div class="card-body">
                     <h3 class="profesor-card-title">${curso[0].nombre}</h3>
                     <p class="profesor-card-code">${curso[0].cod}</p>
-                    <small class="profesor-card-text">${curso[0].descripcion}</small>
                 </div>
             `;
 
@@ -408,58 +406,22 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     const courseKeyElement = document.getElementById("courseKey");
     const descriptionElement = document.getElementById("description");
 
-function home_screen() {
-    location.reload();
-}
+    const courseName = courseNameElement ? courseNameElement.value : "";
+    const courseKey = courseKeyElement ? courseKeyElement.value : "";
+    const description = descriptionElement ? descriptionElement.value : "";
 
-async function log_out() {
-    try {
-        const response = await fetch(`${api_url}/logout`, {
-            method: 'GET',
-            credentials: 'include',
-        });
-        if (!response.ok) {
-            if (response.status === 500) {
-                console.error('Cerrar sesión fallida.');
-            }
-        } else {
-            window.location.href = '/';
-        }
-    } catch (error) {
-        console.error('Error:', error);
+    if (!courseName || !courseKey) {
+        alert("El nombre y la clave del curso son obligatorios.");
+        return;
     }
-}
 
-document.getElementById("saveCourseButton").addEventListener("click", function() {
-    const courseName = document.getElementById("courseName").value;
-    const courseKey = document.getElementById("courseKey").value;
-    const description = document.getElementById("description").value;
-    const csvUpload = document.getElementById("csvUpload").value;
+    // Capturamos los alumnos seleccionados en una variable temporal
+    const alumnosSeleccionados = [...selectedStudents];
 
-    const card = document.createElement("div");
-    card.classList.add("card");
-
-    card.innerHTML = `<a href="course?code=${courseKey}">
-                                    <img class="card_image" src="../images/educacion.png">
-                                    <div class="card_body">
-                                        <h15 class="card_code">${courseKey}</h15>
-                                        <h9 class="card_title">${courseName}</h9>
-                                    </div>
-                                </a>
-                                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon">
-                                <div class="card_options_menu">
-                                    <button class="menu-option" id="edit_course_button">Editar</button>
-                                    <button class="menu-option" id="erase_course_button">Borrar</button>
-                                </div>`;;
-
-    document.getElementById("coursesContainer").appendChild(card);
-
-    // acemos el POST a la base de datos
+    // Hacemos el POST a la base de datos
     fetch(`${api_url}/agregar_curso`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             cod: courseKey,
             nombre: courseName,
@@ -467,7 +429,12 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
         })
     })
     .then(response => response.json())
-    .then(data => {
+    .then(async data => {
+        if (data.message === "El curso ya existe con esa clave.") {
+            alert("El curso ya existe con esa clave.");
+            return;
+        }
+
         console.log("Curso agregado:", data);
 
 
@@ -501,17 +468,23 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     })
     .catch(error => {
         console.error('Error al agregar curso:', error);
+    })
+    .finally(() => {
+        // Limpiar campos después de guardar solo después de que se haya iniciado la asignación
+        if (courseNameElement) courseNameElement.value = "";
+        if (courseKeyElement) courseKeyElement.value = "";
+        if (descriptionElement) descriptionElement.value = "";
+        // Ahora puedes limpiar el array original
+        selectedStudents = [];
+        mostrarAlumnosSeleccionados();
+
+        // Cerrar el modal
+        const modalElement = document.getElementById('exampleModal');
+        if (modalElement) {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) modalInstance.hide();
+        }
     });
-
-    // Limpiar campos
-    document.getElementById("courseName").value = "";
-    document.getElementById("courseKey").value = "";
-    document.getElementById("description").value = "";
-    document.getElementById("csvUpload").value = "";
-
-    // Cerrar el modal
-    const modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
-    modal.hide();
 });
 
 
@@ -612,38 +585,14 @@ document.getElementById('searchStudent').addEventListener('keydown', (event) => 
     }
 });
 
-function actualizarBreadcrumb({ curso = null, extra = null }) {
-    const inicio = document.getElementById('breadcrumb-inicio');
-    const cursoElem = document.getElementById('breadcrumb-curso');
-    const extraElem = document.getElementById('breadcrumb-extra');
-    const sep1 = document.getElementById('breadcrumb-sep-1');
-    const sep2 = document.getElementById('breadcrumb-sep-2');
-  
-    if (!inicio || !cursoElem || !extraElem) return;
-  
-    // Siempre visible el inicio
-    inicio.classList.remove('d-none');
-  
-    if (curso) {
-      cursoElem.textContent = curso;
-      cursoElem.classList.remove('d-none');
-      sep1.classList.remove('d-none');
-    } else {
-      cursoElem.classList.add('d-none');
-      sep1.classList.add('d-none');
+
+document.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('studentDropdown');
+    const searchInput = document.getElementById('searchStudent');
+
+    if (!event.target.closest('#searchStudent') && !event.target.closest('#studentDropdown')) {
+        dropdown.style.display = 'none';
     }
-  
-    if (extra) {
-      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
-      extraElem.textContent = recortado;
-      extraElem.classList.remove('d-none');
-      sep2.classList.remove('d-none');
-    } else {
-      extraElem.classList.add('d-none');
-      sep2.classList.add('d-none');
-    }
-  }
-  
 });
 
 
@@ -815,3 +764,65 @@ function eliminarCurso(codCurso) {
 }
 
 
+
+function home_screen() {
+    location.reload();
+}
+
+async function log_out() {
+    try {
+        const response = await fetch(`${api_url}/logout`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!response.ok) {
+            if (response.status === 500) {
+                console.error('Cerrar sesión fallida.');
+            }
+        } else {
+            window.location.href = '/';
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+
+
+function actualizarBreadcrumb({ curso = null, extra = null }) {
+    const inicio = document.getElementById('breadcrumb-inicio');
+    const cursoElem = document.getElementById('breadcrumb-curso');
+    const extraElem = document.getElementById('breadcrumb-extra');
+    const sep1 = document.getElementById('breadcrumb-sep-1');
+    const sep2 = document.getElementById('breadcrumb-sep-2');
+  
+    if (!inicio || !cursoElem || !extraElem) return;
+  
+    // Siempre visible el inicio
+    inicio.classList.remove('d-none');
+  
+    if (curso) {
+      cursoElem.textContent = curso;
+      cursoElem.classList.remove('d-none');
+      sep1.classList.remove('d-none');
+    } else {
+      cursoElem.classList.add('d-none');
+      sep1.classList.add('d-none');
+    }
+  
+    if (extra) {
+      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
+      extraElem.textContent = recortado;
+      extraElem.classList.remove('d-none');
+      sep2.classList.remove('d-none');
+    } else {
+      extraElem.classList.add('d-none');
+      sep2.classList.add('d-none');
+    }
+}
+  
+
+
+
+
+ 

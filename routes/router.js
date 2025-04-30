@@ -588,12 +588,14 @@ router.get('/modulos', async (req, res) => {
 
 router.put('/modulos/:id', async (req, res) => {
   const moduloId = parseInt(req.params.id);
-  const { titulo, contenido, fecha_entrega} = req.body;
+  const {  titulo, contenido, tarea, cod_curso, fecha_entrega } = req.body;
 
   try {
-    const [result] = await db.query(
-      'UPDATE modulos SET titulo = ?, contenido_html = ?, fecha_entrega = ?, WHERE id = ?',
-      [titulo, contenido, fecha_entrega, moduloId]
+    const [result] = await db.query(`
+      UPDATE modulos 
+      SET titulo = ?, contenido_html = ?, tarea = ?, cod_curso = ?, fecha_entrega = ?
+      WHERE id = ?`, 
+      [titulo, contenido, tarea, cod_curso, fecha_entrega, moduloId]
     );
 
     if (result.affectedRows === 0) {

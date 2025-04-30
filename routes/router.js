@@ -468,14 +468,12 @@ router.post('/progreso', async (req, res) => {
 
     query = `SELECT * FROM (SELECT COUNT(*) AS tareas FROM alumnos_tareas 
             INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
-            WHERE id_alumno = ${num_id}) AS A
+            WHERE id_alumno = ${num_id} AND cod_curso = '${cod}') AS A
             JOIN (SELECT COUNT(*) AS tareas_completadas FROM alumnos_tareas 
             INNER JOIN modulos ON alumnos_tareas.id_tarea = modulos.id
-            WHERE id_alumno = ${num_id} AND completado) AS B;`
+            WHERE id_alumno = ${num_id} AND completado AND cod_curso = '${cod}') AS B;`
 
     let [tareas] = await db.query(query);
-
-    console.log(tareas);
 
     return res.json({tareas: tareas[0].tareas, tareas_completadas: tareas[0].tareas_completadas});
 
@@ -685,8 +683,6 @@ router.delete('/modulos/:id', async (req, res) => {
 router.post('/guardar_resultado', async (req, res) => {
   const { user_id, id_tarea, resultado, completado } = req.body;
 
-  console.log('Datos recibidos en guardar_resultado:', { user_id, id_tarea, resultado, completado });
-
   if (!user_id || id_tarea == null || resultado == null || completado == null) {
     return res.status(400).json({ message: 'Datos incompletos' });
   }
@@ -698,12 +694,7 @@ router.post('/guardar_resultado', async (req, res) => {
       WHERE id_alumno = (SELECT id FROM alumnos WHERE id_usuario = ?)
       AND id_tarea = ?;`;
 
-    console.log('Query que se ejecutará:', updateQuery);
-    console.log('Con valores:', [resultado, completado, user_id, id_tarea]);
-
     const [result] = await db.query(updateQuery, [resultado, completado, user_id, id_tarea]);
-
-    console.log('Resultado de db.query:', result);
 
     res.status(200).json({ message: 'Resultado actualizado exitosamente' });
   } catch (error) {

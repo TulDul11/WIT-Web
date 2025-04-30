@@ -1,4 +1,5 @@
-let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
+// let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
+let api_url = 'http://localhost:3000';
 
 
 window.addEventListener('load', async () => {
@@ -368,8 +369,6 @@ async function set_up_profesor(user_role, user_id, cod) {
         });
         
         const dashboard_data = await dashboard_response.json();
-
-        console.log(dashboard_data);
 
         document.getElementById('course_name').textContent = dashboard_data[0];
         document.getElementById('num_tec').textContent = dashboard_data[1];

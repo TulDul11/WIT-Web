@@ -3,7 +3,7 @@ Función que cambiará los estados de la barra lateral entre activo y no activo.
 */
 function toggleSidebar() {
     // Todos los elementos que requieren ser "activados" y además pueden ser reconocidos por su ID.
-    let items = ["sidebar", "menu_button", "sidebar_top", "sidebar_bottom", "sidebar_role", "sidebar_home",
+    let items = ["sidebar", "menu_button", "sidebar_top", "sidebar_bottom", "sidebar_role", "sidebar_home", "sidebar_docs",
                 "sidebar_previous", "sidebar_logout", "sidebar_courses", "menu_button_2", "sidebar_overlay"
     ];
 

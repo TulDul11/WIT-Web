@@ -887,6 +887,61 @@ router.post('/tarea_id', async (req, res) => {
 });
 
 
+router.get('/alumnos_del_curso/:cod_curso', async (req, res) => {
+    const { cod_curso } = req.params;
+
+    try {
+        const [rows] = await db.query(`
+            SELECT alumnos.id AS id, alumnos.nombre AS nombre
+            FROM alumnos
+            INNER JOIN alumnos_cursos ON alumnos.id = alumnos_cursos.id_alumno
+            WHERE alumnos_cursos.cod_curso = ?
+        `, [cod_curso]);
+
+        res.status(200).json(rows);
+    } catch (err) {
+        console.error('Error al obtener los alumnos del curso:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/actualizar_alumnos_curso/:codCurso', async (req, res) => {
+    let connection;
+
+    try {
+        const codCurso = req.params.codCurso;
+        const { alumnos } = req.body;
+
+        if (!Array.isArray(alumnos)) {
+            return res.status(400).json({ message: 'Se requiere un arreglo de IDs de alumnos' });
+        }
+
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        // Paso 1: Eliminar registros actuales en alumnos_cursos para este curso
+        const deleteQuery = `DELETE FROM alumnos_cursos WHERE cod_curso = ?`;
+        await connection.query(deleteQuery, [codCurso]);
+
+        // Paso 2: Insertar nuevos registros con id_alumno
+        const insertQuery = `INSERT INTO alumnos_cursos (cod_curso, id_alumno) VALUES (?, ?)`;
+
+        for (const alumnoId of alumnos) {
+            await connection.query(insertQuery, [codCurso, alumnoId]);
+        }
+
+        await connection.commit();
+        res.json({ message: 'Alumnos actualizados exitosamente' });
+
+    } catch (err) {
+        if (connection) await connection.rollback();
+        console.error('Error al actualizar alumnos del curso:', err);
+        res.status(500).json({ message: 'Error al actualizar alumnos del curso', error: err.message });
+
+    } finally {
+        if (connection) connection.release();
+    }
+});
 
 
 

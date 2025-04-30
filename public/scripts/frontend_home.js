@@ -1,6 +1,5 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
-
 /*
 Función que cargará cuando todo el contenido html y css cargé en home.html.
 */
@@ -100,6 +99,9 @@ async function load_home_alumno(loading_data) {
     } else {
         header_alumno.innerHTML = 'Bienvenid@!'
     }
+
+    // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+    document.getElementById('sidebar_docs').style.display = 'none';
 
     // Llamada al API para conseguir cursos del usuario.
     try {

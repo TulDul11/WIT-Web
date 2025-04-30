@@ -1,10 +1,8 @@
 let api_url = 'http://iswg4wsw8g8wkookg4gkswog.172.200.210.83.sslip.io';
 
-
-
-
 // --- Evento principal ---
 document.addEventListener('DOMContentLoaded', async () => {
+
     try {
         const response = await fetch(`${api_url}/user_home`, {
             method: 'POST',
@@ -18,7 +16,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/'; // Redirige a login si no está logueado
             return;
         }
-
 
         const data = await response.json();
 
@@ -260,6 +257,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (iframe) iframe.style.display = 'block';
         });
     }
+    // Aquí agregar el breadcrumb:
+    if (modo === 'crear') {
+        actualizarBreadcrumb({ curso: codCurso, extra: 'Creación de Módulo' });
+    } else if (modo === 'editar' && id) {
+        try {
+            const res = await fetch(`${api_url}/modulos/${id}`);
+            const modulo = await res.json();
+            actualizarBreadcrumb({ curso: codCurso, extra: modulo.titulo });
+        } catch (error) {
+            console.error('No se pudo cargar título de módulo');
+        }
+    }
+
+    const breadcrumbCurso = document.getElementById('breadcrumb-curso');
+    if (breadcrumbCurso) {
+        breadcrumbCurso.style.cursor = 'pointer'; // Opcional: para que el mouse cambie a manita
+        breadcrumbCurso.addEventListener('click', () => {
+            const params = new URLSearchParams(window.location.search);
+            const codCurso = params.get('cod') || params.get('code');
+            if (codCurso) {
+                window.location.href = `/course.html?code=${codCurso}`;
+            } else {
+                window.location.href = '/home.html'; // fallback si no hay código
+            }
+        });
+    }
 
 });
 
@@ -418,3 +441,67 @@ function guardarPreguntas() {
         alert("Error al guardar las preguntas.");
     });
 }
+
+function construirBreadcrumb(items) {
+    const breadcrumb = document.getElementById('breadcrumb-nav');
+    if (!breadcrumb) return; // Si no existe el nav, no hace nada
+    breadcrumb.innerHTML = '';
+
+    items.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'breadcrumb-item';
+
+        if (index === items.length - 1) {
+            li.classList.add('active');
+            li.setAttribute('aria-current', 'page');
+            li.textContent = item.nombre;
+        } else {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.textContent = item.nombre;
+            li.appendChild(a);
+        }
+
+        breadcrumb.appendChild(li);
+    });
+}
+
+const params = new URLSearchParams(window.location.search);
+const modo = params.get('modo');
+
+const nombreUltimoPaso = (modo === 'editar') ? 'Editar Módulo' : 'Crear Módulo';
+
+
+    
+function actualizarBreadcrumb({ curso = null, extra = null }) {
+    const inicio = document.getElementById('breadcrumb-inicio');
+    const cursoElem = document.getElementById('breadcrumb-curso');
+    const extraElem = document.getElementById('breadcrumb-extra');
+    const sep1 = document.getElementById('breadcrumb-sep-1');
+    const sep2 = document.getElementById('breadcrumb-sep-2');
+  
+    if (!inicio || !cursoElem || !extraElem) return;
+  
+    // Siempre visible el inicio
+    inicio.classList.remove('d-none');
+  
+    if (curso) {
+      cursoElem.textContent = curso;
+      cursoElem.classList.remove('d-none');
+      sep1.classList.remove('d-none');
+    } else {
+      cursoElem.classList.add('d-none');
+      sep1.classList.add('d-none');
+    }
+  
+    if (extra) {
+      let recortado = extra.length > 30 ? extra.slice(0, 30) + '...' : extra;
+      extraElem.textContent = recortado;
+      extraElem.classList.remove('d-none');
+      sep2.classList.remove('d-none');
+    } else {
+      extraElem.classList.add('d-none');
+      sep2.classList.add('d-none');
+    }
+  }
+  

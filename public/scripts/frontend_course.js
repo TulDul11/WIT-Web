@@ -589,7 +589,7 @@ function configurarBotonCrearModulo() {
   if (codCurso) {
     const crearModuloBtn = document.getElementById('btn-crear-modulo');
     if (crearModuloBtn) {
-        crearModuloBtn.href = `${api_url}crearModulos.html?modo=crear&cod=${codCurso}`;
+        crearModuloBtn.href = `${api_url}/crearModulos.html?modo=crear&cod=${codCurso}`;
     }
   }
 }

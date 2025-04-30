@@ -141,7 +141,7 @@ async function set_up_alumno(user_role, user_id, cod) {
         if (!response.ok) {
             if (response.status === 404) {
                 
-                alumno_body.style.display = 'none';
+                //alumno_body.style.display = 'none';
             }
             throw new Error(`Error: ${response.status}`);
         }

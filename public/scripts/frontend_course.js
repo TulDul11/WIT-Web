@@ -268,7 +268,7 @@ async function set_up_profesor(user_role, user_id, cod) {
         const modulos_profesor = document.getElementById('modulos_profesor');
 
         // Llamamos al backend para traer los módulos
-        const res = await fetch(`/modulos?cod=${cod}`, {
+        const res = await fetch(`${api_url}/modulos?cod=${cod}`, {
             method: 'GET',
             credentials: 'include',
             headers: {

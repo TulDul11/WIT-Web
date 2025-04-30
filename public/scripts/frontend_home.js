@@ -176,14 +176,10 @@ async function load_home_alumno(loading_data) {
 Función que cargará los datos del alumno en home.
 */
 async function load_home_profesor(loading_data) {
-    // Llamada al API para conseguir cursos del usuario.
     try {
-        // Llamada
         const response = await fetch(`${api_url}/user_courses`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
                 user_role: 'profesores',
@@ -191,92 +187,81 @@ async function load_home_profesor(loading_data) {
             })
         });
 
-
         if (!response.ok) {
-            // Caso: El profesor no da ningún curso.
             if (response.status === 404) {
-                user_role_text.textContent = 'No da ningun curso';
+                user_role_text.textContent = 'No da ningún curso';
             }
             return;
         }
 
-        // Conseguimos los datos de los cursos.
         const data = await response.json();
-        
         const profesor_cursos = document.getElementById('profesor_cursos');
- 
-         for (let curso of data.course_data) {
-             const card = document.createElement('div');
-             card.className = 'card';
-             card.id = `card-${curso[0].cod}`;
- 
-             card.innerHTML = `<a href="course?code=${curso[0].cod}">
-                                    <img class="card_image" src="../images/educacion.png">
-                                    <div class="card_body">
-                                        <h15 class="card_code">${curso[0].cod}</h15>
-                                        <h9 class="card_title">${curso[0].nombre}</h9>
-                                    </div>
-                                </a>
-                                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon">
-                                <div class="card_options_menu">
-                                    <button class="menu-option" id="edit_course_button">Editar</button>
-                                    <button class="menu-option" id="erase_course_button">Borrar</button>
-                                </div>`;
+
+        for (let curso of data.course_data) {
+            const card = document.createElement('div');
+            card.className = 'profesor-card';
+            card.id = `card-${curso[0].cod}`;
+            card.style.position = 'relative';
+
+            card.innerHTML = `
+                <a href='/course?code=${curso[0].cod}' style="text-decoration: none; color: inherit;">
+                    <img class="card-img-top" src="../images/educacion.png" alt="Card image cap">
+                </a>
+                <img src="../images/three_dots.png" alt="Opciones" class="three-dots-icon"
+                     style="position: absolute; top: 5px; right: 5px; width: 40px; height: 40px; cursor: pointer;">
+                <div class="options-menu" style="display: none; position: absolute; top: 30px; right: 10px; background-color: white; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); z-index: 100;">
+                    <button class="menu-option editar-btn" data-codigo="${curso[0].cod}">Editar</button>
+                    <button class="menu-option borrar-btn" data-codigo="${curso[0].cod}">Borrar</button>
+                </div>
+                <div class="card-body">
+                    <h3 class="profesor-card-title">${curso[0].nombre}</h3>
+                    <p class="profesor-card-code">${curso[0].cod}</p>
+                    <small class="profesor-card-text">${curso[0].descripcion}</small>
+                </div>
+            `;
+
+            profesor_cursos.appendChild(card);
             
-             profesor_cursos.appendChild(card);
- 
-             // Agregar eventos
-             const threeDotsIcon = card.querySelector('.card_menu_icon');
-             const menu = card.querySelector('.card_options_menu');
-             const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
- 
-             threeDotsIcon.addEventListener('click', function (event) {
-                 event.preventDefault();
-                 event.stopPropagation();
-                 menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
-             });
- 
-             document.addEventListener('click', function (event) {
-                 if (!card.contains(event.target)) {
-                     menu.style.display = 'none';
-                 }
-             });
- 
-             editarBtn.addEventListener('click', function (event) {
-                 event.preventDefault();
-                 event.stopPropagation();
-                 editarCurso(curso[0].cod);
-             });
- 
-             eliminarBtn.addEventListener('click', async function (event) {
-                 event.preventDefault();
-                 event.stopPropagation();
-                 await eliminarCurso(curso[0].cod);
-                 location.reload();
-             });
-         }
 
-         // Seleccionamos el input del filtro y el contenedor de los cursos
-        const filter_input = document.getElementById('filter_input_profesor');
-        const courses_container = document.getElementById('profesor_cursos');
+            const threeDotsIcon = card.querySelector('.three-dots-icon');
+            const menu = card.querySelector('.options-menu');
+            const [editarBtn, eliminarBtn] = menu.querySelectorAll('button');
 
-        // Escuchamos el evento "input" para capturar lo que el usuario escribe
-        filter_input.addEventListener('input', function () {
-            const filter_value = this.value.toLowerCase(); // Convertimos a minúsculas para que no sea case-sensitive
-            const course_cards = courses_container.querySelectorAll('.card'); // Seleccionamos todas las tarjetas
+            threeDotsIcon.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
+            });
 
-            course_cards.forEach(card => {
-                const course_title = card.querySelector('.card_title').textContent.toLowerCase(); // Título del curso
-                const course_code = card.querySelector('.card_code').textContent.toLowerCase(); // Código del curso
-
-                // Mostramos u ocultamos la tarjeta dependiendo de si coincide con el filtro
-                if (course_title.includes(filter_value) || course_code.includes(filter_value)) {
-                    card.style.display = 'block'; // Mostramos la tarjeta
-                } else {
-                    card.style.display = 'none'; // Ocultamos la tarjeta
+            document.addEventListener('click', function (event) {
+                if (!card.contains(event.target)) {
+                    menu.style.display = 'none';
                 }
             });
-        });
+
+            editarBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                document.getElementById('studentDropdown').innerHTML = '';
+                document.getElementById('studentListBox').innerHTML = '';
+
+                document.getElementById('editStudentForm').dataset.courseId = curso[0].cod;
+
+                await editarCurso(curso[0].cod);
+
+                const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
+                modal.show();
+            });
+
+            eliminarBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                await eliminarCurso(curso[0].cod);
+                location.reload(true);
+            });
+        }
+
 
     } catch (error) {
         console.error('Error:', error);

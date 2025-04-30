@@ -100,6 +100,9 @@ async function load_home_alumno(loading_data) {
         header_alumno.innerHTML = 'Bienvenid@!'
     }
 
+    // Escondemos documentación técnica de la aplicación (para que no vean los alumnos)
+    document.getElementById('sidebar_docs').style.display = 'none';
+
     // Llamada al API para conseguir cursos del usuario.
     try {
         // Llamada
@@ -311,16 +314,18 @@ document.getElementById("saveCourseButton").addEventListener("click", function()
     const card = document.createElement("div");
     card.classList.add("card");
 
-    card.innerHTML = `
-        <a href="#" style="text-decoration: none; color: inherit;">
-            <img class="card-img-top" src="../images/educacion.png" alt="Imagen del curso">
-            <div class="card-body">
-                <h9 class="card-title">${courseName}</h9>
-                <h15 class="card-code">${courseKey}</h15>
-                <small class="card-text">${description}</small> <br>
-            </div>
-        </a>
-    `;
+    card.innerHTML = `<a href="course?code=${courseKey}">
+                                    <img class="card_image" src="../images/educacion.png">
+                                    <div class="card_body">
+                                        <h15 class="card_code">${courseKey}</h15>
+                                        <h9 class="card_title">${courseName}</h9>
+                                    </div>
+                                </a>
+                                <img src="../images/three_dots.png" alt="Opciones" class="card_menu_icon">
+                                <div class="card_options_menu">
+                                    <button class="menu-option" id="edit_course_button">Editar</button>
+                                    <button class="menu-option" id="erase_course_button">Borrar</button>
+                                </div>`;;
 
     document.getElementById("coursesContainer").appendChild(card);
 
